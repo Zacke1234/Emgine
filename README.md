@@ -1,3 +1,3 @@
 # Emgine
-My own game emgine
+My own game engine
 it uses GLFW, glad, imgui, glm and KHR.
