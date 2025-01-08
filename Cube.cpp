@@ -169,7 +169,7 @@ void Cube::InitializeObjectFile(Mesh* myMesh)
 	glEnableVertexAttribArray(2);
 
 }
-void Cube::ApplyTexture(Texture* aTexture) // the hell does this even do? sets mytexure to atexture? ?????????????????
+void Cube::ApplyTexture(Texture* aTexture) 
 {
 	myTexture = aTexture;
 }
