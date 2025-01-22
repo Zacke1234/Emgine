@@ -27,7 +27,7 @@ std::string Shader::LoadShader(const char* aPath)
 	}
 	catch (std::ifstream::failure e)
 	{
-		std::cout << "Could not load shader file from path - " << aPath << "\n";
+		//std::cout << "Could not load shader file from path - " << aPath << "\n";
 		return "";
 	}
 }

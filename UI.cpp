@@ -14,7 +14,7 @@
 
 UI::UI(GLFWwindow* window)
 {
-	
+	isCube = false;
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -27,8 +27,8 @@ UI::UI(GLFWwindow* window)
 
 void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
 {
-	Shader* shade = new Shader("../Shader/VertexShader_1.glsl", "../Shader/FragmentShader_1.glsl");
-	VirtualObject* virtobj;
+	shade = new Shader("../Shader/VertexShader_1.glsl", "../Shader/FragmentShader_1.glsl");
+	
 	//Camera* cam = new Camera();
 	// 
 	//Cube* myCube = new Cube();
@@ -46,10 +46,10 @@ void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
 	{
 		std::cout << "echo" << "\n";
 		//std::cout << textureFile << "\n";
-		for (int i = 0; i < VirtualObject::Entities.size(); i++)
+		/*for (int i = 0; i < VirtualObject::Entities.size(); i++)
 		{
 			std::cout << VirtualObject::Entities[i] << " ";
-		}
+		}*/
 	}
 	ImGui::Text("Type in the exact file name");
 
@@ -58,10 +58,13 @@ void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
 	//int b;
 	//ImGui::InputInt("label", &virtobj->SelectedEntity, step2, step2_fast);
 
-	if (ImGui::Button("Create new cube")) // this just dosen't make a cube anymore
+	if (ImGui::Button("Create new cube")) // this just dosen't make a cube anymore, gives an error instead, probably cause of the cube/mesh code change, no longer gives an error
 	{
+		mesh = new Mesh();
+		isCube = true;
 		virtobj = new VirtualObject();
-		Texture* texture = new Texture(buf);	// won't work if I press "create new cube" while the input field is empty, if I were to fill it then it still won't work.
+		//virtobj->isCube = true;
+		texture = new Texture(buf);	// won't work if I press "create new cube" while the input field is empty, if I were to fill it then it still won't work.
 		// it seems to only work if I input the file then click "create new cube" EDIT: now it dosen't work at all,
 
 		if (buf == "") // if the field is empty it should make the cube have the default texture by default, but that dosen't work for some reason.
@@ -72,25 +75,44 @@ void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
 		VirtualObject::Entities.push_back(virtobj);
 
 		//virtobj->Draw(cam, shade);
+		 
+		
 		virtobj->SetTexture(*texture);
-		virtobj->SetCube(*MeshManager::Get().GetCube());
+		virtobj->SetCube(*MeshManager::Get().GetCube()); 
 		virtobj->Position = glm::vec3(1, 1, 1);
 		virtobj->Scale = glm::vec3(1, 1, 1);
 		virtobj->SetShader(*shade);
+		virtobj->SetMesh(*mesh); // the mesh is set here, it no longer gives an error, but it can't render into the engine
+		
 
 		//virtobj->SelectedEntity = 3;
 	}
+
+	if (ImGui::Button("Change Texture"))
+	{
+		texture = new Texture(buf);
+		virtobj = new VirtualObject();
+
+		virtobj->Entities[VirtualObject::SelectedEntity]->SetTexture(*texture);
+	}
+	   
+	if (ImGui::Button("Change name"))
+	{
+		virtobj = new VirtualObject();
+		virtobj->Entities[VirtualObject::SelectedEntity]->SetName(buf2);
+	}
+	name = ImGui::InputText("Name", buf2, sizeof(buf2) - 1);
 
 	int n = sizeof(virtobj->Entities);
 
 	int idx;
 
 	float value = 0;
-	
-	for (int i = 0; i < virtobj->Entities.size(); i++)
+
+	for (int i = 0; i < VirtualObject::Entities.size(); i++)
 	{
 		ImGui::PushID(i);
-		if (ImGui::Button("entity"))
+		if (ImGui::Button(VirtualObject::Entities[i]->namn.c_str()))
 		{
 			
 			VirtualObject::SelectedEntity = i;

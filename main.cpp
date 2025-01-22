@@ -58,33 +58,35 @@ int main()
 	
 
 	Shader* myShader = new Shader("../Shader/VertexShader_1.glsl" ,"../Shader/FragmentShader_1.glsl");
-	Cube* myCube = new Cube(); //TODO: Remove, use MeshManager::GetCube instead
+	
 	Camera* myCamera = new Camera();
 	Texture* wallTex = new Texture("wall.jpg");
 	Texture* myTexture = new Texture("Default 1.png");
-	//Texture* myTexture2 = new Texture("Default 1.png"); // scuffed
+	
 	Lighting* myLighting = new Lighting();
-	//VirtualObject* myVirtualObject = new VirtualObject(myCube, myTexture, myShader);
+	
 	UI* myUI = new UI(window);
 	ObjLoader* myObjLoader = new ObjLoader();
 	MeshManager::Allocate();
 	MeshManager* myMeshManager = &MeshManager::Get(); 
-	//Mesh myMesh{};
+	
 	Vertex myVertex{};
-	//auto loadobj = myObjLoader->ObjParser("plane.obj");
+	
 
 	Mesh mesh = myObjLoader->ObjParser("./teapot.obj"); //teapot.obj
 	
 	Cube* Cubemesh = myMeshManager->GetCube();
 	Cube* ObjMesh = myMeshManager->GetObject();
 
+	
+
 	// Initialization 
-	//Cubemesh->InitializeCube();
+	Cubemesh->InitializeCube();
 	ObjMesh->InitializeObjectFile(&mesh);
 
 	//auto loadMesh = myMeshManager->LoadCube();
 	
-	auto object = new VirtualObject(&mesh, myTexture, myShader); // texture gets set here to the object though TODO: remove
+	//auto object = new VirtualObject(&mesh, myTexture, myShader); // texture gets set here to the object though TODO: remove
 	/*object->SetCube(*myCube);
 	object->SetShader(*myShader);
 	object->SetTexture(*myTexture);*/
@@ -103,32 +105,31 @@ int main()
 
 	VirtualObject* myVirtualObject{};
 	VirtualObject* VirtualObjectMesh{}; 
-
-
+	std::string foo = "entity";
 	
-	VirtualObjectMesh = new VirtualObject(&mesh, myTexture, myShader); // something is wrong (really high numbers) with the vertex count in ObjMesh
+	
+	VirtualObjectMesh = new VirtualObject(&mesh, myTexture, myShader, foo);
 
 	VirtualObjectMesh->Position = glm::vec3(1, 1, 1);
 	VirtualObjectMesh->Scale = glm::vec3(1, 1, 1);
 	
-	//while (VirtualObject::Entities.size() < 3)
-	//{
+	while (VirtualObject::Entities.size() < 3) 
+	{
 
-	//	myVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader);
-	//	VirtualObject::Entities.push_back(myVirtualObject); // something is wrong (really high numbers) with the index count and vertex count here in myVirtualObject, fixed it and I dont think thats the problem why my OBJ mesh won't spawn in, not at all    
-	//	
-	//	//VirtualObject::Entities.push_back(object); // I think I already do this in virtual object cpp, nvm I don't.
-	//	myVirtualObject->Position = glm::vec3(rand() % 10, rand() % 10, rand() % 10);
-	//	
-	//	
-	//}  
+		myVirtualObject = new VirtualObject(&mesh, myTexture, myShader, foo);
+		VirtualObject::Entities.push_back(myVirtualObject); 
+		  
+		
+		myVirtualObject->Position = glm::vec3(rand() % 20, rand() % 20, rand() % 20);
+		
+		
+	}  
+	//myUI->virtobj = VirtualObject::Entities[0];
+	
 	//ObjMesh->InitialiseObjectFile(myObjLoader);
 	VirtualObject::Entities.push_back(VirtualObjectMesh);
 	
-
-	//myCube->InitializeCube();
-
-	bool isFive = false;
+	//myLighting->Initialise();
 	
 	
 	glEnable(GL_DEPTH_TEST);
@@ -137,7 +138,7 @@ int main()
 	{
 		
 		// Renders 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 		
 		// poll for and process events ?
 		glfwPollEvents();
@@ -147,22 +148,17 @@ int main()
 		myUI->RenderUI();
 		
 		myShader->UseShader();
-
+		//myVirtualObject->SetMesh(mesh);
+		//smyLighting->Use();
 		for (auto& o : VirtualObject::Entities)
-		{
-
-			//o->DrawObject(*myShader, *VirtualObjectMesh);
-			o->Draw(myCamera, myShader);
-			//o->Draw(myCamera, myShader, ObjMesh);
-
-			//if (VirtualObject::Entities.size() == 5 && isFive == false)
-			//{
-			//	std::cout << "the entities is equal to 5" << "\n"; // debugging stuff
-			//	isFive = true;
-			//}
+		{		
+			//o->Draw(myCamera, myShader); // draws the cubes
+			o->DrawObject(myCamera, myShader); // draws the mesh from the file. for example, the teapot mesh
+			
+			
 		}
-		ObjMesh->DrawObject(myShader, VirtualObjectMesh); // Something has to up with the drawing, but I dont know what could be causing it
-		
+
+		//ObjMesh->DrawObject(myShader, VirtualObjectMesh); // Something has to up with the drawing, but I dont know what could be causing 		
 		 
 		
 		myVirtualObject->Entities[VirtualObject::SelectedEntity]->Position = glm::vec3(myUI->xPos, myUI->yPos, myUI->zPos);
@@ -176,6 +172,9 @@ int main()
 		glm::mat4 Projection = glm::mat4(1);
 		glm::vec3 Texture = glm::vec3(1);
 		glm::vec2 TexCoords = glm::vec2(1);
+		/*glm::vec3 vertex_Position = glm::vec3(1);
+		glm::vec2 vertex_UV = glm::vec2(1);
+		glm::vec3 vertex_Normal = glm::vec3(1);*/
 		 
 
 		myCamera->ProcessInput(window);

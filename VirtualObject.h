@@ -11,11 +11,13 @@ class VirtualObject
 {
 public:
 	VirtualObject();
-	VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader);
+	VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std::string _namn);
+	VirtualObject(Cube* Cube, Texture* aTexture, Shader* aShader);
 
-	void SetCube(Cube& aCube); //would be SetMesh
+	void SetCube(Cube& aCube); 
 	void SetTexture(Texture& aTexture);
 	void SetShader(Shader& aShader);
+	void SetMesh(Mesh& aMesh);
 	
 	void Draw(Camera* aCamera, Shader* myShader);
 	void DrawObject(Camera* aCamera, Shader* myShader);
@@ -24,11 +26,16 @@ public:
 	glm::vec3 Scale;
 	glm::vec3 Rotation;
 
-	char* name;
+	
+	std::string namn;
+
+	void SetName(std::string name);
 
 	static std::vector<VirtualObject*> Entities;
 
 	static int SelectedEntity;
+
+	bool IsCube;
 
 	
 	
@@ -38,6 +45,8 @@ private:
 	Shader* MyShader;
 	Cube* myCube;
 	Mesh* myMesh;
+
+	
 	//ObjLoader* myObjloader;
 	
 

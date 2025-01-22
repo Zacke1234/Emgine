@@ -99,6 +99,7 @@ Cube::Cube() // I need to learn to use constructors more (that can be said for e
 }
 void Cube::InitializeCube()
 {
+	
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 	
@@ -147,6 +148,7 @@ void Cube::InitializeObjectFile(Mesh* myMesh)
 	glGenBuffers(1, &VBO);
 
 	myMesh->vertexbuffer = VBO;
+	
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 	//indexCount = myMesh->faces.size();
@@ -169,7 +171,7 @@ void Cube::InitializeObjectFile(Mesh* myMesh)
 	glEnableVertexAttribArray(2);
 
 }
-void Cube::ApplyTexture(Texture* aTexture) 
+void Cube::ApplyTexture(Texture* aTexture) // the hell does this even do? sets mytexure to atexture? ?????????????????
 {
 	myTexture = aTexture;
 }
@@ -186,6 +188,7 @@ void Cube::Draw(Shader* myShader, VirtualObject* myVirtualObject)
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject);
 	}
+	
 	glBindVertexArray(VAO);
 	// 36 for the cubes
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);

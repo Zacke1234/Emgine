@@ -23,7 +23,8 @@ struct Mesh{
 	std::vector<Vertex> vertices;
 	std::vector<Face> faces;
 	std::vector<float> data;
-	int vertexbuffer;
+	int vertexbuffer = 0;
+	unsigned int numberVertices = 0;
 };
 
 // glm::vec3 

@@ -11,10 +11,7 @@ ObjLoader::ObjLoader()
 }
 
 // https://www.opengl-tutorial.org/beginners-tutorials/tutorial-7-model-loading/
-bool LoadOBJ(const char* path,
-	std::vector < glm::vec3 >& out_vertices,
-	std::vector < glm::vec3 >& out_uvs,
-	std::vector < glm::vec3 >& out_normals);
+
 
 Mesh ObjLoader::ObjParser(const char* fileName)
 {
@@ -86,6 +83,15 @@ Mesh ObjLoader::ObjParser(const char* fileName)
 			mesh.data.push_back(vertex.position.x);
 			mesh.data.push_back(vertex.position.y);
 			mesh.data.push_back(vertex.position.z);
+
+			// all of these are important for the mesh, except for the position.g it seems like
+			mesh.data.push_back(vertex.position.b);
+			//mesh.data.push_back(vertex.position.g);
+			mesh.data.push_back(vertex.position.p);
+			mesh.data.push_back(vertex.position.r);
+			mesh.data.push_back(vertex.position.s);
+			mesh.data.push_back(vertex.position.t);
+			mesh.numberVertices++;
 			
 		}
 	}

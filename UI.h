@@ -22,7 +22,7 @@ public:
 	float xScale = 1;
 	float zScale = 1;
 	char buf[255]{};
-
+	char buf2[255]{};
 	float step = 0;
 	float step_fast = 0;
 
@@ -30,7 +30,16 @@ public:
 	int step2_fast = 100;
 
 	char textureFile;
+
+	char name;
+
+	bool isCube;
 private:
+
+	Mesh* mesh;
+	VirtualObject* virtobj;
+	Shader* shade;
+	Texture* texture;
 	
 };
 
