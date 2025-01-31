@@ -8,7 +8,7 @@
 MeshManager* MeshManager::instance = nullptr;
 //VirtualObject* MeshManager::instance = nullptr; 
 //Cube* cube = new Cube();
-MeshManager::MeshManager() // do init?
+MeshManager::MeshManager() : Meshtest(std::make_unique<Mesh>()) // do init?
 {
 	// on string input set entity cube in UI
 	//cubeList = new std::list<Cube*>();

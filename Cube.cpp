@@ -5,8 +5,9 @@
 #include "VirtualObject.h"
 #include <ext/matrix_transform.hpp>
 #include "ObjLoader.h"
-#include <cassert>
+#include <cassert>    
 #include "vector"
+#include <glad.h>
 using namespace std;
 
 Texture* myTexture;
@@ -97,9 +98,10 @@ Cube::Cube() // I need to learn to use constructors more (that can be said for e
 	VAO = 0;
 
 }
+
 void Cube::InitializeCube()
 {
-	
+	std::cout << "initialise cube" << "\n";
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 	
@@ -125,60 +127,15 @@ void Cube::InitializeCube()
 	glEnableVertexAttribArray(2);
 }
 
-
-
-void Cube::InitializeObjectFile(Mesh* myMesh)
-{
-	/*if (myObjLoader->temp_vertices.empty() && myObjLoader->temp_faces.empty())
-	{
-		std::cout << "Empty vertices / faces" << std::endl;
-
-		return;
-	}*/
-
-	//Mesh* myMesh = new Mesh();
-
-	Vertex myVertex;
-	Face myFace;
-	ApplyTexture(myTexture);
-
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-
-	glGenBuffers(1, &VBO);
-
-	myMesh->vertexbuffer = VBO;
-	
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	//indexCount = myMesh->faces.size();
-	
-	glBufferData(GL_ARRAY_BUFFER, myMesh->data.size() * sizeof(float), &myMesh->data[0], GL_STATIC_DRAW);
-	// size / length
-
-	//glGenBuffers(1, &EBO);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-	//glBufferData(GL_ARRAY_BUFFER, myMesh->data.size() * sizeof(float), &myMesh->data[0], GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
-
-}
-void Cube::ApplyTexture(Texture* aTexture) // the hell does this even do? sets mytexure to atexture? ?????????????????
+void Cube::ApplyTexture(Texture* aTexture) 
 {
 	myTexture = aTexture;
 }
-void Cube::Draw(Shader* myShader, VirtualObject* myVirtualObject)
+
+void Cube::Draw(Shader* myShader, VirtualObject* myVirtualObject, Camera* aCamera)
 {
 	
-	
+	//std::cout << "draw cube" << "\n";
 	//assert(VAO);
 	if (myTexture != NULL)
 	{
@@ -189,29 +146,33 @@ void Cube::Draw(Shader* myShader, VirtualObject* myVirtualObject)
 		glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject);
 	}
 	
-	glBindVertexArray(VAO);
-	// 36 for the cubes
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	//
+	glm::mat4 trans = glm::mat4(1.0f);
 
-	glBindVertexArray(0);
+	trans = glm::translate(trans, myVirtualObject->Position);
+
+	trans = glm::rotate(trans, myVirtualObject->Rotation.x, glm::vec3(1, 0, 0));
+	trans = glm::rotate(trans, myVirtualObject->Rotation.y, glm::vec3(0, 1, 0));
+	trans = glm::rotate(trans, myVirtualObject->Rotation.z, glm::vec3(0, 0, 1));
+
+	trans = glm::scale(trans, myVirtualObject->Scale);
+
+	glActiveTexture(GL_TEXTURE0); // Activate the texture unit before binding texture
+
+	myShader->SetMatrix("transform", trans);
+	myShader->SetMatrix("view", aCamera->myView);
+	myShader->SetMatrix("projection", aCamera->projection);
+
+	//
+	glGenBuffers(1, &VBO);
+
+	glBindVertexArray(VBO);
+	//// 36 for the cubes
+	glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
+
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Cube::DrawObject(Shader* myShader, VirtualObject* myVirtualObject)
-{
-	//assert(VAO);
-	if (myTexture != NULL)
-	{
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject);
 
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject);
-	}
-	glBindVertexArray(VAO);
-	// indexCount for the objects 
-	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
-	glBindTexture(GL_TEXTURE_2D, 0);
-}
 

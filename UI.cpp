@@ -29,10 +29,6 @@ void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
 {
 	shade = new Shader("../Shader/VertexShader_1.glsl", "../Shader/FragmentShader_1.glsl");
 	
-	//Camera* cam = new Camera();
-	// 
-	//Cube* myCube = new Cube();
-	//objects.push_back(myVirtualObject);
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
@@ -54,38 +50,36 @@ void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
 	ImGui::Text("Type in the exact file name");
 
 	textureFile = ImGui::InputText("texture file", buf, sizeof(buf) - 1);  
+	name = ImGui::InputText("Name", buf2, sizeof(buf2) - 1);
 
-	//int b;
-	//ImGui::InputInt("label", &virtobj->SelectedEntity, step2, step2_fast);
+	
 
-	if (ImGui::Button("Create new cube")) // this just dosen't make a cube anymore, gives an error instead, probably cause of the cube/mesh code change, no longer gives an error
+	if (ImGui::Button("Create new cube")) 
 	{
-		mesh = new Mesh();
-		isCube = true;
+		//mesh = new Mesh();
 		virtobj = new VirtualObject();
-		//virtobj->isCube = true;
-		texture = new Texture(buf);	// won't work if I press "create new cube" while the input field is empty, if I were to fill it then it still won't work.
-		// it seems to only work if I input the file then click "create new cube" EDIT: now it dosen't work at all,
-
-		if (buf == "") // if the field is empty it should make the cube have the default texture by default, but that dosen't work for some reason.
+		texture = new Texture(buf);	
+		virtobj->IsCube = true;
+		virtobj->IsMesh = false;
+		if (textureFile == '\0') 
 		{
 			texture = new Texture("Default 1.png");
 		}
-		// \0
-		VirtualObject::Entities.push_back(virtobj);
-
-		//virtobj->Draw(cam, shade);
-		 
 		
 		virtobj->SetTexture(*texture);
+
 		virtobj->SetCube(*MeshManager::Get().GetCube()); 
 		virtobj->Position = glm::vec3(1, 1, 1);
 		virtobj->Scale = glm::vec3(1, 1, 1);
 		virtobj->SetShader(*shade);
-		virtobj->SetMesh(*mesh); // the mesh is set here, it no longer gives an error, but it can't render into the engine
+		//virtobj->SetMesh(*mesh); 
+		virtobj->SetName(buf2);
+		if (name == '\0')
+		{
+			virtobj->SetName("Cube");
+		}
+		VirtualObject::Entities.push_back(virtobj);
 		
-
-		//virtobj->SelectedEntity = 3;
 	}
 
 	if (ImGui::Button("Change Texture"))
@@ -101,7 +95,7 @@ void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
 		virtobj = new VirtualObject();
 		virtobj->Entities[VirtualObject::SelectedEntity]->SetName(buf2);
 	}
-	name = ImGui::InputText("Name", buf2, sizeof(buf2) - 1);
+	
 
 	int n = sizeof(virtobj->Entities);
 

@@ -22,5 +22,6 @@ public:
 	Cube* cube;
 	Cube* ObjectMesh;
 	VirtualObject* virtobj;
+	std::unique_ptr<Mesh> Meshtest;
 };
 

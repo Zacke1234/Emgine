@@ -10,15 +10,12 @@ class Cube
 public:
 	Cube();
 	/*const float* someVertices, size_t aVertexSize, unsigned int* someIndices, size_t aIndexSize*/
-	void Draw(Shader* myShader, VirtualObject* myVirtualObject);
-
-	void DrawObject(Shader* myShader, VirtualObject* myVirtualObject);
+	void Draw(Shader* myShader, VirtualObject* myVirtualObject, Camera* myCamera);
 
 	void ApplyTexture(Texture* aTexture);
 
 	void InitializeCube();
 
-	void InitializeObjectFile(Mesh* myMesh);
 	//glm::mat4 MyTexture;
 
 	unsigned int VAO;
@@ -29,6 +26,7 @@ public:
 
 	size_t indexCount, vertexCount;
 
+	
 
 private:
 	

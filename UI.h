@@ -1,4 +1,5 @@
 #include "VirtualObject.h"
+#include "ObjLoader.h"
 #include "vector"
 #include <string.h>
 #include <string>
@@ -34,12 +35,15 @@ public:
 	char name;
 
 	bool isCube;
+	
+	ObjLoader* objLoader;
 private:
 
 	Mesh* mesh;
 	VirtualObject* virtobj;
 	Shader* shade;
 	Texture* texture;
+
 	
 };
 

@@ -54,8 +54,6 @@ int main()
 		std::cout << "Failed to initialise GLAD" << std::endl;
 		return -1;
 	}
-	
-	
 
 	Shader* myShader = new Shader("../Shader/VertexShader_1.glsl" ,"../Shader/FragmentShader_1.glsl");
 	
@@ -67,29 +65,37 @@ int main()
 	
 	UI* myUI = new UI(window);
 	ObjLoader* myObjLoader = new ObjLoader();
+
+	myUI->objLoader = myObjLoader;
+
 	MeshManager::Allocate();
 	MeshManager* myMeshManager = &MeshManager::Get(); 
 	
 	Vertex myVertex{};
 	
-
+	//Mesh mesh;
+	//std::shared_ptr<Mesh> aMesh = std::make_shared<Mesh>();
 	Mesh mesh = myObjLoader->ObjParser("./teapot.obj"); //teapot.obj
 	
 	Cube* Cubemesh = myMeshManager->GetCube();
 	Cube* ObjMesh = myMeshManager->GetObject();
 
 	
-
-	// Initialization 
-	Cubemesh->InitializeCube();
-	ObjMesh->InitializeObjectFile(&mesh);
-
-	//auto loadMesh = myMeshManager->LoadCube();
+	VirtualObject* VirtualObjectMesh{}; 
+	VirtualObject* CubeVirtualObject{};
+	std::string name = "Mesh";
+	std::string name2 = "Cube";
 	
-	//auto object = new VirtualObject(&mesh, myTexture, myShader); // texture gets set here to the object though TODO: remove
-	/*object->SetCube(*myCube);
-	object->SetShader(*myShader);
-	object->SetTexture(*myTexture);*/
+	//myVirtualObject->CreateMesh(mesh);
+	//VirtualObjectMesh->CreateMesh(mesh);
+	
+
+	// Initialization  
+	Cubemesh->InitializeCube();
+	//ObjMesh->InitializeObjectFile(&mesh);
+	mesh.InitialiseMesh(&mesh);
+
+ 
 	
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, myCamera->Mouse_Callback);
@@ -100,34 +106,31 @@ int main()
 	0.5f, 1.0f   // top-center corner
 	};
 
-	/*object->Scale = glm::vec3(1, 1, 1);
-	object->Position = glm::vec3(2, 2, 2);*/
 
-	VirtualObject* myVirtualObject{};
-	VirtualObject* VirtualObjectMesh{}; 
-	std::string foo = "entity";
 	
-	
-	VirtualObjectMesh = new VirtualObject(&mesh, myTexture, myShader, foo);
+	//CubeVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name2);
+	//VirtualObject::Entities.push_back(CubeVirtualObject);
+	//CubeVirtualObject->Position = glm::vec3(rand() % 20, rand() % 20, rand() % 20);
 
-	VirtualObjectMesh->Position = glm::vec3(1, 1, 1);
-	VirtualObjectMesh->Scale = glm::vec3(1, 1, 1);
+	std::shared_ptr<Mesh> TeapotMesh = std::make_shared<Mesh>();
 	
 	while (VirtualObject::Entities.size() < 3) 
 	{
-
-		myVirtualObject = new VirtualObject(&mesh, myTexture, myShader, foo);
-		VirtualObject::Entities.push_back(myVirtualObject); 
-		  
+		VirtualObjectMesh = new VirtualObject(&mesh, myTexture, myShader, name);
 		
-		myVirtualObject->Position = glm::vec3(rand() % 20, rand() % 20, rand() % 20);
+		//myVirtualObject = new VirtualObject(&mesh, myTexture, myShader, name2);
+		VirtualObject::Entities.push_back(VirtualObjectMesh);
+		
+		
+		VirtualObjectMesh->Position = glm::vec3(rand() % 20, rand() % 20, rand() % 20);
 		
 		
 	}  
 	//myUI->virtobj = VirtualObject::Entities[0];
 	
 	//ObjMesh->InitialiseObjectFile(myObjLoader);
-	VirtualObject::Entities.push_back(VirtualObjectMesh);
+	
+	
 	
 	//myLighting->Initialise();
 	
@@ -150,20 +153,21 @@ int main()
 		myShader->UseShader();
 		//myVirtualObject->SetMesh(mesh);
 		//smyLighting->Use();
+		
+		
 		for (auto& o : VirtualObject::Entities)
 		{		
-			//o->Draw(myCamera, myShader); // draws the cubes
-			o->DrawObject(myCamera, myShader); // draws the mesh from the file. for example, the teapot mesh
-			
+			o->Draw(myCamera, myShader); // draws the cubes
+			//o->DrawObject(myCamera, myShader); // draws the mesh from the file. for example, the teapot mesh
 			
 		}
 
-		//ObjMesh->DrawObject(myShader, VirtualObjectMesh); // Something has to up with the drawing, but I dont know what could be causing 		
+		
 		 
 		
-		myVirtualObject->Entities[VirtualObject::SelectedEntity]->Position = glm::vec3(myUI->xPos, myUI->yPos, myUI->zPos);
-		myVirtualObject->Entities[VirtualObject::SelectedEntity]->Rotation = glm::vec3(myUI->xRot, myUI->yRot, myUI->zRot);
-		myVirtualObject->Entities[VirtualObject::SelectedEntity]->Scale = glm::vec3(myUI->xScale, myUI->yScale, myUI->zScale);
+		VirtualObject::Entities[VirtualObject::SelectedEntity]->Position = glm::vec3(myUI->xPos, myUI->yPos, myUI->zPos);
+		VirtualObject::Entities[VirtualObject::SelectedEntity]->Rotation = glm::vec3(myUI->xRot, myUI->yRot, myUI->zRot);
+		VirtualObject::Entities[VirtualObject::SelectedEntity]->Scale = glm::vec3(myUI->xScale, myUI->yScale, myUI->zScale);
 		
 		
 
@@ -172,9 +176,7 @@ int main()
 		glm::mat4 Projection = glm::mat4(1);
 		glm::vec3 Texture = glm::vec3(1);
 		glm::vec2 TexCoords = glm::vec2(1);
-		/*glm::vec3 vertex_Position = glm::vec3(1);
-		glm::vec2 vertex_UV = glm::vec2(1);
-		glm::vec3 vertex_Normal = glm::vec3(1);*/
+		
 		 
 
 		myCamera->ProcessInput(window);

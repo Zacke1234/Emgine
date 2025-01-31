@@ -100,4 +100,44 @@ Mesh ObjLoader::ObjParser(const char* fileName)
 	//return std::vector<Vertex>();
 }
 
+void Mesh::InitialiseMesh(Mesh* myMesh)
+{
+	std::cout << "initialise object file" << "\n";
+	/*if (myObjLoader->temp_vertices.empty() && myObjLoader->temp_faces.empty())
+	{
+		std::cout << "Empty vertices / faces" << std::endl;
 
+		return;
+	}*/
+
+	//Mesh* myMesh = new Mesh();
+	//ApplyTexture(myTexture);
+
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	glGenBuffers(1, &VBO);
+
+	myMesh->vertexbuffer = VBO;
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+	//indexCount = myMesh->faces.size();
+
+	glBufferData(GL_ARRAY_BUFFER, myMesh->data.size() * sizeof(float), &myMesh->data[0], GL_STATIC_DRAW);
+	// size / length
+
+	//glGenBuffers(1, &EBO);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+	//glBufferData(GL_ARRAY_BUFFER, myMesh->data.size() * sizeof(float), &myMesh->data[0], GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+}

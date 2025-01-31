@@ -25,6 +25,16 @@ struct Mesh{
 	std::vector<float> data;
 	int vertexbuffer = 0;
 	unsigned int numberVertices = 0;
+	unsigned int VAO;
+	unsigned int VBO;
+	unsigned int EBO;
+
+	//std::string Path; 
+
+	size_t indexCount, vertexCount;
+
+public:	
+	void InitialiseMesh(Mesh* myMesh);
 };
 
 // glm::vec3 
