@@ -107,44 +107,6 @@ void VirtualObject::Draw(Camera* aCamera, Shader* myShader)
 	if (IsCube)
 	{
 		DrawCube(aCamera, myShader);
-		//glm::mat4 trans = glm::mat4(1.0f);
-
-		//trans = glm::translate(trans, Position);
-
-		//trans = glm::rotate(trans, Rotation.x, glm::vec3(1, 0, 0));
-		//trans = glm::rotate(trans, Rotation.y, glm::vec3(0, 1, 0));
-		//trans = glm::rotate(trans, Rotation.z, glm::vec3(0, 0, 1));
-
-		//trans = glm::scale(trans, Scale);
-
-		//glActiveTexture(GL_TEXTURE0); // Activate the texture unit before binding texture
-		//glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject);
-
-		//MyShader->SetMatrix("transform", trans);
-		//MyShader->SetMatrix("view", aCamera->myView);
-		//MyShader->SetMatrix("projection", aCamera->projection);
-
-		////
-
-		////assert(VAO);
-		//if (myTexture != NULL)
-		//{
-		//	glActiveTexture(GL_TEXTURE0);
-		//	glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject);
-
-		//	glActiveTexture(GL_TEXTURE1);
-		//	glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject);
-		//}
-
-		////glBindVertexArray(myMesh->vertexbuffer);
-		////
-		////glDrawArrays(GL_TRIANGLES, 0, myMesh->data.size());
-		//glBindVertexArray(1);
-		////// 36 for the cubes
-		//glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
-
-
-		//glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	else if(IsMesh)
 	{
@@ -159,6 +121,7 @@ void VirtualObject::DrawCube(Camera* aCamera, Shader* myShader)
 
 void VirtualObject::DrawObject(Camera* aCamera, Shader* myShader)
 {
+		
 		//std::cout << "draw object in virtualobject" << "\n";
 		//assert(myMesh);
 		glm::mat4 trans = glm::mat4(1.0f);
@@ -186,11 +149,17 @@ void VirtualObject::DrawObject(Camera* aCamera, Shader* myShader)
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject);
 		}
-		glGenBuffers(1, &myMesh->VBO);
-
-		glBindVertexArray(myMesh->VBO);
+		/*glGenBuffers(1, &myMesh->VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, myMesh->VBO);
+		glBindVertexArray(myMesh->VBO);*/
 		//
+
+		glBindVertexArray(myMesh->VAO);
 		glDrawArrays(GL_TRIANGLES, 0, myMesh->data.size());
+		//glGenBuffers(1, &VBO);
+		glBindVertexArray(0);
+
+		
 
 
 		//myCube->DrawObject(myShader, this);

@@ -74,7 +74,7 @@ glm::vec3 cubePositions[] = {
 	glm::vec3(1.5f,  0.2f, -1.5f),
 	glm::vec3(-1.3f,  1.0f, -1.5f)
 };
-static unsigned int indices[] = {
+static signed int indices[] = {
 	// Front face
 	0, 2, 1, 2, 0, 3,
 	// Back face
@@ -99,9 +99,11 @@ Cube::Cube() // I need to learn to use constructors more (that can be said for e
 
 }
 
+
 void Cube::InitializeCube()
 {
 	std::cout << "initialise cube" << "\n";
+	IndicesSize = sizeof(indices);
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 	
@@ -110,11 +112,15 @@ void Cube::InitializeCube()
 	//
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	
-
-	glGenBuffers(1, &EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	//
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	EBO = 0;
+	if (IndicesSize > 0)
+	{
+		glGenBuffers(1, &EBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		//
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	}
+	
 	
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
@@ -125,6 +131,10 @@ void Cube::InitializeCube()
 
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
 }
 
 void Cube::ApplyTexture(Texture* aTexture) 
@@ -137,6 +147,9 @@ void Cube::Draw(Shader* myShader, VirtualObject* myVirtualObject, Camera* aCamer
 	
 	//std::cout << "draw cube" << "\n";
 	//assert(VAO);
+
+	glActiveTexture(GL_TEXTURE0); // Activate the texture unit before binding texture
+	//glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject);
 	if (myTexture != NULL)
 	{
 		glActiveTexture(GL_TEXTURE0);
@@ -157,21 +170,34 @@ void Cube::Draw(Shader* myShader, VirtualObject* myVirtualObject, Camera* aCamer
 
 	trans = glm::scale(trans, myVirtualObject->Scale);
 
-	glActiveTexture(GL_TEXTURE0); // Activate the texture unit before binding texture
+	
 
 	myShader->SetMatrix("transform", trans);
 	myShader->SetMatrix("view", aCamera->myView);
 	myShader->SetMatrix("projection", aCamera->projection);
 
-	//
+	
+	/*glBindVertexArray(VAO);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glGenBuffers(1, &VBO);
-
-	glBindVertexArray(VBO);
-	//// 36 for the cubes
-	glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
-
-
+	glBindVertexArray(0);*/
+	glBindVertexArray(VAO);
+	if (IndicesSize > 0)
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glDrawElements(GL_TRIANGLES, IndicesSize, GL_UNSIGNED_INT, (void*)0);
+		glBindVertexArray(0);
+	}
+	
+	/*glBindBuffer(GL_ARRAY_BUFFER, VBO);*/
 	glBindTexture(GL_TEXTURE_2D, 0);
+		
+	
+	//// 36 for the cubes
+	
+	
+
+	
 }
 
 
