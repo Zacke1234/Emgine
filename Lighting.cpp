@@ -53,21 +53,23 @@ void Lighting::Use()
 	//SetMatrix("", trans);
 	glEnableVertexAttribArray(0); // vertex​
 
-	glEnableVertexAttribArray(1); // UVs​
+	//glEnableVertexAttribArray(1); // UVs​
 
-	glEnableVertexAttribArray(2); // normals
+	//glEnableVertexAttribArray(2); // normals
 
 
-  	const int stride = 3 + 2 + 3; // 3 pos, 2 uv, 3 normal​
+  	const int stride = 3 + 2 + 3; // 3 pos, 2 uv, 3 no rmal​
 	const int StrideBytes = stride * sizeof(float);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, StrideBytes, (void*)0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, StrideBytes, (void*)(3 * sizeof(float)));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, StrideBytes, (void*)(5 * sizeof(float)));
+	/*glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, StrideBytes, (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, StrideBytes, (void*)(5 * sizeof(float)));*/
 
 	GLuint indexBuffer = 1;
 	glGenBuffers(1, &indexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexBuffer); // bind it to be interacted with
+	SetVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+	SetVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
 
 	//Buffer in the new indices array
 
@@ -79,4 +81,9 @@ void Lighting::Use()
 void Lighting::SetMatrix(const char* texture, glm::mat4 MAT)
 {
 	glUniformMatrix4fv(glGetUniformLocation(LightingProgram, texture), 1, GL_FALSE, glm::value_ptr(MAT));
+}
+
+void Lighting::SetVec3(const char* texture, glm::vec3 aVec3)
+{
+	glUniformMatrix4fv(glGetUniformLocation(LightingProgram, texture), 1, GL_FALSE, glm::value_ptr(aVec3));
 }

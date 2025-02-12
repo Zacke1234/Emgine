@@ -40,6 +40,8 @@ public:
 
 	void SetMatrix(const char* texture, glm::mat4 mat4);
 
+	void SetVec3(const char* texture, glm::vec3 aVec3);
+
 	float ambientStrength = 0.1f;
 
 	std::vector<LightingVertex> vertices;
