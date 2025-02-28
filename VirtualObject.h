@@ -4,15 +4,18 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "ObjLoader.h"
+
+#include "Lighting.h"
 #include <vector>
+#include "Collider.h"
 
 class Cube;
 class VirtualObject
 {
 public:
 	VirtualObject();
-	VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std::string _namn);
-	VirtualObject(Cube* Cube, Texture* aTexture, Shader* aShader, std::string _namn);
+	VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll, Lighting* light); // add lighting I suppose
+	VirtualObject(Cube* Cube, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll, Lighting* light);
 	~VirtualObject();
 
 	void SetCube(Cube& aCube); 
@@ -52,6 +55,7 @@ private:
 	Cube* myCube;
 	Mesh* myMesh;
 	ObjLoader* myObjLoader;
+	Collider* myCollider;
 	//std::shared_ptr<Mesh> aMesh = std::make_shared<Mesh>();
 	
 	//ObjLoader* myObjloader;

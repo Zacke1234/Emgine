@@ -5,7 +5,7 @@
 #include "MeshManager.h"
 #include <cassert>
 #include <glad.h>
-
+#include "Collider.h"
 //#include "Lighting.cpp"
 
 std::vector<VirtualObject*> VirtualObject::Entities;
@@ -20,6 +20,7 @@ VirtualObject::VirtualObject()
 	myTexture = nullptr;
 	MyShader = nullptr;
 	myMesh = nullptr;
+	myCollider = nullptr;
 	//isCube = false;
 
 	Position = glm::vec3(0, 0, 0);
@@ -28,7 +29,7 @@ VirtualObject::VirtualObject()
 	//Name[255] = nullptr;
 }
 
-VirtualObject::VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std::string _namn)
+VirtualObject::VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll)
 {
 	//myCube = aCube;
 	myTexture = aTexture;
@@ -37,6 +38,7 @@ VirtualObject::VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std
 	//Name[255] = aName[255];
 	this->namn = _namn;
 	IsMesh = true;
+	myCollider = coll;
 	
 
 	Position = glm::vec3(0, 0, 0);
@@ -45,7 +47,7 @@ VirtualObject::VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std
 
 }
 
-VirtualObject::VirtualObject(Cube* cube, Texture* aTexture, Shader* aShader, std::string _namn)
+VirtualObject::VirtualObject(Cube* cube, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll)
 {
 	myTexture = aTexture;
 	MyShader = aShader;
@@ -140,7 +142,7 @@ void VirtualObject::DrawObject(Camera* aCamera, Shader* myShader)
 		MyShader->SetMatrix("transform", trans);
 		MyShader->SetMatrix("view", aCamera->myView);
 		MyShader->SetMatrix("projection", aCamera->projection);
-
+		
 		if (myTexture != NULL)
 		{
 			glActiveTexture(GL_TEXTURE0);
@@ -164,7 +166,7 @@ void VirtualObject::DrawObject(Camera* aCamera, Shader* myShader)
 
 		//myCube->DrawObject(myShader, this);
 
-		glBindTexture(GL_TEXTURE_2D, 0);
+		/*glBindTexture(GL_TEXTURE_2D, 0);*/
 
 	
 	

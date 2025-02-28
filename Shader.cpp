@@ -64,7 +64,7 @@ Shader::Shader(const char* VertexPath, const char* FragmantPath)
 	if (!result)
 	{
 		glGetShaderInfoLog(fragmantShader, 512, NULL, Log);
-		std::cout << "Failed to compile vertex shader \n" << Log << std::endl;
+		std::cout << "Failed to compile fragment shader \n" << Log << std::endl;
 	}
 
 }
@@ -79,16 +79,6 @@ void Shader::SetMatrix(const char* transform, glm::mat4 aMatrix)
 	glUniformMatrix4fv(glGetUniformLocation(ShaderProgram, transform), 1, GL_FALSE, glm::value_ptr(aMatrix));
 }
 
-//void Shader::SetView(const char* view, glm::mat4 aView)
-//{
-//	glUniformMatrix4fv(glGetUniformLocation(ShaderProgram, view), 1, GL_FALSE, glm::value_ptr(aView));
-//}
-//
-//void Shader::SetProjection(const char* projection, glm::mat4 aProjection)
-//{
-//	glUniformMatrix4fv(glGetUniformLocation(ShaderProgram, projection), 1, GL_FALSE, glm::value_ptr(aProjection));
-//}
-
 void Shader::SetVec2(const char* texture, glm::vec2 aVec2)
 {
 	glUniformMatrix4fv(glGetUniformLocation(ShaderProgram, texture), 1, GL_FALSE, glm::value_ptr(aVec2));
@@ -96,6 +86,10 @@ void Shader::SetVec2(const char* texture, glm::vec2 aVec2)
 void Shader::SetVec3(const char* texture, glm::vec3 aVec3)
 {
 	glUniformMatrix4fv(glGetUniformLocation(ShaderProgram, texture), 1, GL_FALSE, glm::value_ptr(aVec3));
+}
+void Shader::SetVec4(const char* texture, glm::vec4 aVec4)
+{
+	glUniformMatrix4fv(glGetUniformLocation(ShaderProgram, texture), 1, GL_FALSE, glm::value_ptr(aVec4));
 }
 void Shader::SetFloat(const std::string texcord, float aTexcord)
 {
