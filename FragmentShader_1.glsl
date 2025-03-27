@@ -1,31 +1,41 @@
-#version 330 core
+﻿#version 330 core
+in vec3 viewPos;
+in vec2 TexCoord;
+in vec3 Normal;
+in vec3 LightPos;
+in vec3 ourColor;
+in vec3 FragPos;
+
 out vec4 FragColor;
   
-in vec4 vertexColor; // the input variable from the vertex shader (same name and same type)  
-
-in vec3 ourColor;
-in vec2 TexCoord;
-
-uniform sampler2D ourTexture;
-
-uniform sampler2D texture1;
-uniform sampler2D texture2;
 uniform vec3 objectColor;
 uniform vec3 lightColor;
+uniform float ambientStrength;
+uniform sampler2D ourTexture;
+uniform vec3 lightPosition;
 
 void main()
-{   //color and image
-    //FragColor = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0);  
+{
+    vec3 ambient = ambientStrength * lightColor;    
+    
+     // diffuse 
+    vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(LightPos - FragPos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
+    
+    // specular
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(viewPos - FragPos); // the viewer is always at (0,0,0) in view-space, so viewDir is (0,0,0) - Position => -Position
+    vec3 reflectDir = reflect(-lightDir, norm);  
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * lightColor; 
+    
+    vec3 result = (ambient + diffuse + specular);
+    
 
-    //color
-    //FragColor = vertexColor;
-
-    //image
-    //FragColor = texture(ourTexture, TexCoord);
-
-    //image on another image
-    FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.2);
-    //FragColor = vec4(1, 0, 0, 1);
-
-    //FragColor = vec4(lightColor * objectColor, 1.0);
+    
+    //color and image
+    FragColor = texture(ourTexture, TexCoord) * vec4(result, 1.0);  
+    //FragColor = vec4(norm, 1.0);
 } 
