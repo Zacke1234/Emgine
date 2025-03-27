@@ -1,3 +1,3 @@
 # Emgine
 My own game engine
-it uses GLFW, glad, imgui, glm and KHR.
+it uses GLFW, glad, imgui, glm, KHR and stbi image loading.
