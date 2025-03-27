@@ -25,40 +25,40 @@ static float vertices[] = {
 	// Positions           // Color    
 	//     
 	 // Front face
-	 -0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,1.0f, 1.0f,
-	  0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,1.0f, 0.0f,
-	  0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 0.0f,0.0f, 0.0f,
-	 -0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 0.0f,0.0f, 1.0f,
+	 -0.5f, -0.5f,  0.5f,   0.0f, 0.0f, 1.0f,	1.0f, 1.0f,
+	  0.5f, -0.5f,  0.5f,   0.0f, 0.0f, 1.0f,	1.0f, 0.0f,
+	  0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,	0.0f, 0.0f,
+	 -0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,	0.0f, 1.0f,
 
 	 // Back face			
-	 -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,1.0f, 1.0f,
-	 -0.5f,  0.5f, -0.5f,   1.0f, 1.0f, 0.0f,1.0f, 0.0f,
-	  0.5f,  0.5f, -0.5f,   1.0f, 1.0f, 0.0f,0.0f, 0.0f,
-	  0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,0.0f, 1.0f,
+	 -0.5f, -0.5f, -0.5f,   0.0f, 0.0f, -1.0f,	1.0f, 1.0f,
+	 -0.5f,  0.5f, -0.5f,   0.0f, 0.0f, -1.0f,	1.0f, 0.0f,
+	  0.5f,  0.5f, -0.5f,   0.0f, 0.0f, -1.0f,	0.0f, 0.0f,
+	  0.5f, -0.5f, -0.5f,   0.0f, 0.0f, -1.0f,	0.0f, 1.0f,
 
 	  // Bottom face		
-	  -0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,1.0f, 1.0f,
-	   0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,1.0f, 0.0f,
-	   0.5f, -0.5f,  0.5f,  1.0f, 1.0f, 0.0f,0.0f, 0.0f,
-	  -0.5f, -0.5f,  0.5f,  1.0f, 1.0f, 0.0f,0.0f, 1.0f,
+	  -0.5f, -0.5f, -0.5f,  0.0f, -1.0f, 0.0f,	1.0f, 1.0f,
+	   0.5f, -0.5f, -0.5f,  0.0f, -1.0f, 0.0f,	1.0f, 0.0f,
+	   0.5f, -0.5f,  0.5f,  0.0f, -1.0f, 0.0f,	0.0f, 0.0f,
+	  -0.5f, -0.5f,  0.5f,  0.0f, -1.0f, 0.0f,	0.0f, 1.0f,
 
 	  // Top face
-	  -0.5f,  0.5f, -0.5f,   1.0f, 0.0f, 0.0f,1.0f, 1.0f,
-	  -0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 0.0f,1.0f, 0.0f,
-	   0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 0.0f,0.0f, 0.0f,
-	   0.5f,  0.5f, -0.5f,   1.0f, 0.0f, 0.0f,0.0f, 1.0f,
+	  -0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,	1.0f, 1.0f,
+	  -0.5f,  0.5f,  0.5f,   0.0f, 1.0f, 0.0f,	1.0f, 0.0f,
+	   0.5f,  0.5f,  0.5f,   0.0f, 1.0f, 0.0f,	0.0f, 0.0f,
+	   0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,	0.0f, 1.0f,
 
 	   // Left face
-	   -0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,1.0f, 1.0f,
-	   -0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,1.0f, 0.0f,
-	   -0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.0f,0.0f, 0.0f,
-	   -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,0.0f, 1.0f,
+	   -0.5f, -0.5f, -0.5f,  -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+	   -0.5f, -0.5f,  0.5f,  -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+	   -0.5f,  0.5f,  0.5f,  -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+	   -0.5f,  0.5f, -0.5f,  -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
 
 	   // Right face
-		0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,1.0f, 1.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,1.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.0f,0.0f, 0.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f
+		0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,	1.0f, 1.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,	0.0f, 0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,	 0.0f, 1.0f
 };
 
 
@@ -90,7 +90,7 @@ static signed int indices[] = {
 };
 
 Cube::Cube() // I need to learn to use constructors more (that can be said for everything in coding)
-{	
+{	  
 	vertexCount = 0;
 	indexCount = 0;
 	VBO = 0;
@@ -104,36 +104,36 @@ void Cube::InitializeCube()
 {
 	std::cout << "initialise cube" << "\n";
 	IndicesSize = sizeof(indices);
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+	GL_CHECK(glGenVertexArrays(1, &VAO));
+	GL_CHECK(glBindVertexArray(VAO));
 	
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	GL_CHECK(glGenBuffers(1, &VBO));
+	GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, VBO));
 	//
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	GL_CHECK(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
 	
 	EBO = 0;
 	if (IndicesSize > 0)
 	{
-		glGenBuffers(1, &EBO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		GL_CHECK(glGenBuffers(1, &EBO));
+		GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
 		//
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
 	}
 	
 	
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+	GL_CHECK(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0));
+	GL_CHECK(glEnableVertexAttribArray(0));
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	GL_CHECK(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float))));
+	GL_CHECK(glEnableVertexAttribArray(1));
 
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+	GL_CHECK(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float))));
+	GL_CHECK(glEnableVertexAttribArray(2));
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	GL_CHECK(glBindVertexArray(0));
 
 }
 
@@ -148,14 +148,14 @@ void Cube::Draw(Shader* myShader, VirtualObject* myVirtualObject, Camera* aCamer
 	//std::cout << "draw cube" << "\n";
 	//assert(VAO);
 
-	glActiveTexture(GL_TEXTURE0); // Activate the texture unit before binding texture
-	//glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject);
-	if (myTexture != NULL)
+	GL_CHECK(glActiveTexture(GL_TEXTURE0)); // Activate the texture unit before binding texture
+	
+	if (myTexture != NULL && myTexture->IsValid())
 	{
-		glActiveTexture(GL_TEXTURE0);
+		GL_CHECK(glActiveTexture(GL_TEXTURE0));
 		glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject);
 
-		glActiveTexture(GL_TEXTURE1);
+		GL_CHECK(glActiveTexture(GL_TEXTURE1));
 		glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject);
 	}
 	
@@ -170,33 +170,17 @@ void Cube::Draw(Shader* myShader, VirtualObject* myVirtualObject, Camera* aCamer
 
 	trans = glm::scale(trans, myVirtualObject->Scale);
 
-	
-
 	myShader->SetMatrix("transform", trans);
 	myShader->SetMatrix("view", aCamera->myView);
 	myShader->SetMatrix("projection", aCamera->projection);
 
-	
-	/*glBindVertexArray(VAO);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glGenBuffers(1, &VBO);
-	glBindVertexArray(0);*/
-	glBindVertexArray(VAO);
+	GL_CHECK(glBindVertexArray(VAO));
 	if (IndicesSize > 0)
 	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glDrawElements(GL_TRIANGLES, IndicesSize, GL_UNSIGNED_INT, (void*)0);
-		glBindVertexArray(0);
+		GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
+		GL_CHECK(glDrawElements(GL_TRIANGLES, IndicesSize, GL_UNSIGNED_INT, (void*)0));
+		GL_CHECK(glBindVertexArray(0));
 	}
-	
-	/*glBindBuffer(GL_ARRAY_BUFFER, VBO);*/
-	glBindTexture(GL_TEXTURE_2D, 0);
-		
-	
-	//// 36 for the cubes
-	
-	
-
 	
 }
 

@@ -43,6 +43,7 @@ private:
 	VirtualObject* virtobj;
 	Shader* shade;
 	Texture* texture;
+	
 
 	
 };

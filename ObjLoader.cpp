@@ -2,6 +2,8 @@
 #include "ObjLoader.h"
 #include <iostream>
 #include <sstream>
+#include "Texture.h"
+using namespace std;
 
 // do breakpoints
 
@@ -12,17 +14,24 @@ ObjLoader::ObjLoader()
 
 // https://www.opengl-tutorial.org/beginners-tutorials/tutorial-7-model-loading/
 
-
-Mesh ObjLoader::ObjParser(const char* fileName)
+bool runOnce = false;
+Mesh ObjLoader::ObjParser(std::string fileName)
 {
 	
 	Vertex vertex;
+	Vertex vertexNor;
+	Vertex vertexUV;
 	Mesh mesh;
-	std::vector<Vertex> vertices;
-	std::vector<Face> faces;
+
 	std::ifstream file(fileName);
 	
+	std::vector<Vertex> vertices;
+	std::vector<Face> faces;
+
+	
+	
 	std::string line;
+	
 	if (!file.is_open())
 	{
 		std::cerr <<  "Failed to open file: " << fileName << std::endl;
@@ -35,109 +44,241 @@ Mesh ObjLoader::ObjParser(const char* fileName)
 		iss >> prefix;
 		if (prefix == "v")
 		{
+			glm::vec3 position;
+			iss >> position.x >> position.y >> position.z;
 			
-			iss >> vertex.position.x >> vertex.position.y >> vertex.position.z;
-			//std::cout << temp_vertices[vertex.z][vertex.x] << " ";
-			temp_vertices.push_back(vertex);
-			// Severity	Code	Description	Project	File	Line	Suppression State	Details
-			// Error	C2039	'push_back': is not a member of 'glm::vec<3,float,glm::packed_highp>'	Emgine	C : \Users\zackarias.hager\source\repos\Emgine\Emgine\ObjLoader.cpp	42
-			// How do I include my glm::vec3 into my Vertex struct without errors?
+			temp_position.push_back(position);
+			
 		}
 		if (prefix == "f")
 		{
 			Face face;
-			//iss >> face.x >> face.y >> face.z;
-			int newInt;
-			iss >> newInt;
-			face.vertexIndices.push_back(newInt);
-			iss >> newInt;
-			face.vertexIndices.push_back(newInt);
-			iss >> newInt;
-			face.vertexIndices.push_back(newInt);
+			int vertexIndex = 0;
+			std::string newFace;
+
+			iss >> newFace;
+			ParseFaceIndices(newFace, face, vertexIndex);
+			vertexIndex++;
+
+			iss >> newFace;
+			ParseFaceIndices(newFace, face, vertexIndex);
+			vertexIndex++;
+
+			iss >> newFace;
+			ParseFaceIndices(newFace, face, vertexIndex);
+			vertexIndex++;
+
+			iss >> newFace;
+			if (newFace.length() >= 5 && runOnce == false)
+			{
+				runOnce = true;
+				std::cout << "This engine does not support mesh files with quads, please make sure the file is triangulated" << "\n";
+				//std::exit(EXIT_FAILURE);
+				//std::abort();
+				
+			}
+
 			temp_faces.push_back(face);
-			// f 3227 3239 3243
-			// face
+			
+		}
+		if (prefix == "vt") // I gotta read the uv differently here, cause this makes weird values and crashes everything
+		{
+			glm::vec2 UV;
+			iss >> UV.x >> UV.y;
+
+			temp_uvs.push_back(UV);
 		}
 
-		/*for (unsigned int i = 0; i < objl.vertexIndices.size(); i++)
+		if (prefix == "vn")
 		{
-			unsigned int vertexIndex = objl.vertexIndices[i];
-			objl.out_vertices.push_back(vertex);
-		}*/
+			glm::vec3 NORMAL;
+			iss >> NORMAL.x >> NORMAL.y >> NORMAL.z;
+
+			temp_normals.push_back(NORMAL);
+		}
+		if (prefix == "mtllib") // load in the material from the file onto the mesh
+		{
+			/*char* material = 'j';
+			iss >> material;
+			MeshTexture(material);*/
+
+		}
+		
 	}
 
-	//vertices = objl.out_vertices;
-	//assert(file);
 	file.close();
 	
-	
 
-	for (int i = 0; i < temp_faces.size(); i++)
+	for (int i = 0; i < temp_faces.size(); i++) // changed this to position instead of face 
 	{
 		Face face = temp_faces[i];
-
-		for (int e = 0; e < face.vertexIndices.size(); e++)
+		for (int e = 0; e < 3; e++)
 		{
-			int index = face.vertexIndices[e];
-			vertex = temp_vertices[index - 1];
-			mesh.data.push_back(vertex.position.x);
-			mesh.data.push_back(vertex.position.y);
-			mesh.data.push_back(vertex.position.z);
+			
+			int index = face.positionIndices[e]; // this is probably the cause of the problem
+			
+			
+			if (index == -1)
+			{
+				mesh.data.push_back(0.0f);
+				mesh.data.push_back(0.0f);
+				mesh.data.push_back(0.0f);
+			}
+			else
+			{
+				glm::vec3 position = temp_position[index - 1]; //the index value here is also absurd -858993460
 
-			// all of these are important for the mesh, except for the position.g it seems like
-			mesh.data.push_back(vertex.position.b);
-			//mesh.data.push_back(vertex.position.g);
-			mesh.data.push_back(vertex.position.p);
-			mesh.data.push_back(vertex.position.r);
-			mesh.data.push_back(vertex.position.s);
-			mesh.data.push_back(vertex.position.t);
+				mesh.data.push_back(position.x);
+				mesh.data.push_back(position.y);
+				mesh.data.push_back(position.z);
+				
+			}
+
+			index = face.normalIndices[e];
+
+			if (index == -1)
+			{
+				mesh.data.push_back(0.0f);
+				mesh.data.push_back(0.0f);
+				mesh.data.push_back(0.0f);
+			}
+			else
+			{
+				glm::vec3 normal = temp_normals[index - 1];
+				mesh.data.push_back(normal.x);
+				mesh.data.push_back(normal.y);
+				mesh.data.push_back(normal.z);
+				
+
+			}
+			
+			index = face.uvIndices[e];
+
+			if (index == -1)
+			{
+				mesh.data.push_back(0.0f);
+				mesh.data.push_back(0.0f);
+			}
+			else
+			{
+				glm::vec2 uv = temp_uvs[index - 1];
+				mesh.data.push_back(uv.x);
+				mesh.data.push_back(uv.y);
+			}
+			mesh.elements.push_back(mesh.numberVertices);
 			mesh.numberVertices++;
 			
 		}
+		
 	}
-	//return vertices;
 	return mesh;
-	//return std::vector<Vertex>();
+}
+
+inline std::vector<std::string> SplitString(const std::string& str, char delimeter) {
+	std::vector<std::string> tokens;
+	std::stringstream ss(str);
+	std::string token;
+	while (std::getline(ss, token, delimeter))
+	{
+		tokens.push_back(token);
+	
+	}
+	return tokens;
+
+}
+
+void ObjLoader::ParseFaceIndices(const std::string& string, Face& face, int vertexIndex)
+{
+	
+	/*auto foundIndex = string.find('/');
+	face_result = string.substr(0, foundIndex);*/
+
+	char del = '/';
+
+	std::string indexString = "";
+	int indexCounter = 0;
+	
+	std::vector<std::string> tokens = SplitString(string, del);
+	for (std::string& token : tokens)
+	{
+		int index = std::atoi(token.c_str());
+		if (indexCounter == 0)
+		{
+			face.positionIndices[vertexIndex] = index;
+		}
+		else if (indexCounter == 2)
+		{
+			face.normalIndices[vertexIndex] = index;
+		}
+		else if (indexCounter == 1)
+		{
+			face.uvIndices[vertexIndex] = index;
+		}
+		indexCounter++;
+	}
+
+	//for (int i = 0; i < (int)string.size(); i++)
+	//{
+	//	if (string[i] != del) {
+	//		indexString += string[i];
+	//	}
+	//	else {
+	//		//cout << indexString << " ";
+	//		int index = std::atoi(indexString.c_str());
+	//		if (indexCounter == 0)
+	//		{
+	//			face.positionIndices[vertexIndex] = index;
+	//		}
+	//		else if (indexCounter == 2)
+	//		{
+	//			face.normalIndices[vertexIndex] = index;
+	//		}
+	//		else if (indexCounter == 1)
+	//		{
+	//			face.uvIndices[vertexIndex] = index;
+	//		}
+	//		// break down polygons down into 3 vertex faces if 4 vertices are found in a file. or stop reading the file
+	//		indexCounter++;
+	//		indexString = "";
+	//	}
+	//}
+	//cout << indexString;
+}
+
+void ObjLoader::MeshTexture(char material[])
+{
+	//TextureOfMesh = new Texture(material);
 }
 
 void Mesh::InitialiseMesh(Mesh* myMesh)
 {
 	std::cout << "initialise object file" << "\n";
-	/*if (myObjLoader->temp_vertices.empty() && myObjLoader->temp_faces.empty())
-	{
-		std::cout << "Empty vertices / faces" << std::endl;
-
-		return;
-	}*/
-
-	//Mesh* myMesh = new Mesh();
-	//ApplyTexture(myTexture);
-
+	
 	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-
 	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 	myMesh->vertexbuffer = VBO;
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
-	//indexCount = myMesh->faces.size();
+	glBufferData(GL_ARRAY_BUFFER, myMesh->data.size() * sizeof(float), &myMesh->data[0], GL_STATIC_DRAW); // Data here is zero, for some reason
 
-	glBufferData(GL_ARRAY_BUFFER, myMesh->data.size() * sizeof(float), &myMesh->data[0], GL_STATIC_DRAW);
-	// size / length
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
-	//glGenBuffers(1, &EBO);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, myMesh->elements.size() * sizeof(unsigned int), &myMesh->elements[0], GL_STATIC_DRAW);
 
-	//glBufferData(GL_ARRAY_BUFFER, myMesh->data.size() * sizeof(float), &myMesh->data[0], GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1);
 
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(2);
+
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	
+	glBindVertexArray(0);
 }

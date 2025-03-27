@@ -46,11 +46,13 @@ public:
 
 	float deltatime = 0.0f;
 	float lastFrame = 0.0f;
+
+	glm::vec3 myPosition;
 	
 
 private:
 	glm::vec3 myDirection;
-	glm::vec3 myPosition;
+	
 	glm::vec3 myUp;
 	glm::vec3 myRight;
 	glm::vec3 myFront;

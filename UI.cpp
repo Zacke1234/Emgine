@@ -14,6 +14,7 @@
 
 UI::UI(GLFWwindow* window)
 {
+	shade = new Shader("../Shader/VertexShader_1.glsl", "../Shader/FragmentShader_1.glsl");
 	isCube = false;
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -27,7 +28,7 @@ UI::UI(GLFWwindow* window)
 
 void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
 {
-	shade = new Shader("../Shader/VertexShader_1.glsl", "../Shader/FragmentShader_1.glsl");
+	
 	
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -66,8 +67,9 @@ void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
 			texture = new Texture("Default 1.png");
 		}
 		
+		
 		virtobj->SetTexture(*texture);
-
+		
 		virtobj->SetCube(*MeshManager::Get().GetCube()); 
 		virtobj->Position = glm::vec3(1, 1, 1);
 		virtobj->Scale = glm::vec3(1, 1, 1);

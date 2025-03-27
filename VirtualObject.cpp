@@ -21,6 +21,7 @@ VirtualObject::VirtualObject()
 	MyShader = nullptr;
 	myMesh = nullptr;
 	myCollider = nullptr;
+	//myLight = nullptr;
 	//isCube = false;
 
 	Position = glm::vec3(0, 0, 0);
@@ -29,7 +30,7 @@ VirtualObject::VirtualObject()
 	//Name[255] = nullptr;
 }
 
-VirtualObject::VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll)
+VirtualObject::VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll/*, Lighting* light*/)
 {
 	//myCube = aCube;
 	myTexture = aTexture;
@@ -39,6 +40,7 @@ VirtualObject::VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std
 	this->namn = _namn;
 	IsMesh = true;
 	myCollider = coll;
+	//myLight = light;
 	
 
 	Position = glm::vec3(0, 0, 0);
@@ -47,7 +49,7 @@ VirtualObject::VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std
 
 }
 
-VirtualObject::VirtualObject(Cube* cube, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll)
+VirtualObject::VirtualObject(Cube* cube, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll/*, Lighting* light*/)
 {
 	myTexture = aTexture;
 	MyShader = aShader;
@@ -55,7 +57,7 @@ VirtualObject::VirtualObject(Cube* cube, Texture* aTexture, Shader* aShader, std
 	//Name[255] = aName[255];
 	this->namn = _namn;
 	IsCube = true;
-
+	//myLight = light;
 
 	Position = glm::vec3(0, 0, 0);
 	Rotation = glm::vec3(0, 0, 0);
@@ -87,7 +89,7 @@ void VirtualObject::SetShader(Shader& aShader)
 	MyShader = &aShader;
 }
 
-void VirtualObject::CreateMesh(Mesh& aMesh) 
+void VirtualObject::CreateMesh(Mesh& aMesh) // does nothing
 {
 	
 	aMesh = myObjLoader->ObjParser("./teapot.obj"); //teapot.obj
@@ -124,8 +126,8 @@ void VirtualObject::DrawCube(Camera* aCamera, Shader* myShader)
 void VirtualObject::DrawObject(Camera* aCamera, Shader* myShader)
 {
 		
+
 		//std::cout << "draw object in virtualobject" << "\n";
-		//assert(myMesh);
 		glm::mat4 trans = glm::mat4(1.0f);
 
 		trans = glm::translate(trans, Position);
@@ -136,40 +138,27 @@ void VirtualObject::DrawObject(Camera* aCamera, Shader* myShader)
 
 		trans = glm::scale(trans, Scale);
 
-		glActiveTexture(GL_TEXTURE0); // Activate the texture unit before binding texture
-		glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject);
 
 		MyShader->SetMatrix("transform", trans);
 		MyShader->SetMatrix("view", aCamera->myView);
 		MyShader->SetMatrix("projection", aCamera->projection);
 		
-		if (myTexture != NULL)
+		if (myTexture != NULL && myTexture->IsValid())
 		{
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject);
+			GL_CHECK(glActiveTexture(GL_TEXTURE0)); // Activate the texture unit before binding texture
+			GL_CHECK(glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject));
+			GL_CHECK(glActiveTexture(GL_TEXTURE0));
+			GL_CHECK(glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject));
 
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject);
+			GL_CHECK(glActiveTexture(GL_TEXTURE1));
+			GL_CHECK(glBindTexture(GL_TEXTURE_2D, myTexture->TextureObject));
 		}
-		/*glGenBuffers(1, &myMesh->VBO);
-		glBindBuffer(GL_ARRAY_BUFFER, myMesh->VBO);
-		glBindVertexArray(myMesh->VBO);*/
-		//
-
-		glBindVertexArray(myMesh->VAO);
-		glDrawArrays(GL_TRIANGLES, 0, myMesh->data.size());
-		//glGenBuffers(1, &VBO);
-		glBindVertexArray(0);
-
 		
-
-
-		//myCube->DrawObject(myShader, this);
-
-		/*glBindTexture(GL_TEXTURE_2D, 0);*/
-
-	
-	
+		
+		GL_CHECK(glBindVertexArray(myMesh->VAO));
+		GL_CHECK(glDrawElements(GL_TRIANGLES, myMesh->elements.size(), GL_UNSIGNED_INT, 0));
+		
+		GL_CHECK(glBindVertexArray(0));
 }
 
 

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <gtc/type_ptr.hpp>
+#include "VirtualObject.h"
 
 
 std::string Shader::LoadShader(const char* aPath)
@@ -42,28 +43,28 @@ Shader::Shader(const char* VertexPath, const char* FragmantPath)
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	std::string vertexCodeString = LoadShader(VertexPath);
 	const char* vertexCode = vertexCodeString.c_str();
-	glShaderSource(vertexShader, 1, &vertexCode, NULL);
+	GL_CHECK(glShaderSource(vertexShader, 1, &vertexCode, NULL));
 
-	glCompileShader(vertexShader);
+	GL_CHECK(glCompileShader(vertexShader));
 	fragmantShader = glCreateShader(GL_FRAGMENT_SHADER);
 	std::string fragmantCodeString = LoadShader(FragmantPath);
 	const char* fragmantCode = fragmantCodeString.c_str();
-	glShaderSource(fragmantShader, 1, &fragmantCode, NULL);
+	GL_CHECK(glShaderSource(fragmantShader, 1, &fragmantCode, NULL));
 
-	glCompileShader(fragmantShader);
+	GL_CHECK(glCompileShader(fragmantShader));
 	shaderProgram = glCreateProgram();
 
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmantShader);
-	glLinkProgram(shaderProgram);
+	GL_CHECK(glAttachShader(shaderProgram, vertexShader));
+	GL_CHECK(glAttachShader(shaderProgram, fragmantShader));
+	GL_CHECK(glLinkProgram(shaderProgram));
 	ShaderProgram = shaderProgram;
 
 	int result;
 	char Log[512];
-	glGetShaderiv(fragmantShader, GL_COMPILE_STATUS, &result);
+	GL_CHECK(glGetShaderiv(fragmantShader, GL_COMPILE_STATUS, &result));
 	if (!result)
 	{
-		glGetShaderInfoLog(fragmantShader, 512, NULL, Log);
+		GL_CHECK(glGetShaderInfoLog(fragmantShader, 512, NULL, Log));
 		std::cout << "Failed to compile fragment shader \n" << Log << std::endl;
 	}
 
@@ -71,27 +72,27 @@ Shader::Shader(const char* VertexPath, const char* FragmantPath)
 
 void Shader::UseShader()
 {
-	glUseProgram(ShaderProgram);
+	GL_CHECK(glUseProgram(ShaderProgram));
 }
 
 void Shader::SetMatrix(const char* transform, glm::mat4 aMatrix)
 {
-	glUniformMatrix4fv(glGetUniformLocation(ShaderProgram, transform), 1, GL_FALSE, glm::value_ptr(aMatrix));
+	GL_CHECK(glUniformMatrix4fv(glGetUniformLocation(ShaderProgram, transform), 1, GL_FALSE, glm::value_ptr(aMatrix)));
 }
 
 void Shader::SetVec2(const char* texture, glm::vec2 aVec2)
 {
-	glUniformMatrix4fv(glGetUniformLocation(ShaderProgram, texture), 1, GL_FALSE, glm::value_ptr(aVec2));
+	GL_CHECK(glUniformMatrix4fv(glGetUniformLocation(ShaderProgram, texture), 1, GL_FALSE, glm::value_ptr(aVec2)));
 }
 void Shader::SetVec3(const char* texture, glm::vec3 aVec3)
 {
-	glUniformMatrix4fv(glGetUniformLocation(ShaderProgram, texture), 1, GL_FALSE, glm::value_ptr(aVec3));
+	GL_CHECK(glUniform3fv(glGetUniformLocation(ShaderProgram, texture), 1, glm::value_ptr(aVec3)));
 }
 void Shader::SetVec4(const char* texture, glm::vec4 aVec4)
 {
-	glUniformMatrix4fv(glGetUniformLocation(ShaderProgram, texture), 1, GL_FALSE, glm::value_ptr(aVec4));
+	GL_CHECK(glUniformMatrix4fv(glGetUniformLocation(ShaderProgram, texture), 1, GL_FALSE, glm::value_ptr(aVec4)));
 }
 void Shader::SetFloat(const std::string texcord, float aTexcord)
 {
-	glUniform1f(glGetUniformLocation(ShaderProgram, texcord.c_str()), aTexcord);
+	GL_CHECK(glUniform1f(glGetUniformLocation(ShaderProgram, texcord.c_str()), aTexcord));
 }
