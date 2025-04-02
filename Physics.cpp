@@ -3,6 +3,7 @@
 #include "glm.hpp"
 #include <ext/quaternion_trigonometric.hpp>
 #include <gtc/quaternion.hpp>
+#include "VirtualObject.h"
 
 
 
@@ -18,7 +19,7 @@ void Physics::Simulate(const float& aDeltaTime)
 {
 	colliders = UpdatePhysicsScene();
 	std::vector<Collision> collisions = CheckIntersections(colliders);
-
+	
 	// gotta update this
 	
 	// Just setting the positions of the colliders to match the visual
@@ -26,6 +27,8 @@ void Physics::Simulate(const float& aDeltaTime)
 
 	// checking for any intersections and storing their data in a vector of collisions
 	//std::vector<Collision> collisions = CheckIntersections(cols);
+
+	ApplyGravity(colliders, aDeltaTime);
 
 	//As a result of those collisions what should happen?
 	HandleCollisions(collisions);
@@ -35,7 +38,18 @@ void Physics::Simulate(const float& aDeltaTime)
 	ApplyVelocity(cols, aDeltaTime);
 
 	//Making sure that the visuals of the colliders aligned with the colliders
-	//Update visuals
+	UpdateVisuals();
+}
+
+void Physics::UpdateVisuals()
+{
+	for (auto& o : VirtualObject::Entities)
+	{
+		o->Position += o->myCollider->position;
+		
+		//o->myCollider->position = o->Position;
+		//o->trans += o->myCollider->transform;
+	}
 }
 
 void Physics::ApplyVelocity(std::vector<Collider*> colliders, const float& dt)
@@ -44,6 +58,7 @@ void Physics::ApplyVelocity(std::vector<Collider*> colliders, const float& dt)
 	{
 		if (c->hasGravity && !c->isKinematic)
 		{
+			//std::cout << "apply velocity";
 			c->velocity += glm::vec3(0, 0.96f, 0) * dt;
 			c->transform[3] = glm::vec4(c->position, 1.0f);
 
@@ -78,7 +93,10 @@ void Physics::ApplyGravity(std::vector<Collider*> colliders, const float& dt)
 	{
 		if (!c->isKinematic)
 		{
+			//std::cout << "apply gravity";
 			glm::vec3 position = glm::vec3(c->transform[3]);
+			// 9.84
+			c->velocity.y -= 0.001f * dt;
 			position += c->velocity * dt;
 			c->position = position;
 			c->transform[3] = glm::vec4(position, 1.0f);
@@ -90,7 +108,7 @@ void Physics::HandleCollisions(std::vector<Collision> collisions)
 {
 	for (Collision c : collisions)
 	{
-
+		std::cout << "handle Collision";
 		if (!c.col1->isKinematic)
 		{
 			c.col1->velocity *= -1;
@@ -102,7 +120,7 @@ void Physics::HandleCollisions(std::vector<Collision> collisions)
 		}
 		if (!c.col1->isKinematic || !c.col2->isKinematic)
 		{
-			std::cout << "Collision";
+			
 			glm::vec3 normal = glm::normalize(c.col2->position - c.col1->position);
 
 			//relative velocity
@@ -136,7 +154,7 @@ void Physics::HandleDynamicDynamic(std::vector<Collision> collisions)
 {
 	for (Collision c : collisions)
 	{
-
+		std::cout << "handle dynamic dynamic";
 		glm::vec3 normal = c.normal1; // might need to change that to just normal without the 1
 
 		glm::vec3 relativeVelocity = c.col2->velocity - c.col1->velocity;
@@ -168,6 +186,7 @@ void Physics::HandleStaticDynamic(std::vector<Collision> collisions)
 	const float SlidingFriction = 0.5f;
 	for (Collision c : collisions)
 	{
+		std::cout << "handle static dynamic";
 		Collider* A = c.col1;
 		Collider* B = c.col2;
 
@@ -213,23 +232,12 @@ void Physics::HandleStaticDynamic(std::vector<Collision> collisions)
 	}
 }
 
-Collision Physics::CheckIntersect(Collider* c1, Collider* c2) // this will probably just cause issues since it's not really a singulator or whatever its called singulation singolator????????
-{
-	if (c1->isOf<SphereCollider>() && c2->isOf<SphereCollider>())
-	{
-		SphereCollider* sphere1 = dynamic_cast<SphereCollider*>(c1);
-		SphereCollider* sphere2 = dynamic_cast<SphereCollider*>(c2);
-		/*return SphereSphereIntersect(*sphere1, *sphere2);*/
-		return {};
-	}
-	
-}
-
-bool Physics::BoolCheckIntersect(Collider* c1, Collider* c2) // having a bool version of this might be crazy
+bool Physics::BoolCheckIntersect(Collider* c1, Collider* c2) 
 {
 	//CheckIntersect(c1, c2);
 	if (c1->isOf<SphereCollider>() && c2->isOf<SphereCollider>())
 	{
+		std::cout << "check intersect";
 		SphereCollider* sphere1 = dynamic_cast<SphereCollider*>(c1);
 		SphereCollider* sphere2 = dynamic_cast<SphereCollider*>(c2);
 		return SphereSphereIntersect(*sphere1, *sphere2);
@@ -238,36 +246,47 @@ bool Physics::BoolCheckIntersect(Collider* c1, Collider* c2) // having a bool ve
 
 std::vector<Collider*> Physics::UpdatePhysicsScene()
 {
-	return std::vector<Collider*>();
+	std::vector<Collider*> returnColliders;
+	for (auto& o : VirtualObject::Entities)
+	{
+		//std::cout << "apply velocity";
+		returnColliders.push_back(o->myCollider);
+
+	}
+	return returnColliders;
 }
 
 std::vector<Collision> Physics::CheckIntersections(std::vector<Collider*> colliders)
 {
+	
 	std::vector<Collision> collisions;
 
 	int count = colliders.size();
 
-	for (int i = 0; i < count; i++)
-	{
-		for (int j = i + 1; j < count; j++)
-		{
-			Collision c = CheckIntersect(colliders[i], colliders[j]); // cannot convert from bool to collision? 
-			if (c.col1 != nullptr && c.col2 != nullptr)
-			{
-				collisions.push_back(c);
-			}
-		}
-	}
+	//for (int i = 0; i < count; i++)
+	//{
+	//	for (int j = i + 1; j < count; j++)
+	//	{
+	//		Collision c = CheckIntersect(colliders[i], colliders[j]); // cannot convert from bool to collision? 
+	//		if (c.col1 != nullptr && c.col2 != nullptr)
+	//		{
+	//			collisions.push_back(c);
+	//		}
+	//	}
+	//}
 
 	// 
 	for (Collider* c1 : colliders)
 	{
+		
 		for (Collider* c2 : colliders)
 		{
 			if (c1 != c2)
 			{
+				
 				if (BoolCheckIntersect(c1, c2))
 				{
+					std::cout << "check Intersection";
 					Collision collision;
 					collision.col1 = c1;
 					collision.col2 = c2;

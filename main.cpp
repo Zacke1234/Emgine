@@ -40,8 +40,10 @@ int main()
 		std::cout << "Failed to initialize glfw" << std::endl;
 		return -1;
 	}
+	unsigned int SCR_WIDTH = 640;
+	unsigned int SCR_HEIGHT = 480;
 	GLFWwindow* window;
-	window = glfwCreateWindow(640, 480, "Emgine", NULL, NULL);
+	window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Emgine", NULL, NULL);
 
 	
 	//std::cout << "" + a << std::endl;
@@ -68,8 +70,9 @@ int main()
 	Camera* myCamera = new Camera();
 	Texture* wallTex = new Texture("wall.jpg");
 	Texture* myTexture = new Texture("Default 1.png");
-	Collider* myCollider = new Collider();
 	
+	
+	//myCollider->radius = 3;
 	
 	UI* myUI = new UI(window);
 	ObjLoader* myObjLoader = new ObjLoader();
@@ -91,6 +94,7 @@ int main()
 	Physics* Phys = new Physics();
 	VirtualObject* VirtualObjectMesh{}; 
 	VirtualObject* CubeVirtualObject{};
+	VirtualObject* PlaneVirtualObject{};
 	std::string name = "Mesh";
 	std::string name2 = "Cube";
 	
@@ -110,48 +114,72 @@ int main()
 	0.5f, 1.0f   // top-center corner
 	};
 
-	//myLighting->Initialise();
 	
-	CubeVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name2, myCollider/*, myLighting*/);
-	VirtualObject::Entities.push_back(CubeVirtualObject);
-	CubeVirtualObject->Position = glm::vec3(rand() % 20, rand() % 20, rand() % 20);
+	glm::vec3 center = { 0, 0,0 }; float radius = 3; glm::vec3 pos = { 0,0,0 };
+	// const glm::vec3& aCenter, const float& aRadius, glm::vec3 Apos
+	SphereCollider* myCollider = new SphereCollider(center, radius, pos);
+	
 
+	// const glm::vec3& aCenter, const glm::vec3& someExtents
+	glm::vec3 extents = { 0,0,0 };
+	CubeCollider* cubeColl = new CubeCollider(center, extents);
+	
+
+	CubeVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name2, cubeColl);
+	PlaneVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name2, cubeColl);
+
+	//CubeVirtualObject->myCubeColl->isKinematic = false; //this dosen't work?
+
+	PlaneVirtualObject->myCollider->isKinematic = true;
+	PlaneVirtualObject->Scale = glm::vec3(7, 0.5f, 7);
+	PlaneVirtualObject->Position = glm::vec3(1, 0, 1);
+
+	VirtualObject::Entities.push_back(CubeVirtualObject);
+	VirtualObject::Entities.push_back(PlaneVirtualObject);
+	CubeVirtualObject->Position = glm::vec3(rand() % 20, rand() % 20, rand() % 20);
+	
+	
 	std::shared_ptr<Mesh> TeapotMesh = std::make_shared<Mesh>();
 	
-	while (VirtualObject::Entities.size() < 3) 
+	while (VirtualObject::Entities.size() < 5) 
 	{
-		VirtualObjectMesh = new VirtualObject(&mesh, myTexture, myShader, name, myCollider/*, myLighting*/);
+		VirtualObjectMesh = new VirtualObject(&mesh, myTexture, myShader, name, myCollider);
 		
 		//myVirtualObject = new VirtualObject(&mesh, myTexture, myShader, name2);
 		VirtualObject::Entities.push_back(VirtualObjectMesh);
 		
 		
-		VirtualObjectMesh->Position = glm::vec3(rand() % 20, rand() % 20, rand() % 20);
-		
+		//VirtualObjectMesh->Position = glm::vec3(rand() % 20, rand() % 20, rand() % 20);
+		VirtualObjectMesh->Position = glm::vec3(rand() % 5, 10, rand() % 5);
 		
 	}  
 	
 	float deltatime = 0.0f;
 	float lastFrame = 0.0f;
-	
+	unsigned int depthMapFBO = 0;
+	unsigned int depthMap = 0;
+	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 	//myLighting->Initialise();
 	GLfloat BackgroundColor;
-	
+	myCamera->myPosition = glm::vec3(0, 3, 0);
 	glEnable(GL_DEPTH_TEST);
 	// loops until user closes window
 	while (!glfwWindowShouldClose(window))
 	{
-		
-		// Renders 
+		/*myCollider->position = VirtualObjectMesh->Position;
+		myCollider->transform = VirtualObjectMesh->trans;*/
 		GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 		GL_CHECK(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
+
+		
+
 		// poll for and process events ?
 		glfwPollEvents();
 
 		
 		myLighting->lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;
 		myLighting->lightPos.y = (glfwGetTime() / 2.0f) * 1.0f;
-
+		
 		//Phys->Simulate(deltatime);
 		float currentFrame = glfwGetTime();
 		deltatime = currentFrame - lastFrame;
@@ -162,6 +190,7 @@ int main()
 		myShader->UseShader();
 		
 		myLighting->Use(myCamera, myShader);
+
 		Phys->Simulate(deltatime);
 		//myVirtualObject->SetMesh(mesh);
 		//smyLighting->Use();

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Collider.h"
+#include "VirtualObject.h"
 class Physics
 {
 public:
@@ -13,7 +14,8 @@ public:
 	void HandleCollisions(std::vector<Collision> collisions);
 	void HandleDynamicDynamic(std::vector<Collision> collisions);
 	void HandleStaticDynamic(std::vector <Collision> collisions);
-	Collision CheckIntersect(Collider* c1, Collider* c2);
+	void UpdateVisuals();
+
 	bool BoolCheckIntersect(Collider* c1, Collider* c2);
 	std::vector<Collider*> UpdatePhysicsScene();
 	std::vector<Collision> CheckIntersections(std::vector<Collider*> colliders);
