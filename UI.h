@@ -24,6 +24,7 @@ public:
 	float zScale = 1;
 	char buf[255]{};
 	char buf2[255]{};
+	char buf3[255]{};
 	float step = 0;
 	float step_fast = 0;
 
@@ -35,6 +36,8 @@ public:
 	char name;
 
 	bool isCube;
+
+	bool check;
 	
 	ObjLoader* objLoader;
 private:
@@ -43,8 +46,9 @@ private:
 	VirtualObject* virtobj;
 	Shader* shade;
 	Texture* texture;
-	
-
+	Camera* camera;
+	CubeCollider* cubeCollider;
+	Collider* newCollider;
 	
 };
 
