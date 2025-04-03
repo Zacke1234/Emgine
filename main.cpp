@@ -40,8 +40,8 @@ int main()
 		std::cout << "Failed to initialize glfw" << std::endl;
 		return -1;
 	}
-	unsigned int SCR_WIDTH = 640;
-	unsigned int SCR_HEIGHT = 480;
+	unsigned int SCR_WIDTH = 1920;
+	unsigned int SCR_HEIGHT = 1080;
 	GLFWwindow* window;
 	window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Emgine", NULL, NULL);
 
@@ -136,7 +136,7 @@ int main()
 
 	VirtualObject::Entities.push_back(CubeVirtualObject);
 	VirtualObject::Entities.push_back(PlaneVirtualObject);
-	CubeVirtualObject->Position = glm::vec3(rand() % 20, rand() % 20, rand() % 20);
+	CubeVirtualObject->Position = glm::vec3(0, 10, 0);
 	
 	
 	std::shared_ptr<Mesh> TeapotMesh = std::make_shared<Mesh>();
@@ -166,6 +166,7 @@ int main()
 	// loops until user closes window
 	while (!glfwWindowShouldClose(window))
 	{
+		
 		/*myCollider->position = VirtualObjectMesh->Position;
 		myCollider->transform = VirtualObjectMesh->trans;*/
 		GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));

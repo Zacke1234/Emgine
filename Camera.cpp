@@ -61,7 +61,7 @@ void Camera::CameraUpdate(GLFWwindow* window) // the mouse cursor is still not g
 	deltatime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 
-	projection = glm::perspective(glm::radians(45.0f), myWidth / myHeight, 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(70.0f), myWidth / myHeight, 0.1f, 200.0f);
 
 	myRight = glm::normalize(glm::cross(WorldUp, myDirection));
 	myUp = glm::cross(myDirection, myRight);
