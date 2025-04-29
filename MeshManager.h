@@ -1,6 +1,7 @@
 #pragma once
 #include "list"
 #include "Cube.h"
+#include "ObjLoader.h"
 #include <string>
 
 class MeshManager
@@ -15,13 +16,18 @@ public:
 	
 	//static void LoadMesh(char* fromPath);
 
-	Cube* GetCube();
-	Cube* GetObject();
+	ObjLoader* myObjLoader = new ObjLoader();
+	
 	Cube* LoadCube();
-	std::list<Cube*>* cubeList;
-	Cube* cube;
-	Cube* ObjectMesh;
-	VirtualObject* virtobj;
+	Mesh* LoadMesh(std::string fromPath);
+	std::vector<Cube*> cubeList;
+	std::vector<Mesh*> meshList;
+	
+	
 	std::unique_ptr<Mesh> Meshtest;
+};
+class cache
+{
+
 };
 

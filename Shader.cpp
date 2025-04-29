@@ -60,14 +60,20 @@ Shader::Shader(const char* VertexPath, const char* FragmantPath)
 	ShaderProgram = shaderProgram;
 
 	int result;
+	int vertexResult;
 	char Log[512];
 	GL_CHECK(glGetShaderiv(fragmantShader, GL_COMPILE_STATUS, &result));
+	GL_CHECK(glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &vertexResult));
 	if (!result)
 	{
 		GL_CHECK(glGetShaderInfoLog(fragmantShader, 512, NULL, Log));
 		std::cout << "Failed to compile fragment shader \n" << Log << std::endl;
 	}
-
+	if (!vertexResult)
+	{
+		GL_CHECK(glGetShaderInfoLog(vertexShader, 512, NULL, Log));
+		std::cout << "Failed to compile vertex shader \n" << Log << std::endl;
+	}
 }
 
 void Shader::UseShader()
@@ -95,4 +101,8 @@ void Shader::SetVec4(const char* texture, glm::vec4 aVec4)
 void Shader::SetFloat(const std::string texcord, float aTexcord)
 {
 	GL_CHECK(glUniform1f(glGetUniformLocation(ShaderProgram, texcord.c_str()), aTexcord));
+}
+void Shader::SetInt(const std::string depth, int aInt)
+{
+	glUniform1i(glGetUniformLocation(ShaderProgram, depth.c_str()), aInt);
 }

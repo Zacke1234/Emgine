@@ -18,6 +18,8 @@ public:
 
 	void SetFloat(const std::string, float aTexCord);
 
+	void SetInt(const std::string depth, int OutInt);
+
 	std::string LoadShader(const char* aPath);
 
 	unsigned int ShaderProgram;

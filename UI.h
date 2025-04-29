@@ -1,5 +1,7 @@
 #include "VirtualObject.h"
+#include "MeshManager.h"
 #include "ObjLoader.h"
+#include "Physics.h"
 #include "vector"
 #include <string.h>
 #include <string>
@@ -25,6 +27,7 @@ public:
 	char buf[255]{};
 	char buf2[255]{};
 	char buf3[255]{};
+	char buf_Mesh[255];
 	float step = 0;
 	float step_fast = 0;
 
@@ -34,6 +37,8 @@ public:
 	char textureFile;
 
 	char name;
+
+	char charMesh;
 
 	bool isCube;
 
@@ -49,6 +54,8 @@ private:
 	Camera* camera;
 	CubeCollider* cubeCollider;
 	Collider* newCollider;
+	Physics* physics;
+	MeshManager* meshmang;
 	
 };
 

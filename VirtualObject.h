@@ -34,12 +34,12 @@ class VirtualObject
 {
 public:
 	VirtualObject();
-	VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll/*, Lighting* light*/); // add lighting I suppose
-	VirtualObject(Cube* Cube, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll/*, Lighting* light*/);
+	VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll); 
+	VirtualObject(Cube* Cube, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll);
 	~VirtualObject();
 
 	void SetCube(Cube& aCube); 
-	void CreateCube(Cube& aCube); 
+	//void CreateCube(Cube& aCube); 
 	void SetTexture(Texture& aTexture);
 	void SetShader(Shader& aShader);
 	void CreateMesh(Mesh& aMesh);
@@ -49,6 +49,7 @@ public:
 	void Draw(Camera* aCamera, Shader* myShader);
 	void DrawCube(Camera* aCamera, Shader* myShader);
 	void DrawObject(Camera* aCamera, Shader* myShader);
+	void UpdateTransform();
 
 	glm::vec3 Position;
 	glm::vec3 Scale;
@@ -65,6 +66,12 @@ public:
 
 	bool IsCube;
 	bool IsMesh;
+	bool IsTransformValid;
+
+	glm::mat4 trans;
+	Collider* myCollider;
+	SphereCollider* mySphereColl;
+	CubeCollider* myCubeColl;
 
 	
 	
@@ -75,7 +82,7 @@ private:
 	Cube* myCube;
 	Mesh* myMesh;
 	ObjLoader* myObjLoader;
-	Collider* myCollider;
+	
 	//Lighting* myLight;
 	//std::shared_ptr<Mesh> aMesh = std::make_shared<Mesh>();
 	

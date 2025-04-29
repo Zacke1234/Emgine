@@ -22,6 +22,7 @@ Texture::Texture(const char* aPath)
 	glBindTexture(GL_TEXTURE_2D, TextureObject);
 	
 	
+
 	
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

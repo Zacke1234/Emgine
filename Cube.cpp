@@ -8,6 +8,7 @@
 #include <cassert>    
 #include "vector"
 #include <glad.h>
+#include "Physics.h"
 using namespace std;
 
 Texture* myTexture;
@@ -91,11 +92,13 @@ static signed int indices[] = {
 
 Cube::Cube() // I need to learn to use constructors more (that can be said for everything in coding)
 {	  
+
 	vertexCount = 0;
 	indexCount = 0;
 	VBO = 0;
 	EBO = 0;
 	VAO = 0;
+	
 
 }
 
@@ -160,7 +163,7 @@ void Cube::Draw(Shader* myShader, VirtualObject* myVirtualObject, Camera* aCamer
 	}
 	
 	//
-	glm::mat4 trans = glm::mat4(1.0f);
+	glm::mat4 trans = Math::identity4;
 
 	trans = glm::translate(trans, myVirtualObject->Position);
 

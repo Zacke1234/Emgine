@@ -69,10 +69,10 @@ Mesh ObjLoader::ObjParser(std::string fileName)
 			vertexIndex++;
 
 			iss >> newFace;
-			if (newFace.length() >= 5 && runOnce == false)
+			if (newFace.length() >= 6 && runOnce == false) // This can't actually tell triangulated and non triangulated meshes apart.
 			{
 				runOnce = true;
-				std::cout << "This engine does not support mesh files with quads, please make sure the file is triangulated" << "\n";
+				//std::cout << "This engine does not support mesh files with quads, please make sure the file is triangulated" << "\n";
 				//std::exit(EXIT_FAILURE);
 				//std::abort();
 				
@@ -98,8 +98,10 @@ Mesh ObjLoader::ObjParser(std::string fileName)
 		}
 		if (prefix == "mtllib") // load in the material from the file onto the mesh
 		{
-			/*char* material = 'j';
+			
+			/*char material[] = {255};
 			iss >> material;
+			std::cout << material , "\n";
 			MeshTexture(material);*/
 
 		}
@@ -216,33 +218,6 @@ void ObjLoader::ParseFaceIndices(const std::string& string, Face& face, int vert
 		}
 		indexCounter++;
 	}
-
-	//for (int i = 0; i < (int)string.size(); i++)
-	//{
-	//	if (string[i] != del) {
-	//		indexString += string[i];
-	//	}
-	//	else {
-	//		//cout << indexString << " ";
-	//		int index = std::atoi(indexString.c_str());
-	//		if (indexCounter == 0)
-	//		{
-	//			face.positionIndices[vertexIndex] = index;
-	//		}
-	//		else if (indexCounter == 2)
-	//		{
-	//			face.normalIndices[vertexIndex] = index;
-	//		}
-	//		else if (indexCounter == 1)
-	//		{
-	//			face.uvIndices[vertexIndex] = index;
-	//		}
-	//		// break down polygons down into 3 vertex faces if 4 vertices are found in a file. or stop reading the file
-	//		indexCounter++;
-	//		indexString = "";
-	//	}
-	//}
-	//cout << indexString;
 }
 
 void ObjLoader::MeshTexture(char material[])
@@ -262,8 +237,6 @@ void Mesh::InitialiseMesh(Mesh* myMesh)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 	myMesh->vertexbuffer = VBO;
-
-	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
 	glBufferData(GL_ARRAY_BUFFER, myMesh->data.size() * sizeof(float), &myMesh->data[0], GL_STATIC_DRAW); // Data here is zero, for some reason
 

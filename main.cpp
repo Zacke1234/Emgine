@@ -1,3 +1,4 @@
+
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -23,7 +24,9 @@
 #include "Memory.h"
 #include "Collider.h"
 
-
+#include <float.h>
+unsigned int fp_Currentstate;
+unsigned int fp_control_state = _controlfp_s(&fp_Currentstate ,_EM_INEXACT, _MCW_EM);
 
 
 #pragma once
@@ -48,7 +51,7 @@ int main()
 	
 	//std::cout << "" + a << std::endl;
 	
-	if (!window)
+	if (!window) 
 	{
 		glfwTerminate();
 		return -1;
@@ -71,64 +74,57 @@ int main()
 	Texture* wallTex = new Texture("wall.jpg");
 	Texture* myTexture = new Texture("Default 1.png");
 	
-	
-	//myCollider->radius = 3;
+
+	MeshManager::Allocate();
+	MeshManager* myMeshManager = &MeshManager::Get();
+
 	
 	UI* myUI = new UI(window);
 	ObjLoader* myObjLoader = new ObjLoader();
 
 	myUI->objLoader = myObjLoader;
-
-	MeshManager::Allocate();
-	MeshManager* myMeshManager = &MeshManager::Get(); 
-	
-	Vertex myVertex{};
 	
 	//Mesh mesh;
 	//std::shared_ptr<Mesh> aMesh = std::make_shared<Mesh>();
-	Mesh mesh = myObjLoader->ObjParser("./fish.obj"); //teapot.obj / fish.obj
+	//Mesh mesh = myObjLoader->ObjParser("./fish.obj"); //teapot.obj / fish.obj
 	
-	Cube* Cubemesh = myMeshManager->GetCube();
-	Cube* ObjMesh = myMeshManager->GetObject();
+	Cube* Cubemesh = myMeshManager->LoadCube();
+	Mesh* MeshMesh = myMeshManager->LoadMesh("./fish.obj");
 
 	Physics* Phys = new Physics();
-	VirtualObject* VirtualObjectMesh{}; 
-	VirtualObject* CubeVirtualObject{};
-	VirtualObject* PlaneVirtualObject{};
+	
 	std::string name = "Mesh";
 	std::string name2 = "Cube";
 	
 	// Initialization  
 	Cubemesh->InitializeCube();
 	//ObjMesh->InitializeObjectFile(&mesh);
-	mesh.InitialiseMesh(&mesh);
+	MeshMesh->InitialiseMesh(MeshMesh);
+	//MeshMesh->InitialiseMesh(MeshMesh);
 
  
 	
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, myCamera->Mouse_Callback);
 
-	float texCoords[] = {
-	0.0f, 0.0f,  // lower-left corner  
-	1.0f, 0.0f,  // lower-right corner
-	0.5f, 1.0f   // top-center corner
-	};
+	
+	std::string name3 = "Plane";
+	glm::vec3 center = { 0, 0,0 }; float radius = 1; glm::vec3 pos = { 0,0,0 };
+	glm::vec3 scale = { 1,1,1 };
 
 	
-	glm::vec3 center = { 0, 0,0 }; float radius = 3; glm::vec3 pos = { 0,0,0 };
-	// const glm::vec3& aCenter, const float& aRadius, glm::vec3 Apos
-	SphereCollider* myCollider = new SphereCollider(center, radius, pos);
-	
+	glm::vec3 extents = { 1,1,1 };
 
-	// const glm::vec3& aCenter, const glm::vec3& someExtents
-	glm::vec3 extents = { 0,0,0 };
-	CubeCollider* cubeColl = new CubeCollider(center, extents);
 	
-
+	Collider* collider = new Collider();
+	CubeCollider* cubeColl = new CubeCollider(center, extents, pos);
+	
+	VirtualObject* VirtualObjectMesh{};
+	VirtualObject* CubeVirtualObject{};
+	VirtualObject* PlaneVirtualObject{};
 	CubeVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name2, cubeColl);
-	PlaneVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name2, cubeColl);
+	PlaneVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name3, cubeColl);
 
-	//CubeVirtualObject->myCubeColl->isKinematic = false; //this dosen't work?
 
 	PlaneVirtualObject->myCollider->isKinematic = true;
 	PlaneVirtualObject->Scale = glm::vec3(7, 0.5f, 7);
@@ -136,20 +132,20 @@ int main()
 
 	VirtualObject::Entities.push_back(CubeVirtualObject);
 	VirtualObject::Entities.push_back(PlaneVirtualObject);
-	CubeVirtualObject->Position = glm::vec3(0, 10, 0);
-	
+
 	
 	std::shared_ptr<Mesh> TeapotMesh = std::make_shared<Mesh>();
 	
 	while (VirtualObject::Entities.size() < 5) 
 	{
-		VirtualObjectMesh = new VirtualObject(&mesh, myTexture, myShader, name, myCollider);
+		SphereCollider* sphereColl = new SphereCollider(center, radius, pos);
+		VirtualObjectMesh = new VirtualObject(MeshMesh, myTexture, myShader, name, sphereColl);
 		
-		//myVirtualObject = new VirtualObject(&mesh, myTexture, myShader, name2);
+		
 		VirtualObject::Entities.push_back(VirtualObjectMesh);
 		
+		VirtualObjectMesh->myCollider->isKinematic = false;
 		
-		//VirtualObjectMesh->Position = glm::vec3(rand() % 20, rand() % 20, rand() % 20);
 		VirtualObjectMesh->Position = glm::vec3(rand() % 5, 10, rand() % 5);
 		
 	}  
@@ -159,7 +155,7 @@ int main()
 	unsigned int depthMapFBO = 0;
 	unsigned int depthMap = 0;
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-	//myLighting->Initialise();
+	
 	GLfloat BackgroundColor;
 	myCamera->myPosition = glm::vec3(0, 3, 0);
 	glEnable(GL_DEPTH_TEST);
@@ -167,8 +163,6 @@ int main()
 	while (!glfwWindowShouldClose(window))
 	{
 		
-		/*myCollider->position = VirtualObjectMesh->Position;
-		myCollider->transform = VirtualObjectMesh->trans;*/
 		GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 		GL_CHECK(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
 
@@ -181,10 +175,13 @@ int main()
 		myLighting->lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;
 		myLighting->lightPos.y = (glfwGetTime() / 2.0f) * 1.0f;
 		
-		//Phys->Simulate(deltatime);
-		float currentFrame = glfwGetTime();
-		deltatime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
+		if (Phys->TimeTicking)
+		{
+			float currentFrame = glfwGetTime();
+			deltatime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+		}
+		
 		
 		myUI->RenderUI();
 
@@ -193,14 +190,11 @@ int main()
 		myLighting->Use(myCamera, myShader);
 
 		Phys->Simulate(deltatime);
-		//myVirtualObject->SetMesh(mesh);
-		//smyLighting->Use();
-		
 		
 		for (auto& o : VirtualObject::Entities)
-		{		
+		{
+			
 			o->Draw(myCamera, myShader); // draws the cubes
-			//o->DrawObject(myCamera, myShader); // draws the mesh from the file. for example, the teapot mesh
 			
 		}
 
@@ -232,8 +226,8 @@ int main()
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 
-	myMemory->ClearMemory(myShader, Cubemesh, myCamera, myLighting, CubeVirtualObject, myUI, myMeshManager, &mesh, Phys, myCollider);
-	delete myMemory;
+	myMemory->ClearMemory(myShader, Cubemesh, myCamera, myLighting, CubeVirtualObject, myUI, myMeshManager, MeshMesh, Phys, collider);
+	//delete myMemory;
 	glfwTerminate();
 	//std::cout << "hello engime" << std::endl;
 	

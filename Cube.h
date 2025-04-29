@@ -27,6 +27,7 @@ public:
 	size_t indexCount, vertexCount;
 	/*static unsigned int &indices[];*/
 	
+	
 
 private:
 	int IndicesSize = 0;

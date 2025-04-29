@@ -5,20 +5,36 @@
 #include <gtc/quaternion.hpp>
 #include "VirtualObject.h"
 
+const glm::mat4 Math::identity4{
+	
+1,0,0,0,
+0,1,0,0,
+0,0,1,0,
+0,0,0,1
+};
+
+const glm::mat3 Math::identity3{
+
+1,0,0,
+0,1,0,
+0,0,1
+};
 
 
 float Restitution;
 float LinearDrag;
 
+
 Physics::Physics()
 {
-	/*CheckIntersect(Collider * c1, Collider * c2);*/
+	
 }
 
 void Physics::Simulate(const float& aDeltaTime)
 {
 	colliders = UpdatePhysicsScene();
 	std::vector<Collision> collisions = CheckIntersections(colliders);
+	
 	
 	// gotta update this
 	
@@ -27,12 +43,16 @@ void Physics::Simulate(const float& aDeltaTime)
 
 	// checking for any intersections and storing their data in a vector of collisions
 	//std::vector<Collision> collisions = CheckIntersections(cols);
-
+	
+	
 	ApplyGravity(colliders, aDeltaTime);
 
+	ApplyCollision(aDeltaTime, collisions);
+	
 	//As a result of those collisions what should happen?
 	HandleCollisions(collisions);
-
+	
+	
 	//at the moment this only applying gravity to my colliders since I have no calculations for linear and angular velocity based on collisions.
 	//This should ideally be in HandleCollisions
 	ApplyVelocity(cols, aDeltaTime);
@@ -43,23 +63,60 @@ void Physics::Simulate(const float& aDeltaTime)
 
 void Physics::UpdateVisuals()
 {
+	/*glm::vec3 center = { 0, 0,0 }; float radius = 10; glm::vec3 pos = { 0,0,0 };
+	glm::vec3 scale = { 1,1,1 };
+	glm::vec3 extents = { 1,1,1 };*/
 	for (auto& o : VirtualObject::Entities)
 	{
-		o->Position += o->myCollider->position;
+		o->UpdateTransform();
+
 		
-		//o->myCollider->position = o->Position;
-		//o->trans += o->myCollider->transform;
+		
+		//o->Position = o->myCollider->position;
+
+		//o->myCollider->transform = o->trans;
+		
+		
+
 	}
 }
+// std::vector<Collision> coll, std::vector<Collider*> colliders,
+void Physics::ApplyCollision( const float& dt, std::vector<Collision> collisions)
+{
+	
+}
+
+glm::vec3 Physics::SafeNormalise(glm::vec3 vector)
+{
+	
+	float vecLength = glm::length(vector);
+	if (vecLength < 0.00000001f)
+	{
+		return glm::vec3(0);
+
+	}
+
+	return glm::normalize(vector);
+	//
+}
+
+
 
 void Physics::ApplyVelocity(std::vector<Collider*> colliders, const float& dt)
 {
+	// std::vector<Collider*> colliders
 	for (Collider* c : colliders)
 	{
 		if (c->hasGravity && !c->isKinematic)
 		{
+			/*if (CheckCollision(c1, c2))
+			{
+				if (c1 != c2)
+				{
+				}
+			}*/
 			//std::cout << "apply velocity";
-			c->velocity += glm::vec3(0, 0.96f, 0) * dt;
+			c->velocity += glm::vec3(0, 0.0096f, 0) * dt;
 			c->transform[3] = glm::vec4(c->position, 1.0f);
 
 			float maxAngularVelocity = 3;
@@ -91,24 +148,31 @@ void Physics::ApplyGravity(std::vector<Collider*> colliders, const float& dt)
 {
 	for (Collider* c : colliders)
 	{
-		if (!c->isKinematic)
+		for(Collider* c2 : colliders)
+		if (!c->isKinematic) 
 		{
+			// && CheckCollision(c, c2)
 			//std::cout << "apply gravity";
 			glm::vec3 position = glm::vec3(c->transform[3]);
+			//glm::vec3 scale = glm::vec3(c->scale[3]);
 			// 9.84
+			
+
 			c->velocity.y -= 0.001f * dt;
 			position += c->velocity * dt;
 			c->position = position;
 			c->transform[3] = glm::vec4(position, 1.0f);
+			//c->scale = scale;
 		}
 	}
 }
 
 void Physics::HandleCollisions(std::vector<Collision> collisions)
 {
+	
 	for (Collision c : collisions)
 	{
-		std::cout << "handle Collision";
+		//std::cout << "handle Collision";
 		if (!c.col1->isKinematic)
 		{
 			c.col1->velocity *= -1;
@@ -121,31 +185,37 @@ void Physics::HandleCollisions(std::vector<Collision> collisions)
 		if (!c.col1->isKinematic || !c.col2->isKinematic)
 		{
 			
-			glm::vec3 normal = glm::normalize(c.col2->position - c.col1->position);
+			
+					glm::vec3 normal = SafeNormalise(c.col2->position - c.col1->position);//relative velocity
+					glm::vec3 relativeVelocity = c.col2->velocity - c.col1->velocity;
+					float velocityAlongNormal = glm::dot(relativeVelocity, normal);
+					if (velocityAlongNormal < 0)
+					{
+						// Coefficient of restitution (bounciness) and calculating impulse
+						float restitution = 0.2f;
+						float impulse = (1 + restitution) * velocityAlongNormal;
 
-			//relative velocity
-			glm::vec3 relativeVelocity = c.col2->velocity - c.col1->velocity;
-			float velocityAlongNormal = glm::dot(relativeVelocity, normal);
+						if (!c.col1->isKinematic)
+						{
+							glm::vec3 impulseVector = impulse * normal;
+							c.col1->velocity += impulseVector;
+						}
+
+						if (!c.col2->isKinematic)
+						{
+							glm::vec3 impulseVector = impulse * normal;
+							c.col2->velocity -= impulseVector;
+						}
+					}
+
+			
+			
+			
+
+			
 
 			// < 0 means they are moving towards each other
-			if (velocityAlongNormal < 0)
-			{
-				// Coefficient of restitution (bounciness) and calculating impulse
-				float restitution = 0.2f;
-				float impulse = (1 + restitution) * velocityAlongNormal;
-
-				if (!c.col1->isKinematic)
-				{
-					glm::vec3 impulseVector = impulse * normal;
-					c.col1->velocity += impulseVector;
-				}
-
-				if (!c.col2->isKinematic)
-				{
-					glm::vec3 impulseVector = impulse * normal;
-					c.col2->velocity -= impulseVector;
-				}
-			}
+			
 		}
 	}
 }
@@ -154,7 +224,7 @@ void Physics::HandleDynamicDynamic(std::vector<Collision> collisions)
 {
 	for (Collision c : collisions)
 	{
-		std::cout << "handle dynamic dynamic";
+		//std::cout << "handle dynamic dynamic";
 		glm::vec3 normal = c.normal1; // might need to change that to just normal without the 1
 
 		glm::vec3 relativeVelocity = c.col2->velocity - c.col1->velocity;
@@ -177,7 +247,7 @@ void Physics::HandleDynamicDynamic(std::vector<Collision> collisions)
 
 		c.col1->angularVelocity += c.col1->inverseMomentOfInertia * torque1 * 100000000.0f;
 		c.col2->angularVelocity += c.col2->inverseMomentOfInertia * torque2 * 100000000.0f;
-		
+
 	}
 }
 
@@ -186,7 +256,7 @@ void Physics::HandleStaticDynamic(std::vector<Collision> collisions)
 	const float SlidingFriction = 0.5f;
 	for (Collision c : collisions)
 	{
-		std::cout << "handle static dynamic";
+		//std::cout << "handle static dynamic";
 		Collider* A = c.col1;
 		Collider* B = c.col2;
 
@@ -232,16 +302,41 @@ void Physics::HandleStaticDynamic(std::vector<Collision> collisions)
 	}
 }
 
-bool Physics::BoolCheckIntersect(Collider* c1, Collider* c2) 
+
+bool Physics::BoolCheckIntersect(Collider* c1, Collider* c2)
 {
+
 	//CheckIntersect(c1, c2);
 	if (c1->isOf<SphereCollider>() && c2->isOf<SphereCollider>())
 	{
-		std::cout << "check intersect";
+		//std::cout << "check with spheres intersect ";
 		SphereCollider* sphere1 = dynamic_cast<SphereCollider*>(c1);
 		SphereCollider* sphere2 = dynamic_cast<SphereCollider*>(c2);
 		return SphereSphereIntersect(*sphere1, *sphere2);
+		
 	}
+
+	else if (c1->isOf<CubeCollider>() && c2->isOf<SphereCollider>())
+	{
+		//std::cout << "check with cubes & spheres intersect";
+		CubeCollider* cube1 = dynamic_cast<CubeCollider*>(c1);
+		SphereCollider* sphere1 = dynamic_cast<SphereCollider*>(c2);
+
+		return CubeSphereIntersect(*cube1, *sphere1);
+		
+		
+	}
+
+	else if (c1->isOf<CubeCollider>() && c2->isOf<CubeCollider>())
+	{
+		//std::cout << "check with cubes intersect";
+		CubeCollider* cube1 = dynamic_cast<CubeCollider*>(c1);
+		CubeCollider* cube2 = dynamic_cast<CubeCollider*>(c2);
+		return CubeCubeIntersect(*cube1, *cube2);
+		
+	}
+
+	
 }
 
 std::vector<Collider*> Physics::UpdatePhysicsScene()
@@ -263,34 +358,20 @@ std::vector<Collision> Physics::CheckIntersections(std::vector<Collider*> collid
 
 	int count = colliders.size();
 
-	//for (int i = 0; i < count; i++)
-	//{
-	//	for (int j = i + 1; j < count; j++)
-	//	{
-	//		Collision c = CheckIntersect(colliders[i], colliders[j]); // cannot convert from bool to collision? 
-	//		if (c.col1 != nullptr && c.col2 != nullptr)
-	//		{
-	//			collisions.push_back(c);
-	//		}
-	//	}
-	//}
-
-	// 
 	for (Collider* c1 : colliders)
 	{
-		
 		for (Collider* c2 : colliders)
 		{
 			if (c1 != c2)
 			{
-				
 				if (BoolCheckIntersect(c1, c2))
 				{
-					std::cout << "check Intersection";
+					//std::cout << "check Intersections";
 					Collision collision;
 					collision.col1 = c1;
 					collision.col2 = c2;
 					collisions.push_back(collision);
+
 
 				}
 			}
@@ -307,26 +388,48 @@ glm::mat3 Physics::ComputeMomentOfInertiaSPhere(float mass, float radius) // omw
 
 bool Physics::SphereSphereIntersect(const SphereCollider& c1, const SphereCollider& c2)
 {
-	float dist = glm::distance(c1.position, c2.position);
+	
+			float dist = glm::distance(c1.position, c2.position);
 
-	if (dist < c1.radius + c2.radius)
-	{
-		std::cout << "Spheres are intersecting!" << std::endl;
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+			if (dist < c1.radius + c2.radius)
+			{
+				//std::cout << "Spheres are intersecting!" << std::endl;
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+	
+	
 }
 
 bool Physics::CubeSphereIntersect(const CubeCollider& aCube1, const SphereCollider& aSphere2)
 {
-	glm::vec3 sphereCenter = glm::vec3(aSphere2.transform[3]);
-	glm::vec3 localSphereCenter = glm::inverse(aCube1.transform) * glm::vec4(sphereCenter, 1.0f);
-	glm::vec3 closestPoint = glm::clamp(localSphereCenter, -aCube1.extents, aCube1.extents);
-	float dist2 = glm::length(localSphereCenter - closestPoint);
-	return dist2 < aSphere2.radius * aSphere2.radius;
+	/*for (int i = 0; aCube1.transform.length() > i; i++)
+	{
+		if (aCube1.transform[i].x <= -100000)
+		{
+			std::cout << "is less then -100000";
+			break;*/
+
+			glm::vec3 sphereCenter = glm::vec3(aSphere2.transform[3]);
+			glm::vec3 localSphereCenter = glm::inverse(aCube1.transform) * glm::vec4(sphereCenter, 1.0f); // problems arise here
+			glm::vec3 closestPoint = glm::clamp(localSphereCenter, -aCube1.extents, aCube1.extents);
+			float dist2 = glm::length(localSphereCenter - closestPoint); // -nan(ind) error
+			if (dist2 <= aSphere2.radius * aSphere2.radius)
+			{
+				//std::cout << "cubes & spheres intersect" << std::endl;
+				return true;
+			}
+			else {
+				return false;
+			}
+
+	//	}
+	//}
+	//std::cout << "cubes & spheres intersect";
+	
 }
 
 bool Physics::CubeCubeIntersect(const CubeCollider& aCube1, const CubeCollider& aCube2)
@@ -364,6 +467,7 @@ bool Physics::CubeCubeIntersect(const CubeCollider& aCube1, const CubeCollider& 
 	}
 
 	return true;
+	std::cout << "cubes are intersecting" << std::endl;
 
 }
 
@@ -459,7 +563,7 @@ bool Physics::RayOBBIntersect(const Ray& aRay, const CubeCollider& aCube)
 	glm::vec3 localOrigin = glm::transpose(rotation) * (aRay.origin - center);
 	glm::vec3 localDirection = glm::transpose(rotation) * aRay.direction;
 
-	CubeCollider localCube = CubeCollider(glm::vec3(0, 0, 0), aCube.extents);
+	CubeCollider localCube = CubeCollider(glm::vec3(0, 0, 0), aCube.extents, aCube.position);
 	localCube.extents = aCube.extents;
 
 	Ray localRay(localOrigin, localDirection);

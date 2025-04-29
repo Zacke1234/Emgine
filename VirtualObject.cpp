@@ -3,6 +3,7 @@
 #include "Cube.h"
 #include "ObjLoader.h"
 #include "MeshManager.h"
+#include "Physics.h"
 #include <cassert>
 #include <glad.h>
 #include "Collider.h"
@@ -14,13 +15,25 @@ int VirtualObject::SelectedEntity;
 
 
 //auto object = new VirtualObject(mesh, myTexture, myShader);
-VirtualObject::VirtualObject()
+VirtualObject::VirtualObject() // unitilized
 {
+	glm::vec3 center = { 0, 0,0 }; float radius = 10; glm::vec3 pos = { 0,0,0 };
+	glm::vec3 scale = { 1,1,1 };
+	glm::vec3 extents = { 1,1,1 };
+
 	myCube = nullptr;
 	myTexture = nullptr;
 	MyShader = nullptr;
 	myMesh = nullptr;
 	myCollider = nullptr;
+	trans = Math::identity4;
+	IsTransformValid = false;
+	//mySphereColl = nullptr;
+
+
+	
+	/*o->myCubeColl = new CubeCollider(center, extents, pos);
+	o->mySphereColl = new SphereCollider(center, radius, pos);*/
 	//myLight = nullptr;
 	//isCube = false;
 
@@ -30,38 +43,52 @@ VirtualObject::VirtualObject()
 	//Name[255] = nullptr;
 }
 
-VirtualObject::VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll/*, Lighting* light*/)
+VirtualObject::VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll) : VirtualObject()
 {
-	//myCube = aCube;
 	myTexture = aTexture;
 	MyShader = aShader;
 	myMesh = Mesh;
-	//Name[255] = aName[255];
+	
 	this->namn = _namn;
 	IsMesh = true;
-	myCollider = coll;
-	//myLight = light;
-	
 
 	Position = glm::vec3(0, 0, 0);
 	Rotation = glm::vec3(0, 0, 0);
 	Scale = glm::vec3(1, 1, 1);
 
+	myCollider = coll;
+
+	coll->position = this->Position;
+	
+	coll->isKinematic = false;
+	coll->scale = Scale;
+	//coll->mySphereColl;
+	
+	
+
 }
 
-VirtualObject::VirtualObject(Cube* cube, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll/*, Lighting* light*/)
+VirtualObject::VirtualObject(Cube* cube, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll) : VirtualObject()
 {
 	myTexture = aTexture;
 	MyShader = aShader;
 	myCube = cube;
-	//Name[255] = aName[255];
+	
 	this->namn = _namn;
 	IsCube = true;
-	//myLight = light;
 
+	myCollider = coll;
+	
+	
 	Position = glm::vec3(0, 0, 0);
 	Rotation = glm::vec3(0, 0, 0);
 	Scale = glm::vec3(1, 1, 1);
+
+	coll->position = this->Position;
+	
+	coll->isKinematic = false;
+	coll->scale = Scale;
+
 }
 
 VirtualObject::~VirtualObject()
@@ -72,11 +99,6 @@ VirtualObject::~VirtualObject()
 void VirtualObject::SetCube(Cube& aCube)
 {
 	myCube = &aCube;
-}
-
-void VirtualObject::CreateCube(Cube& aCube)
-{
-	
 }
 
 void VirtualObject::SetTexture(Texture& aTexture)
@@ -123,21 +145,33 @@ void VirtualObject::DrawCube(Camera* aCamera, Shader* myShader)
 	myCube->Draw(myShader, this, aCamera);
 }
 
+void VirtualObject::UpdateTransform()
+{
+	trans = Math::identity4;
+
+	trans = glm::translate(trans, Position);
+
+	trans = glm::rotate(trans, Rotation.x, glm::vec3(1, 0, 0));
+	trans = glm::rotate(trans, Rotation.y, glm::vec3(0, 1, 0));
+	trans = glm::rotate(trans, Rotation.z, glm::vec3(0, 0, 1));
+
+	trans = glm::scale(trans, Scale);
+
+	IsTransformValid = true;
+}
+
 void VirtualObject::DrawObject(Camera* aCamera, Shader* myShader)
 {
 		
-
+		
 		//std::cout << "draw object in virtualobject" << "\n";
-		glm::mat4 trans = glm::mat4(1.0f);
+		if (IsTransformValid == false)
+		{
 
-		trans = glm::translate(trans, Position);
+			UpdateTransform();
 
-		trans = glm::rotate(trans, Rotation.x, glm::vec3(1, 0, 0));
-		trans = glm::rotate(trans, Rotation.y, glm::vec3(0, 1, 0));
-		trans = glm::rotate(trans, Rotation.z, glm::vec3(0, 0, 1));
-
-		trans = glm::scale(trans, Scale);
-
+		}
+		
 
 		MyShader->SetMatrix("transform", trans);
 		MyShader->SetMatrix("view", aCamera->myView);
@@ -156,9 +190,11 @@ void VirtualObject::DrawObject(Camera* aCamera, Shader* myShader)
 		
 		
 		GL_CHECK(glBindVertexArray(myMesh->VAO));
-		GL_CHECK(glDrawElements(GL_TRIANGLES, myMesh->elements.size(), GL_UNSIGNED_INT, 0));
+		GL_CHECK(glDrawElements(GL_TRIANGLES, myMesh->elements.size(), GL_UNSIGNED_INT, (void*)0));
 		
 		GL_CHECK(glBindVertexArray(0));
+
+		IsTransformValid = false;
 }
 
 

@@ -7,12 +7,13 @@
 #include "Camera.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Physics.h"
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_glfw.h>
 #include <iostream>
 
 
-UI::UI(GLFWwindow* window)
+UI::UI(GLFWwindow* window) // unitilized
 {
 	shade = new Shader("../Shader/VertexShader_1.glsl", "../Shader/FragmentShader_1.glsl");
 	isCube = false;
@@ -30,7 +31,8 @@ UI::UI(GLFWwindow* window)
 void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
 {
 	
-	
+	//MeshManager::Allocate();
+	MeshManager* myMeshManager = &MeshManager::Get();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
@@ -53,12 +55,41 @@ void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
 
 	textureFile = ImGui::InputText("texture file", buf, sizeof(buf) - 1);  
 	name = ImGui::InputText("Name", buf2, sizeof(buf2) - 1);
-
+	charMesh = ImGui::InputText("Mesh", buf_Mesh, sizeof(buf_Mesh) - 1);
 	ImGui::Text("Change camera speed");
 	camera->cameraSpeed = ImGui::InputText("Default speed is 3", buf3, sizeof(buf3) - 1); // supposed to change speed of camera cause
 	// Implement a Camera class and UI to configure it for rendering your scene
 
+	if (ImGui::Button("Create new mesh"))
+	{
+		virtobj = new VirtualObject();
+		texture = new Texture(buf);
+		newCollider = new Collider();
+		//mesh = new Mesh();
 
+		virtobj->IsCube = false;
+		virtobj->IsMesh = true;
+		if (textureFile == '\0')
+		{
+			texture = new Texture("Default 1.png");
+		}
+		virtobj->SetTexture(*texture);
+		//mesh = myMeshManager->LoadMesh("fish.obj");
+		virtobj->SetMesh(*MeshManager::Get().LoadMesh("fish.obj"));
+		virtobj->Position = glm::vec3(1, 1, 1);
+		virtobj->Scale = glm::vec3(1, 1, 1);
+		virtobj->SetShader(*shade);
+		virtobj->SetName(buf2);
+
+		virtobj->myCollider = newCollider;
+		newCollider->isKinematic = true;
+
+		if (name == '\0')
+		{
+			virtobj->SetName("Mesh");
+		}
+		VirtualObject::Entities.push_back(virtobj);
+	}
 
 	if (ImGui::Button("Create new cube")) 
 	{
@@ -68,7 +99,7 @@ void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
 		virtobj = new VirtualObject();
 		texture = new Texture(buf);	
 		newCollider = new Collider();
-
+	
 		virtobj->IsCube = true;
 		virtobj->IsMesh = false;
 		if (textureFile == '\0') 
@@ -79,11 +110,11 @@ void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
 		
 		virtobj->SetTexture(*texture);
 		
-		virtobj->SetCube(*MeshManager::Get().GetCube()); 
+		virtobj->SetCube(*MeshManager::Get().LoadCube()); 
 		virtobj->Position = glm::vec3(1, 1, 1);
 		virtobj->Scale = glm::vec3(1, 1, 1);
 		virtobj->SetShader(*shade);
-		//virtobj->SetMesh(*mesh); 
+		
 		virtobj->SetName(buf2);
 		
 		virtobj->myCollider = newCollider;
@@ -118,8 +149,13 @@ void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
 		virtobj = new VirtualObject();
 		virtobj->Entities[VirtualObject::SelectedEntity]->SetName(buf2);
 	}
-	
 
+	if (ImGui::Button("Play"))
+	{
+		
+	}
+	
+	ImGui::Text("Mesh Manager");
 	int n = sizeof(virtobj->Entities);
 
 	int idx;
@@ -145,7 +181,7 @@ void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
 			xScale = VirtualObject::Entities[i]->Scale[0];
 			yScale = VirtualObject::Entities[i]->Scale[1];
 			zScale = VirtualObject::Entities[i]->Scale[2];
-
+			//virtobj->Scale = cubeCollider->scale; cubeCollider is nullptr
 		}
 		//VirtualObject::Entities[0] = o;
 		ImGui::PopID();
