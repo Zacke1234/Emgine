@@ -28,6 +28,8 @@ public:
 	char buf2[255]{};
 	char buf3[255]{};
 	char buf_Mesh[255];
+	char buf_fov[2];
+	float test[255];
 	float step = 0;
 	float step_fast = 0;
 
@@ -43,6 +45,9 @@ public:
 	bool isCube;
 
 	bool check;
+
+	float fov = 70.0f;
+	float speed = 10.0f;
 	
 	ObjLoader* objLoader;
 private:

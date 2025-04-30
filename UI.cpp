@@ -28,11 +28,9 @@ UI::UI(GLFWwindow* window) // unitilized
 	
 }
 
-void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
+void UI::RenderUI()
 {
 	
-	//MeshManager::Allocate();
-	MeshManager* myMeshManager = &MeshManager::Get();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
@@ -56,8 +54,13 @@ void UI::RenderUI(/*std::vector<VirtualObject*> object, GLFWwindow* window*/)
 	textureFile = ImGui::InputText("texture file", buf, sizeof(buf) - 1);  
 	name = ImGui::InputText("Name", buf2, sizeof(buf2) - 1);
 	charMesh = ImGui::InputText("Mesh", buf_Mesh, sizeof(buf_Mesh) - 1);
-	ImGui::Text("Change camera speed");
-	camera->cameraSpeed = ImGui::InputText("Default speed is 3", buf3, sizeof(buf3) - 1); // supposed to change speed of camera cause
+	
+	ImGui::InputFloat("Field of view", &fov, 1.0f, 1.0f, "%.1f");
+
+
+	//ImGui::Text("Change camera speed");
+	//ImGui::InputFloat("Camera speed", &speed, 1.0f, 1.0f, "%.1f"); // supposed to change speed of camera cause
+	
 	// Implement a Camera class and UI to configure it for rendering your scene
 
 	if (ImGui::Button("Create new mesh"))
