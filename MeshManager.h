@@ -1,8 +1,7 @@
 #pragma once
-#include "list"
-#include "Cube.h"
-#include "ObjLoader.h"
+
 #include <string>
+#include "vector"
 
 class MeshManager
 {
@@ -26,8 +25,8 @@ public:
 	
 	std::unique_ptr<Mesh> Meshtest;
 };
-class cache
-{
-
-};
+//class cache
+//{
+//
+//};
 

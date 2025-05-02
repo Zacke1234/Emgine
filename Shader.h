@@ -1,6 +1,7 @@
+#pragma once
 #include <string>
 #include <glm.hpp>
-#pragma once
+
 class Shader
 {
 public:

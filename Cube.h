@@ -1,10 +1,11 @@
 #pragma once
+#include "Texture.h"
+#include "Shader.h"
+#include "Camera.h"
+#include "VirtualObject.h"
 #include <glfw3.h>
 #include <glm.hpp>
-#include "Shader.h"
-#include "ObjLoader.h"
-#include "VirtualObject.h"
-#include "Texture.h"
+
 class Cube
 {
 public:

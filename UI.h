@@ -1,10 +1,13 @@
-#include "VirtualObject.h"
+#pragma once
 #include "MeshManager.h"
-#include "ObjLoader.h"
+#include "VirtualObject.h"
 #include "Physics.h"
-#include "vector"
-#include <string.h>
-#include <string>
+#include "Camera.h"
+#include "ObjLoader.h"
+#include "Cube.h"
+
+
+
 #pragma once
 class UI
 {

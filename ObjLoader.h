@@ -1,3 +1,4 @@
+#pragma once
 #include "vector"
 #include <gtc/matrix_transform.hpp>
 #include <glad.h>

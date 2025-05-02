@@ -3,8 +3,6 @@
 #include <vector>
 #include <glfw3.h>
 #include <gtc/type_ptr.hpp>
-#include "Camera.h"
-#include "Shader.h"
 
 // shadow mapping 
 float near_plane = 1.0f, far_plane = 7.5f;

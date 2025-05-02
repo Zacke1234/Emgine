@@ -1,19 +1,17 @@
 #pragma once
+#include <stdio.h>
 #include "Shader.h"
 #include "Cube.h"
 #include "Camera.h"
 #include "Lighting.h"
 #include "VirtualObject.h"
 #include "UI.h"
-#include <stdio.h>
 #include <cstdlib>
 #include <gtc/matrix_transform.hpp>
 #include <vector>
 #include <string>
-#include "MeshManager.h"
-#include "ObjLoader.h"
 #include "Physics.h"
-#include "Collider.h"
+
 
 class Memory
 {

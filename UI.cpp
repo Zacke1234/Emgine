@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Physics.h"
+
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_glfw.h>
 #include <iostream>
@@ -20,7 +21,7 @@ UI::UI(GLFWwindow* window) // unitilized
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	camera = new Camera();
+	//camera = new Camera();
 	ImGui::StyleColorsDark();
 	ImGui_ImplGlfw_InitForOpenGL(window, true); // changing this to false makes the hover over highlight effect work on the button, but I still
 	// can't interact with it, nvm fixed all of this now
@@ -161,7 +162,7 @@ void UI::RenderUI()
 	ImGui::Text("Mesh Manager");
 	int n = sizeof(virtobj->Entities);
 
-	int idx;
+	
 
 	float value = 0;
 

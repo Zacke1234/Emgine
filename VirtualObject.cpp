@@ -7,7 +7,7 @@
 #include <cassert>
 #include <glad.h>
 #include "Collider.h"
-//#include "Lighting.cpp"
+
 
 std::vector<VirtualObject*> VirtualObject::Entities;
 int VirtualObject::SelectedEntity;

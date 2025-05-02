@@ -56,26 +56,19 @@ void Camera::CameraUpdate(GLFWwindow* window) // the mouse cursor is still not g
 		return;
 	}
 	myUp = glm::cross(myDirection, myRight);
-	//myDirection = glm::normalize(myPosition - myTarget);
-	float currentFrame = glfwGetTime();
+	
+	double currentFrame = glfwGetTime();
 	deltatime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 
-	projection = glm::perspective(glm::radians(70.0f), myWidth / myHeight, 0.1f, 200.0f);
+	projection = glm::perspective(glm::radians(fieldOfView), myWidth / myHeight, 0.1f, 200.0f);
 
 	myRight = glm::normalize(glm::cross(WorldUp, myDirection));
 	myUp = glm::cross(myDirection, myRight);
 	myView = glm::lookAt(myPosition, myPosition + myDirection, myUp);
-	
-	//projection = glm::perspective(glm::radians(45.0f), myWidth / myHeight, 0.1, 100.0f);
-	/*std::cout << myDirection.x <<" ";
-	std::cout << myDirection.y <<" ";
-	std::cout << myDirection.z << "\n";*/
-
-	
 
 	mouse_callback(lastX, lastY);
-	//cursor_enter_callback(window, Entered);
+
 }
 
 void Camera::ProcessInput(GLFWwindow* window)

@@ -178,12 +178,13 @@ void Cube::Draw(Shader* myShader, VirtualObject* myVirtualObject, Camera* aCamer
 	myShader->SetMatrix("projection", aCamera->projection);
 
 	GL_CHECK(glBindVertexArray(VAO));
-	if (IndicesSize > 0)
+	GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
+	GL_CHECK(glDrawElements(GL_TRIANGLES, IndicesSize, GL_UNSIGNED_INT, (void*)0));
+	GL_CHECK(glBindVertexArray(0));
+	/*if (&IndicesSize > 0)
 	{
-		GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
-		GL_CHECK(glDrawElements(GL_TRIANGLES, IndicesSize, GL_UNSIGNED_INT, (void*)0));
-		GL_CHECK(glBindVertexArray(0));
-	}
+		
+	}*/
 	
 }
 

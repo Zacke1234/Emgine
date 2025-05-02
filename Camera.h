@@ -36,6 +36,8 @@ public:
 	float yaw = -90.0f;
 	float pitch = 0;
 
+	float fieldOfView = 70;
+
 	static void Cursor_enter_callback(GLFWwindow* window, int entered);
 
 	void cursor_enter_callback(GLFWwindow* window,int entered);

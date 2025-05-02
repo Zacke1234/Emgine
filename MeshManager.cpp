@@ -1,8 +1,5 @@
 
 #include "Cube.h"
-#include "VirtualObject.h"
-
-
 #include <cassert>
 #include "MeshManager.h"
 #pragma once
@@ -29,7 +26,7 @@ MeshManager& MeshManager::Get()//Gets the singleton
 
 Cube* MeshManager::LoadCube()
 {
-	// checks if fromPath ends with .obj, exit if not
+	// checks if fromPath ends with .obj, exit if not (not actually implemented)
 	Cube* newCube = new Cube();
 	//newCube->Path = fromPath;
 	// do .obj-loading here
@@ -39,17 +36,7 @@ Cube* MeshManager::LoadCube()
 
 Mesh* MeshManager::LoadMesh(std::string fromPath)
 {
-	/*std::string fullString = fromPath;
-	std::string ending = ".obj";
-	if (fromPath.length() >= ending.length())
-	{
-		return 0 (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
-	}
-	else
-	{
-
-		std::cout << "file must end with .obj";
-	}*/
+	
 	Mesh* newMesh = new Mesh(myObjLoader->ObjParser(fromPath)); //teapot.obj / fish.obj
 	//Mesh* newMesh = new Mesh();
 	 

@@ -1,13 +1,13 @@
 #pragma once
 //#include "Cube.h"
+#include "ObjLoader.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "Camera.h"
-#include "ObjLoader.h"
-
-#include "Lighting.h"
-#include <vector>
 #include "Collider.h"
+#include <vector>
+
+
 
 inline void CheckOpenGLError(const char* stmt, const char* fname, int line)
 {
@@ -33,6 +33,7 @@ class Cube;
 class VirtualObject
 {
 public:
+	
 	VirtualObject();
 	VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll); 
 	VirtualObject(Cube* Cube, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll);

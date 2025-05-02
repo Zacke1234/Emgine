@@ -3,6 +3,7 @@
 #include "Collider.h"
 #include "VirtualObject.h"
 
+
 namespace Math {
 	extern const glm::mat4 identity4;
 	extern const glm::mat3 identity3;
@@ -52,6 +53,6 @@ private:
 
 	std::vector<Collision*> collisions;
 
-	std::vector<VirtualObject*> m_virtualObjects;
+	//std::vector<VirtualObject*> m_virtualObjects;
 };
 

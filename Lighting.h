@@ -1,7 +1,8 @@
 ﻿#pragma once
-#include <vector>
-#include <iostream>
-#include "VirtualObject.h"
+#include "glm.hpp"
+#include "Camera.h"
+#include "Shader.h"
+
 
 struct LightData {
 	glm::vec3 PointLight;

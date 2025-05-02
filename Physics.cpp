@@ -1,9 +1,11 @@
 #define GLM_ENABLE_EXPERIMENTAL
-#include "Physics.h"
+
 #include "glm.hpp"
 #include <ext/quaternion_trigonometric.hpp>
 #include <gtc/quaternion.hpp>
 #include "VirtualObject.h"
+#include "Collider.h"
+#include "Physics.h"
 
 const glm::mat4 Math::identity4{
 	
@@ -72,7 +74,7 @@ void Physics::UpdateVisuals()
 
 		
 		
-		//o->Position = o->myCollider->position;
+		o->Position =+ o->myCollider->position;
 
 		//o->myCollider->transform = o->trans;
 		
@@ -109,6 +111,7 @@ void Physics::ApplyVelocity(std::vector<Collider*> colliders, const float& dt)
 	{
 		if (c->hasGravity && !c->isKinematic)
 		{
+			
 			/*if (CheckCollision(c1, c2))
 			{
 				if (c1 != c2)
@@ -157,7 +160,7 @@ void Physics::ApplyGravity(std::vector<Collider*> colliders, const float& dt)
 			//glm::vec3 scale = glm::vec3(c->scale[3]);
 			// 9.84
 			
-
+			
 			c->velocity.y -= 0.001f * dt;
 			position += c->velocity * dt;
 			c->position = position;
@@ -366,12 +369,12 @@ std::vector<Collision> Physics::CheckIntersections(std::vector<Collider*> collid
 			{
 				if (BoolCheckIntersect(c1, c2))
 				{
-					//std::cout << "check Intersections";
+					
 					Collision collision;
 					collision.col1 = c1;
 					collision.col2 = c2;
 					collisions.push_back(collision);
-
+					//std::cout << "check Intersections";
 
 				}
 			}
@@ -417,7 +420,7 @@ bool Physics::CubeSphereIntersect(const CubeCollider& aCube1, const SphereCollid
 			glm::vec3 localSphereCenter = glm::inverse(aCube1.transform) * glm::vec4(sphereCenter, 1.0f); // problems arise here
 			glm::vec3 closestPoint = glm::clamp(localSphereCenter, -aCube1.extents, aCube1.extents);
 			float dist2 = glm::length(localSphereCenter - closestPoint); // -nan(ind) error
-			if (dist2 <= aSphere2.radius * aSphere2.radius)
+			if (dist2 >= aSphere2.radius * aSphere2.radius)
 			{
 				//std::cout << "cubes & spheres intersect" << std::endl;
 				return true;
@@ -428,7 +431,7 @@ bool Physics::CubeSphereIntersect(const CubeCollider& aCube1, const SphereCollid
 
 	//	}
 	//}
-	//std::cout << "cubes & spheres intersect";
+	
 	
 }
 

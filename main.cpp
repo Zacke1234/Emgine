@@ -1,7 +1,6 @@
-
+#include <stdio.h>
 #include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+
 #include <iostream>
 #include <glad.h>
 #include <glfw3.h>
@@ -11,13 +10,15 @@
 #include "Cube.h"
 #include "Camera.h"
 #include "Lighting.h"
-#include "VirtualObject.h"
-#include "UI.h"
-#include <stdio.h>
+
+
 #include <cstdlib>
 #include <gtc/matrix_transform.hpp>
 #include <vector>
 #include <string>
+
+#include "VirtualObject.h"
+#include "UI.h"
 #include "MeshManager.h"
 #include "ObjLoader.h"
 #include "Physics.h"
@@ -25,6 +26,9 @@
 #include "Collider.h"
 
 #include <float.h>
+
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 unsigned int fp_Currentstate;
 unsigned int fp_control_state = _controlfp_s(&fp_Currentstate ,_EM_INEXACT, _MCW_EM);
 
@@ -35,7 +39,7 @@ unsigned int fp_control_state = _controlfp_s(&fp_Currentstate ,_EM_INEXACT, _MCW
 
 int main()
 {
-	char* imageFile;
+	/*char* imageFile;*/
 	
 	
 	if (!glfwInit())
@@ -109,21 +113,26 @@ int main()
 
 	
 	std::string name3 = "Plane";
-	glm::vec3 center = { 0, 0,0 }; float radius = 1; glm::vec3 pos = { 0,0,0 };
-	glm::vec3 scale = { 1,1,1 };
+
 
 	
-	glm::vec3 extents = { 1,1,1 };
-
 	
-	Collider* collider = new Collider();
-	CubeCollider* cubeColl = new CubeCollider(center, extents, pos);
 	
 	VirtualObject* VirtualObjectMesh{};
 	VirtualObject* CubeVirtualObject{};
 	VirtualObject* PlaneVirtualObject{};
+
+	glm::vec3 extents = { myUI->xScale / 2, myUI->yScale / 2, myUI->zScale / 2};
+	glm::vec3 extentsPlane = { 7 / 2, 0.5f / 2, 7 / 2};
+	glm::vec3 center = { 0, 0,0 }; float radius = 0.5f; glm::vec3 pos = { 0,0,0 };
+	glm::vec3 scale = { 1,1,1 };
+
+	Collider* collider = new Collider();
+	CubeCollider* cubeColl = new CubeCollider(center, extents, pos);
+	CubeCollider* planeColl = new CubeCollider(center, extentsPlane, pos);
+
 	CubeVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name2, cubeColl);
-	PlaneVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name3, cubeColl);
+	PlaneVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name3, planeColl);
 
 
 	PlaneVirtualObject->myCollider->isKinematic = true;
@@ -156,7 +165,7 @@ int main()
 	unsigned int depthMap = 0;
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 	
-	GLfloat BackgroundColor;
+
 	myCamera->myPosition = glm::vec3(0, 3, 0);
 	glEnable(GL_DEPTH_TEST);
 	// loops until user closes window
@@ -177,7 +186,7 @@ int main()
 		
 		if (Phys->TimeTicking)
 		{
-			float currentFrame = glfwGetTime();
+			double currentFrame = glfwGetTime();
 			deltatime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 		}
@@ -208,6 +217,7 @@ int main()
 		myCamera->ProcessInput(window);
 		
 		myCamera->CameraUpdate(window);
+		myCamera->fieldOfView = myUI->fov;
 
 		ImGui::End();
 
