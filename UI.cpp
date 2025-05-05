@@ -3,12 +3,8 @@
 #include "vector"
 #include "imgui.h"
 #include "UI.h"
-#include "Cube.h"
-#include "Camera.h"
 #include "Shader.h"
 #include "Texture.h"
-#include "Physics.h"
-
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_glfw.h>
 #include <iostream>
@@ -16,7 +12,7 @@
 
 UI::UI(GLFWwindow* window) // unitilized
 {
-	shade = new Shader("../Shader/VertexShader_1.glsl", "../Shader/FragmentShader_1.glsl");
+	
 	isCube = false;
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -29,9 +25,13 @@ UI::UI(GLFWwindow* window) // unitilized
 	
 }
 
-void UI::RenderUI()
+void UI::RenderUI(Shader* shader)
 {
-	
+	glm::vec3 extents = { 1,1,1 };
+	glm::vec3 center = { 0, 0,0 }; float radius = 0.5f; glm::vec3 pos = { 0,0,0 };
+	glm::vec3 scale = { 1,1,1 };
+	SphereCollider* sphereColl = new SphereCollider(center, radius, pos);
+	CubeCollider* cubeColl = new CubeCollider(center, extents, pos);
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
@@ -56,7 +56,9 @@ void UI::RenderUI()
 	name = ImGui::InputText("Name", buf2, sizeof(buf2) - 1);
 	charMesh = ImGui::InputText("Mesh", buf_Mesh, sizeof(buf_Mesh) - 1);
 	
-	ImGui::InputFloat("Field of view", &fov, 1.0f, 1.0f, "%.1f");
+	ImGui::InputFloat("Field of view", &fov, 1.0f, 1.0f, "%.2f");
+
+	ImGui::InputFloat("Camera sensitivity", &sens, 0.1f, 1.0f, "%.2f");
 
 
 	//ImGui::Text("Change camera speed");
@@ -66,33 +68,37 @@ void UI::RenderUI()
 
 	if (ImGui::Button("Create new mesh"))
 	{
-		virtobj = new VirtualObject();
+		VirtualObject* meshObj = new VirtualObject();
+		
 		texture = new Texture(buf);
 		newCollider = new Collider();
-		//mesh = new Mesh();
+		/*meshmang = new MeshManager();
+		mesh = new Mesh();*/
+		
 
-		virtobj->IsCube = false;
-		virtobj->IsMesh = true;
+		meshObj->IsCube = false;
+		meshObj->IsMesh = true;
 		if (textureFile == '\0')
 		{
 			texture = new Texture("Default 1.png");
 		}
-		virtobj->SetTexture(*texture);
-		//mesh = myMeshManager->LoadMesh("fish.obj");
-		virtobj->SetMesh(*MeshManager::Get().LoadMesh("fish.obj"));
-		virtobj->Position = glm::vec3(1, 1, 1);
-		virtobj->Scale = glm::vec3(1, 1, 1);
-		virtobj->SetShader(*shade);
-		virtobj->SetName(buf2);
+		
+		meshObj->SetTexture(*texture);
+		//mesh = meshmang->LoadMesh("fish.obj");
+		meshObj->SetMesh(*MeshManager::Get().LoadMesh("fish.obj"));
+		meshObj->Position = glm::vec3(1, 1, 1);
+		meshObj->Scale = glm::vec3(1, 1, 1);
+		meshObj->SetShader(*shader);
+		meshObj->SetName(buf2);
 
-		virtobj->myCollider = newCollider;
+		meshObj->myCollider = newCollider;
 		newCollider->isKinematic = true;
 
 		if (name == '\0')
 		{
-			virtobj->SetName("Mesh");
+			meshObj->SetName("Mesh");
 		}
-		VirtualObject::Entities.push_back(virtobj);
+		VirtualObject::Entities.push_back(meshObj);
 	}
 
 	if (ImGui::Button("Create new cube")) 
@@ -117,7 +123,7 @@ void UI::RenderUI()
 		virtobj->SetCube(*MeshManager::Get().LoadCube()); 
 		virtobj->Position = glm::vec3(1, 1, 1);
 		virtobj->Scale = glm::vec3(1, 1, 1);
-		virtobj->SetShader(*shade);
+		virtobj->SetShader(*shader);
 		
 		virtobj->SetName(buf2);
 		
@@ -136,22 +142,20 @@ void UI::RenderUI()
 	//ImGui::Text("IsKinematic", &check);
 	if (ImGui::Checkbox("Is kinematic", &check)) // a bit jank
 	{
-		virtobj->Entities[VirtualObject::SelectedEntity]->myCollider->isKinematic = check;
+		VirtualObject::Entities[VirtualObject::SelectedEntity]->myCollider->isKinematic = check;
 		//virtobj->Entities[VirtualObject::SelectedEntity]->myCollider->isKinematic;
 	}
 
 	if (ImGui::Button("Change Texture"))
 	{
 		texture = new Texture(buf);
-		virtobj = new VirtualObject();
 
-		virtobj->Entities[VirtualObject::SelectedEntity]->SetTexture(*texture);
+		VirtualObject::Entities[VirtualObject::SelectedEntity]->SetTexture(*texture);
 	}
 	   
 	if (ImGui::Button("Change name"))
 	{
-		virtobj = new VirtualObject();
-		virtobj->Entities[VirtualObject::SelectedEntity]->SetName(buf2);
+		VirtualObject::Entities[VirtualObject::SelectedEntity]->SetName(buf2);
 	}
 
 	if (ImGui::Button("Play"))

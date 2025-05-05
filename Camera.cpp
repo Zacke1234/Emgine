@@ -157,7 +157,7 @@ void Camera::mouse_callback(double xpos, double ypos)
 	curx = xpos;
 	cury = ypos;
 
-	const float sensitivity = 0.1f;
+	//sensitivity = 0.1f;
 	xoffset *= sensitivity;
 	yoffset *= sensitivity;
 

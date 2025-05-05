@@ -74,7 +74,7 @@ void Physics::UpdateVisuals()
 
 		
 		
-		o->Position =+ o->myCollider->position;
+		//o->Position = o->myCollider->position;
 
 		//o->myCollider->transform = o->trans;
 		

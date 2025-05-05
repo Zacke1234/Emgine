@@ -13,7 +13,7 @@ class UI
 {
 public:
 	UI(GLFWwindow* window);
-	void RenderUI(/*std::vector<VirtualObject*> objects, GLFWwindow* window*/);
+	void RenderUI(Shader* shader);
 	//ImGuiIO& io;
 
 	float yPos = 0;
@@ -50,6 +50,7 @@ public:
 	bool check;
 
 	float fov = 70.0f;
+	float sens = 0.1f;
 	float speed = 10.0f;
 	
 	ObjLoader* objLoader;

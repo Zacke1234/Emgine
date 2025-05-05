@@ -42,7 +42,7 @@ public:
 
 	void cursor_enter_callback(GLFWwindow* window,int entered);
 
-	
+	float sensitivity = 0.1f;
 
 	bool TabbedIn = true;
 

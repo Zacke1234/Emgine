@@ -86,7 +86,7 @@ int main()
 	UI* myUI = new UI(window);
 	ObjLoader* myObjLoader = new ObjLoader();
 
-	myUI->objLoader = myObjLoader;
+	//myUI->objLoader = myObjLoader;
 	
 	//Mesh mesh;
 	//std::shared_ptr<Mesh> aMesh = std::make_shared<Mesh>();
@@ -190,11 +190,11 @@ int main()
 			deltatime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 		}
-		
-		
-		myUI->RenderUI();
-
 		myShader->UseShader();
+		
+		myUI->RenderUI(myShader);
+
+		
 		
 		myLighting->Use(myCamera, myShader);
 
@@ -218,6 +218,7 @@ int main()
 		
 		myCamera->CameraUpdate(window);
 		myCamera->fieldOfView = myUI->fov;
+		myCamera->sensitivity = myUI->sens;
 
 		ImGui::End();
 
