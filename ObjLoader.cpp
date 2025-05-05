@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include "Texture.h"
+#include "VirtualObject.h"
 using namespace std;
 
 // do breakpoints
@@ -15,13 +16,17 @@ ObjLoader::ObjLoader()
 // https://www.opengl-tutorial.org/beginners-tutorials/tutorial-7-model-loading/
 
 bool runOnce = false;
-Mesh ObjLoader::ObjParser(std::string fileName)
+bool ObjLoader::ObjParser(std::string fileName, Mesh* INmesh)
 {
-	
+	if (INmesh == nullptr)
+	{
+		return false;
+	}
+
 	Vertex vertex;
 	Vertex vertexNor;
 	Vertex vertexUV;
-	Mesh mesh;
+	Mesh& mesh = *INmesh;
 
 	std::ifstream file(fileName);
 	
@@ -35,7 +40,7 @@ Mesh ObjLoader::ObjParser(std::string fileName)
 	if (!file.is_open())
 	{
 		std::cerr <<  "Failed to open file: " << fileName << std::endl;
-		return mesh;
+		return false;
 	}
 
 	while (std::getline(file, line)){
@@ -173,7 +178,8 @@ Mesh ObjLoader::ObjParser(std::string fileName)
 		}
 		
 	}
-	return mesh;
+	
+	return true;
 }
 
 inline std::vector<std::string> SplitString(const std::string& str, char delimeter) {
@@ -225,7 +231,7 @@ void ObjLoader::MeshTexture(char material[])
 	//TextureOfMesh = new Texture(material);
 }
 
-void Mesh::InitialiseMesh(Mesh* myMesh)
+void Mesh::InitialiseMesh()
 {
 	std::cout << "initialise object file" << "\n";
 	
@@ -236,13 +242,13 @@ void Mesh::InitialiseMesh(Mesh* myMesh)
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-	myMesh->vertexbuffer = VBO;
+	this->vertexbuffer = VBO;
 
-	glBufferData(GL_ARRAY_BUFFER, myMesh->data.size() * sizeof(float), &myMesh->data[0], GL_STATIC_DRAW); // Data here is zero, for some reason
+	glBufferData(GL_ARRAY_BUFFER, this->data.size() * sizeof(float), &this->data[0], GL_STATIC_DRAW); // Data here is zero, for some reason
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, myMesh->elements.size() * sizeof(unsigned int), &myMesh->elements[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->elements.size() * sizeof(unsigned int), &this->elements[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);

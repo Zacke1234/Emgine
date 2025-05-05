@@ -52,9 +52,9 @@ void UI::RenderUI(Shader* shader)
 	}
 	ImGui::Text("Type in the exact file name");
 
-	textureFile = ImGui::InputText("texture file", buf, sizeof(buf) - 1);  
+	textureFile = ImGui::InputText("texture file", buf, sizeof(buf) - 1);  // does not work as intended
 	name = ImGui::InputText("Name", buf2, sizeof(buf2) - 1);
-	charMesh = ImGui::InputText("Mesh", buf_Mesh, sizeof(buf_Mesh) - 1);
+	charMesh = ImGui::InputText("Mesh", buf_Mesh, sizeof(buf_Mesh) - 1); // not yet implemented
 	
 	ImGui::InputFloat("Field of view", &fov, 1.0f, 1.0f, "%.2f");
 
@@ -76,8 +76,8 @@ void UI::RenderUI(Shader* shader)
 		mesh = new Mesh();*/
 		
 
-		meshObj->IsCube = false;
-		meshObj->IsMesh = true;
+		
+		
 		if (textureFile == '\0')
 		{
 			texture = new Texture("Default 1.png");
@@ -85,7 +85,15 @@ void UI::RenderUI(Shader* shader)
 		
 		meshObj->SetTexture(*texture);
 		//mesh = meshmang->LoadMesh("fish.obj");
-		meshObj->SetMesh(*MeshManager::Get().LoadMesh("fish.obj"));
+		mesh = MeshManager::Get().LoadMesh("./fish.obj");
+		if (mesh != nullptr)
+		{
+			
+			meshObj->SetMesh(*mesh);
+		}
+		
+		//meshObj->CreateMesh();
+
 		meshObj->Position = glm::vec3(1, 1, 1);
 		meshObj->Scale = glm::vec3(1, 1, 1);
 		meshObj->SetShader(*shader);
@@ -106,35 +114,35 @@ void UI::RenderUI(Shader* shader)
 		glm::vec3 center = { 0, 0,0 };
 		glm::vec3 extents = { 0,0,0 };
 		//mesh = new Mesh();
-		virtobj = new VirtualObject();
+		VirtualObject* CubeObj = new VirtualObject();
 		texture = new Texture(buf);	
 		newCollider = new Collider();
 	
-		virtobj->IsCube = true;
-		virtobj->IsMesh = false;
+		CubeObj->IsCube = true;
+		CubeObj->IsMesh = false;
 		if (textureFile == '\0') 
 		{
 			texture = new Texture("Default 1.png");
 		}
 		
 		
-		virtobj->SetTexture(*texture);
+		CubeObj->SetTexture(*texture);
 		
-		virtobj->SetCube(*MeshManager::Get().LoadCube()); 
-		virtobj->Position = glm::vec3(1, 1, 1);
-		virtobj->Scale = glm::vec3(1, 1, 1);
-		virtobj->SetShader(*shader);
+		CubeObj->SetCube(*MeshManager::Get().LoadCube());
+		CubeObj->Position = glm::vec3(1, 1, 1);
+		CubeObj->Scale = glm::vec3(1, 1, 1);
+		CubeObj->SetShader(*shader);
 		
-		virtobj->SetName(buf2);
+		CubeObj->SetName(buf2);
 		
-		virtobj->myCollider = newCollider;
+		CubeObj->myCollider = newCollider;
 		newCollider->isKinematic = true;
 		
 		if (name == '\0')
 		{
-			virtobj->SetName("Cube");
+			CubeObj->SetName("Cube");
 		}
-		VirtualObject::Entities.push_back(virtobj);
+		VirtualObject::Entities.push_back(CubeObj);
 		
 	}
 	 // cubeCollider->isKinematic;
@@ -182,9 +190,9 @@ void UI::RenderUI(Shader* shader)
 			yPos = VirtualObject::Entities[i]->Position[1];
 			zPos = VirtualObject::Entities[i]->Position[2];
 
-			xRot = VirtualObject::Entities[i]->Rotation[0];
-			yRot = VirtualObject::Entities[i]->Rotation[1];
-			zRot = VirtualObject::Entities[i]->Rotation[2];
+			xRot = glm::degrees(VirtualObject::Entities[i]->Rotation[0]);
+			yRot = glm::degrees(VirtualObject::Entities[i]->Rotation[1]);
+			zRot = glm::degrees(VirtualObject::Entities[i]->Rotation[2]);
 
 			xScale = VirtualObject::Entities[i]->Scale[0];
 			yScale = VirtualObject::Entities[i]->Scale[1];
@@ -197,6 +205,7 @@ void UI::RenderUI(Shader* shader)
 	//ImGui::InputText("texture file", buf, sizeof(buf) - 1);
 	
 	ImGui::Text("");
+	
 	ImGui::InputFloat("X pos", &xPos, step, step_fast);
 	ImGui::InputFloat("Y pos", &yPos, step, step_fast);
 	ImGui::InputFloat("Z pos", &zPos, step, step_fast);

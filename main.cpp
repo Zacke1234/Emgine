@@ -91,9 +91,10 @@ int main()
 	//Mesh mesh;
 	//std::shared_ptr<Mesh> aMesh = std::make_shared<Mesh>();
 	//Mesh mesh = myObjLoader->ObjParser("./fish.obj"); //teapot.obj / fish.obj
+	VirtualObject* VirtualObjectMesh{};
+	VirtualObject* CubeVirtualObject{};
+	VirtualObject* PlaneVirtualObject{};
 	
-	Cube* Cubemesh = myMeshManager->LoadCube();
-	Mesh* MeshMesh = myMeshManager->LoadMesh("./fish.obj");
 
 	Physics* Phys = new Physics();
 	
@@ -101,9 +102,9 @@ int main()
 	std::string name2 = "Cube";
 	
 	// Initialization  
-	Cubemesh->InitializeCube();
+	//Cubemesh->InitializeCube();
 	//ObjMesh->InitializeObjectFile(&mesh);
-	MeshMesh->InitialiseMesh(MeshMesh);
+	
 	//MeshMesh->InitialiseMesh(MeshMesh);
 
  
@@ -118,9 +119,7 @@ int main()
 	
 	
 	
-	VirtualObject* VirtualObjectMesh{};
-	VirtualObject* CubeVirtualObject{};
-	VirtualObject* PlaneVirtualObject{};
+	
 
 	glm::vec3 extents = { myUI->xScale / 2, myUI->yScale / 2, myUI->zScale / 2};
 	glm::vec3 extentsPlane = { 7 / 2, 0.5f / 2, 7 / 2};
@@ -131,16 +130,20 @@ int main()
 	CubeCollider* cubeColl = new CubeCollider(center, extents, pos);
 	CubeCollider* planeColl = new CubeCollider(center, extentsPlane, pos);
 
+	Cube* Cubemesh = myMeshManager->LoadCube();
+	Mesh* MeshMesh = myMeshManager->LoadMesh("./fish.obj");
+	//MeshMesh->InitialiseMesh();
 	CubeVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name2, cubeColl);
 	PlaneVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name3, planeColl);
 
 
 	PlaneVirtualObject->myCollider->isKinematic = true;
 	PlaneVirtualObject->Scale = glm::vec3(7, 0.5f, 7);
-	PlaneVirtualObject->Position = glm::vec3(1, 0, 1);
+	PlaneVirtualObject->Position = glm::vec3(0, 0, 0);
 
 	VirtualObject::Entities.push_back(CubeVirtualObject);
 	VirtualObject::Entities.push_back(PlaneVirtualObject);
+
 
 	
 	std::shared_ptr<Mesh> TeapotMesh = std::make_shared<Mesh>();
@@ -211,7 +214,10 @@ int main()
 		 
 		
 		VirtualObject::Entities[VirtualObject::SelectedEntity]->Position = glm::vec3(myUI->xPos, myUI->yPos, myUI->zPos);
-		VirtualObject::Entities[VirtualObject::SelectedEntity]->Rotation = glm::vec3(myUI->xRot, myUI->yRot, myUI->zRot);
+		VirtualObject::Entities[VirtualObject::SelectedEntity]->Rotation = glm::vec3(
+			glm::radians(myUI->xRot), 
+			glm::radians(myUI->yRot),
+			glm::radians(myUI->zRot));
 		VirtualObject::Entities[VirtualObject::SelectedEntity]->Scale = glm::vec3(myUI->xScale, myUI->yScale, myUI->zScale);
 		
 		myCamera->ProcessInput(window);

@@ -91,14 +91,19 @@ VirtualObject::VirtualObject(Cube* cube, Texture* aTexture, Shader* aShader, std
 
 }
 
-VirtualObject::~VirtualObject()
-{
-	delete myMesh, myCube;
-}
 
 void VirtualObject::SetCube(Cube& aCube)
 {
 	myCube = &aCube;
+	IsMesh = false;
+	IsCube = true;
+}
+
+void VirtualObject::SetMesh(Mesh& mesh)
+{
+	myMesh = &mesh;
+	IsMesh = true;
+	IsCube = false;
 }
 
 void VirtualObject::SetTexture(Texture& aTexture)
@@ -111,16 +116,12 @@ void VirtualObject::SetShader(Shader& aShader)
 	MyShader = &aShader;
 }
 
-void VirtualObject::CreateMesh(Mesh& aMesh) // does nothing
+Mesh* VirtualObject::CreateMesh() 
 {
 	
-	aMesh = myObjLoader->ObjParser("./teapot.obj"); //teapot.obj
+	myMesh = new Mesh();
 	
-}
-
-void VirtualObject::SetMesh(Mesh& aMesh)
-{
-	myMesh = &aMesh;
+	return myMesh;
 }
 
 void VirtualObject::SetName(std::string name)

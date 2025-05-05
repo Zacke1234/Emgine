@@ -37,14 +37,14 @@ public:
 	VirtualObject();
 	VirtualObject(Mesh* Mesh, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll); 
 	VirtualObject(Cube* Cube, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll);
-	~VirtualObject();
 
 	void SetCube(Cube& aCube); 
 	//void CreateCube(Cube& aCube); 
+	void SetMesh(Mesh& mesh);
 	void SetTexture(Texture& aTexture);
 	void SetShader(Shader& aShader);
-	void CreateMesh(Mesh& aMesh);
-	void SetMesh(Mesh& aMesh);
+	Mesh* CreateMesh();
+	
 
 	
 	void Draw(Camera* aCamera, Shader* myShader);
@@ -73,7 +73,7 @@ public:
 	Collider* myCollider;
 	SphereCollider* mySphereColl;
 	CubeCollider* myCubeColl;
-
+	Mesh* myMesh;
 	
 	
 private:
@@ -81,7 +81,7 @@ private:
 	Texture* myTexture;
 	Shader* MyShader;
 	Cube* myCube;
-	Mesh* myMesh;
+	
 	ObjLoader* myObjLoader;
 	
 	//Lighting* myLight;

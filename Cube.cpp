@@ -165,13 +165,13 @@ void Cube::Draw(Shader* myShader, VirtualObject* myVirtualObject, Camera* aCamer
 	//
 	glm::mat4 trans = Math::identity4;
 
-	trans = glm::translate(trans, myVirtualObject->Position);
+	trans = glm::scale(trans, myVirtualObject->Scale);
 
 	trans = glm::rotate(trans, myVirtualObject->Rotation.x, glm::vec3(1, 0, 0));
 	trans = glm::rotate(trans, myVirtualObject->Rotation.y, glm::vec3(0, 1, 0));
 	trans = glm::rotate(trans, myVirtualObject->Rotation.z, glm::vec3(0, 0, 1));
 
-	trans = glm::scale(trans, myVirtualObject->Scale);
+	trans = glm::translate(trans, myVirtualObject->Position);
 
 	myShader->SetMatrix("transform", trans);
 	myShader->SetMatrix("view", aCamera->myView);

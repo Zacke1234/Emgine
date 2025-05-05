@@ -32,13 +32,13 @@ struct Mesh{
 	std::vector<unsigned int> elements;
 	int vertexbuffer = 0;
 	unsigned int numberVertices = 0;
-	unsigned int VAO;
-	unsigned int VBO;
-	unsigned int EBO;
-	size_t indexCount, vertexCount;
+	unsigned int VAO = 0;
+	unsigned int VBO = 0;
+	unsigned int EBO = 0;
+	size_t indexCount = 0, vertexCount = 0;
 
 public:	
-	void InitialiseMesh(Mesh* myMesh);
+	void InitialiseMesh();
 };
 
 
@@ -46,7 +46,7 @@ class ObjLoader
 {
 public:
 	ObjLoader();
-	Mesh ObjParser(std::string fileName);
+	bool ObjParser(std::string fileName, Mesh* mesh);
 	void ParseFaceIndices(const std::string& string, Face& face, int vertexIndex);
 	void MeshTexture(char material[]);
 	//

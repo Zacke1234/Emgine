@@ -6,10 +6,21 @@
 MeshManager* MeshManager::instance = nullptr;
 //VirtualObject* MeshManager::instance = nullptr; 
 //Cube* cube = new Cube();
-MeshManager::MeshManager() : Meshtest(std::make_unique<Mesh>()) // do init?
+MeshManager::MeshManager()
 {
 	
 	// Ensure mesh is bufffered before rendered
+}
+
+MeshManager::~MeshManager()
+{
+	for (auto& [key, value] : MeshCache)
+	{
+		delete value;
+		
+	}
+	delete cube;
+	delete myObjLoader;
 }
 
 void MeshManager::Allocate()
@@ -26,22 +37,37 @@ MeshManager& MeshManager::Get()//Gets the singleton
 
 Cube* MeshManager::LoadCube()
 {
-	// checks if fromPath ends with .obj, exit if not (not actually implemented)
-	Cube* newCube = new Cube();
-	//newCube->Path = fromPath;
-	// do .obj-loading here
-	cubeList.push_back(newCube);
-	return newCube;
+	if (cube == nullptr)
+	{
+		cube = new Cube();
+		cube->InitializeCube();
+	}
+	
+	
+	return cube;
 }
 
 Mesh* MeshManager::LoadMesh(std::string fromPath)
 {
-	
-	Mesh* newMesh = new Mesh(myObjLoader->ObjParser(fromPath)); //teapot.obj / fish.obj
-	//Mesh* newMesh = new Mesh();
-	 
+	if (MeshCache.find(fromPath) != MeshCache.end()) 
+	{
+		return MeshCache[fromPath];
+	}
+	else{
+		Mesh* mesh = new Mesh();
 
-	meshList.push_back(newMesh);
-	return newMesh;
+		if (!myObjLoader->ObjParser(fromPath, mesh))
+		{
+			delete mesh;
+			return nullptr;
+		}
+
+		mesh->InitialiseMesh();
+		MeshCache.emplace(fromPath, mesh);
+
+		
+		return mesh;
+	}
+	
 }
 

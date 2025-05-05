@@ -77,7 +77,7 @@
       <PreprocessorDefinitions>GLM_FORCE_XYZW_ONLY</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\KHR;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glad\;$(SolutionDir)imgui\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>Default</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <FloatingPointModel>Strict</FloatingPointModel>
       <FloatingPointExceptions>true</FloatingPointExceptions>
     </ClCompile>
@@ -96,7 +96,7 @@
       <PreprocessorDefinitions>GLM_FORCE_XYZW_ONLY</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\KHR;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glad\;$(SolutionDir)imgui\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>Default</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <FloatingPointModel>Strict</FloatingPointModel>
       <FloatingPointExceptions>true</FloatingPointExceptions>
     </ClCompile>
@@ -115,7 +115,7 @@
       <PreprocessorDefinitions>GLM_FORCE_XYZW_ONLY</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\KHR;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glad\;$(SolutionDir)imgui\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>Default</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <FloatingPointModel>Strict</FloatingPointModel>
       <FloatingPointExceptions>true</FloatingPointExceptions>
     </ClCompile>
@@ -134,7 +134,7 @@
       <PreprocessorDefinitions>GLM_FORCE_XYZW_ONLY</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\KHR;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glad\;$(SolutionDir)imgui\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>Default</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <FloatingPointModel>Strict</FloatingPointModel>
       <FloatingPointExceptions>true</FloatingPointExceptions>
     </ClCompile>
