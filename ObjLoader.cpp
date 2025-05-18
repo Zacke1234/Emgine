@@ -231,9 +231,29 @@ void ObjLoader::MeshTexture(char material[])
 	//TextureOfMesh = new Texture(material);
 }
 
+void ObjLoader::WriteToBinary(std::string fileName, std::ostream& f)
+{
+	size_t size;
+	char* data;
+	std::ifstream file(fileName);
+	if (f)
+	{
+
+	}
+	// we need to store the data 
+	// 
+	// also I need to first check if there is a file to write too first.
+	f.write((char*)&size, sizeof(size));
+	data = new char[size + 1];
+	f.write(data, size);
+	data[size] = '\0';
+	//type = data;
+	delete data;
+}
+
 void Mesh::InitialiseMesh()
 {
-	std::cout << "initialise object file" << "\n";
+	//std::cout << "initialise object file" << "\n";
 	
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);

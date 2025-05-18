@@ -40,6 +40,8 @@ Cube* MeshManager::LoadCube()
 	if (cube == nullptr)
 	{
 		cube = new Cube();
+		msg = "Cube loaded in";
+		//message->SendMessage(msg, 0);
 		cube->InitializeCube();
 	}
 	
@@ -62,6 +64,8 @@ Mesh* MeshManager::LoadMesh(std::string fromPath)
 			return nullptr;
 		}
 
+		msg = "Mesh loaded in";
+		//message->SendMessage(msg, 0);
 		mesh->InitialiseMesh();
 		MeshCache.emplace(fromPath, mesh);
 

@@ -1,3 +1,4 @@
+#include "Message.h"
 #pragma once
 class Texture
 {
@@ -6,7 +7,9 @@ public:
 
 	bool IsValid() const { return TextureObject != 0; };
 
-
+	std::string msg;
+	//Message* message = new Message(msg);
+	
 	int Width = 0;
 	int Height = 0;
 

@@ -6,10 +6,15 @@
 #include "Physics.h"
 #include <cassert>
 #include <glad.h>
+#include <thread>
 #include "Collider.h"
+#include <mutex>
 
+std::mutex mtx;
 
-std::vector<VirtualObject*> VirtualObject::Entities;
+using namespace std;
+
+vector<VirtualObject*> VirtualObject::Entities;
 int VirtualObject::SelectedEntity;
 
 
@@ -131,23 +136,28 @@ void VirtualObject::SetName(std::string name)
 
 void VirtualObject::Draw(Camera* aCamera, Shader* myShader)
 {
+	
 	if (IsCube)
 	{
+		//std::thread T1(DrawCube(aCamera, myShader));
 		DrawCube(aCamera, myShader);
 	}
 	else if(IsMesh)
 	{
+		
 		DrawObject(aCamera, myShader);
 	}
 }
 
 void VirtualObject::DrawCube(Camera* aCamera, Shader* myShader)
 {
+	//thread T2(&Draw, this, aCamera);
 	myCube->Draw(myShader, this, aCamera);
 }
 
 void VirtualObject::UpdateTransform()
 {
+	mtx.lock();
 	trans = Math::identity4;
 
 	trans = glm::translate(trans, Position);
@@ -158,7 +168,8 @@ void VirtualObject::UpdateTransform()
 
 	trans = glm::scale(trans, Scale);
 
-	IsTransformValid = true;
+	IsTransformValid = true; 
+	mtx.unlock();
 }
 
 void VirtualObject::DrawObject(Camera* aCamera, Shader* myShader)
@@ -168,7 +179,8 @@ void VirtualObject::DrawObject(Camera* aCamera, Shader* myShader)
 		//std::cout << "draw object in virtualobject" << "\n";
 		if (IsTransformValid == false)
 		{
-
+			/*thread T1(&VirtualObject::UpdateTransform);
+			T1.join();*/
 			UpdateTransform();
 
 		}

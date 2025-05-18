@@ -105,7 +105,8 @@ Cube::Cube() // I need to learn to use constructors more (that can be said for e
 
 void Cube::InitializeCube()
 {
-	std::cout << "initialise cube" << "\n";
+	
+	//std::cout << "initialise cube" << "\n";
 	IndicesSize = sizeof(indices);
 	GL_CHECK(glGenVertexArrays(1, &VAO));
 	GL_CHECK(glBindVertexArray(VAO));

@@ -5,6 +5,7 @@
 #include <gtc/quaternion.hpp>
 #include "VirtualObject.h"
 #include "Collider.h"
+#include <thread>
 #include "Physics.h"
 
 const glm::mat4 Math::identity4{
@@ -71,7 +72,7 @@ void Physics::UpdateVisuals()
 	for (auto& o : VirtualObject::Entities)
 	{
 		o->UpdateTransform();
-
+		//std::thread T1(o->UpdateTransform());
 		
 		
 		//o->Position = o->myCollider->position;

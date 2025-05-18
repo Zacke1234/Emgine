@@ -169,6 +169,7 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Threading.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="VirtualObject.cpp" />
   </ItemGroup>
@@ -205,6 +206,7 @@
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Threading.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="VirtualObject.h" />
   </ItemGroup>

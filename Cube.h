@@ -23,6 +23,7 @@ public:
 	unsigned int VBO;
 	unsigned int EBO;
 
+	
 	//std::string Path; 
 
 	size_t indexCount, vertexCount;

@@ -1,7 +1,6 @@
 #include "Texture.h"
 #include <glfw3.h>
 #include <glad.h>
-//#include "../../../../Downloads/stb_image.h"
 #include "stb_image.h"
 #include <iostream>
 #include "glm.hpp"
@@ -31,16 +30,15 @@ Texture::Texture(const char* aPath)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
-	if (data)
+	if (data != NULL)
 	{
 		//std::cout << "data = true" << "\n";
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
+		msg = "Texture loaded in";
+		//message->SendMessage(msg, 0);
 	}
-	else
-	{
-		std::cout << "Could not load texture" << std::endl;
-	}
+	
 	stbi_image_free(data);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }

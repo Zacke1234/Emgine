@@ -24,27 +24,33 @@
 #include "Physics.h"
 #include "Memory.h"
 #include "Collider.h"
-
+#include "Message.h"
+#include "Threading.h"
 #include <float.h>
-
+#include <thread>
+#include <mutex>
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 unsigned int fp_Currentstate;
 unsigned int fp_control_state = _controlfp_s(&fp_Currentstate ,_EM_INEXACT, _MCW_EM);
 
 
+
+using namespace std;
 #pragma once
-
-
 
 int main()
 {
+	string message = "Empty";
+	//Message* myMessage = new Message(message); //Enmuerations don't have constructors
+	//myMessage->SendMessage(message, myMessage->type);
 	/*char* imageFile;*/
 	
-	
+	thread t1();
 	if (!glfwInit())
 	{
-		std::cout << "Failed to initialize glfw" << std::endl;
+		message = "Failed to initialize glfw";
+		//myMessage->SendMessage(message, 0);
 		return -1;
 	}
 	unsigned int SCR_WIDTH = 1920;
@@ -52,7 +58,7 @@ int main()
 	GLFWwindow* window;
 	window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Emgine", NULL, NULL);
 
-	
+	 
 	//std::cout << "" + a << std::endl;
 	
 	if (!window) 
@@ -65,12 +71,19 @@ int main()
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
-		std::cout << "Failed to initialise GLAD" << std::endl;
+		message = "Failed to initialize GLAD";
+		
 		return -1;
 	}
 
-	Memory* myMemory = new Memory();
+	
+	int megaBytes = 0;
 
+	
+	
+	//myMemory->T1();
+	Threading* myThread{};
+	
 	Shader* myShader = new Shader("../Shader/VertexShader_1.glsl" ,"../Shader/FragmentShader_1.glsl");
 	Lighting* myLighting = new Lighting();
 	
@@ -80,46 +93,24 @@ int main()
 	
 
 	MeshManager::Allocate();
-	MeshManager* myMeshManager = &MeshManager::Get();
+	MeshManager* myMeshManager = &MeshManager::Get(); // the mesh manager, it also caches my meshes.
 
 	
 	UI* myUI = new UI(window);
 	ObjLoader* myObjLoader = new ObjLoader();
 
-	//myUI->objLoader = myObjLoader;
-	
-	//Mesh mesh;
-	//std::shared_ptr<Mesh> aMesh = std::make_shared<Mesh>();
-	//Mesh mesh = myObjLoader->ObjParser("./fish.obj"); //teapot.obj / fish.obj
-	VirtualObject* VirtualObjectMesh{};
-	VirtualObject* CubeVirtualObject{};
-	VirtualObject* PlaneVirtualObject{};
-	
-
 	Physics* Phys = new Physics();
-	
-	std::string name = "Mesh";
-	std::string name2 = "Cube";
-	
-	// Initialization  
-	//Cubemesh->InitializeCube();
-	//ObjMesh->InitializeObjectFile(&mesh);
-	
-	//MeshMesh->InitialiseMesh(MeshMesh);
 
- 
+	
+
+	
+	
+	string name = "Mesh";
+	string name2 = "Cube";
+	string name3 = "Plane";
 	
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, myCamera->Mouse_Callback);
-
-	
-	std::string name3 = "Plane";
-
-
-	
-	
-	
-	
 
 	glm::vec3 extents = { myUI->xScale / 2, myUI->yScale / 2, myUI->zScale / 2};
 	glm::vec3 extentsPlane = { 7 / 2, 0.5f / 2, 7 / 2};
@@ -131,8 +122,13 @@ int main()
 	CubeCollider* planeColl = new CubeCollider(center, extentsPlane, pos);
 
 	Cube* Cubemesh = myMeshManager->LoadCube();
-	Mesh* MeshMesh = myMeshManager->LoadMesh("./fish.obj");
+	
+	Mesh* MeshMesh = myMeshManager->LoadMesh("./fish.obj"); // cacheing happens here when it also loads the meshes in.
 	//MeshMesh->InitialiseMesh();
+	VirtualObject* VirtualObjectMesh{};
+	VirtualObject* CubeVirtualObject{};
+	VirtualObject* PlaneVirtualObject{};
+
 	CubeVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name2, cubeColl);
 	PlaneVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name3, planeColl);
 
@@ -144,8 +140,6 @@ int main()
 	VirtualObject::Entities.push_back(CubeVirtualObject);
 	VirtualObject::Entities.push_back(PlaneVirtualObject);
 
-
-	
 	std::shared_ptr<Mesh> TeapotMesh = std::make_shared<Mesh>();
 	
 	while (VirtualObject::Entities.size() < 5) 
@@ -167,9 +161,20 @@ int main()
 	unsigned int depthMapFBO = 0;
 	unsigned int depthMap = 0;
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+
 	
 
 	myCamera->myPosition = glm::vec3(0, 3, 0);
+
+	Memory* myMemory = new Memory();
+	myMemory->HasMemoryAvailable(megaBytes);
+	/*thread t1(myObjLoader);
+	thread t2(Phys);*/
+
+	/*t1.join();
+	t2.join();*/
+	
+
 	glEnable(GL_DEPTH_TEST);
 	// loops until user closes window
 	while (!glfwWindowShouldClose(window))
@@ -182,6 +187,8 @@ int main()
 
 		// poll for and process events ?
 		glfwPollEvents();
+
+		myMemory->LoadInMemory(myShader, Cubemesh, myCamera, myLighting, CubeVirtualObject, myUI, myMeshManager, MeshMesh, Phys, collider);
 
 		
 		myLighting->lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;
@@ -242,7 +249,7 @@ int main()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
-
+	//myMessage->~Message();
 	myMemory->ClearMemory(myShader, Cubemesh, myCamera, myLighting, CubeVirtualObject, myUI, myMeshManager, MeshMesh, Phys, collider);
 	//delete myMemory;
 	glfwTerminate();

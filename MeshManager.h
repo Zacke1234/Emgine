@@ -2,6 +2,7 @@
 
 #include <string>
 #include "vector"
+#include "Message.h"
 #include <map>
 
 class MeshManager
@@ -15,7 +16,13 @@ public:
 //private:
 	static MeshManager* instance; 
 	
+	
+
 	//static void LoadMesh(char* fromPath);
+
+	std::string msg;
+	//Message* message = new Message(msg);
+
 
 	ObjLoader* myObjLoader = new ObjLoader();
 	

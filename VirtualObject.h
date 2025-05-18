@@ -6,7 +6,7 @@
 #include "Camera.h"
 #include "Collider.h"
 #include <vector>
-
+#include <iostream>
 
 
 inline void CheckOpenGLError(const char* stmt, const char* fname, int line)
@@ -45,7 +45,7 @@ public:
 	void SetShader(Shader& aShader);
 	Mesh* CreateMesh();
 	
-
+	
 	
 	void Draw(Camera* aCamera, Shader* myShader);
 	void DrawCube(Camera* aCamera, Shader* myShader);
@@ -68,7 +68,9 @@ public:
 	bool IsCube;
 	bool IsMesh;
 	bool IsTransformValid;
-
+	
+	//std::mutex mtx; can't do mutex in header files
+	//std::thread T1(); can't do thread in header files either
 	glm::mat4 trans;
 	Collider* myCollider;
 	SphereCollider* mySphereColl;

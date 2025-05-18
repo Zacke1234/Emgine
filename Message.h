@@ -1,5 +1,6 @@
-#pragma once
+﻿#pragma once
 #include <string>
+#include "Collider.h"
 #include <glm.hpp>
 
 class Message
@@ -7,24 +8,29 @@ class Message
 
 public:
 
+
 	enum class MessageType {
-		String, // basic type
-		Mouse,
+		String, 
+		Mouse, 
 		FloatMessage,
 		Raycast,
-		Collision
 	};
 
-	MessageType type;
-	
 	std::string msg;
-	Message(MessageType type, std::string msg);
-	virtual ~Message();
-
 	 
+	float FloatMsg;
 
+	Message(MessageType type,std::string msg);
+	MessageType type;
+	virtual ~Message();
 private:
 
+};
+
+class MyManager {
+
+public:
+	void ProcessMessage(Message* message);
 };
 
 class RaycastMessage : public Message {

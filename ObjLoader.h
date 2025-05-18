@@ -1,5 +1,6 @@
 #pragma once
 #include "vector"
+#include "Message.h"
 #include <gtc/matrix_transform.hpp>
 #include <glad.h>
 #include <glfw3.h>
@@ -49,7 +50,9 @@ public:
 	bool ObjParser(std::string fileName, Mesh* mesh);
 	void ParseFaceIndices(const std::string& string, Face& face, int vertexIndex);
 	void MeshTexture(char material[]);
+	void WriteToBinary(std::string fileName, std::ostream& f);
 	//
+	
 	
 	std::vector <Vertex> tmp;
 	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
