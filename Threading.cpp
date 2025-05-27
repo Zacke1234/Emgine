@@ -9,6 +9,7 @@ Threading::Threading() :
 
 void Threading::Run()
 {
+	//std::cout << "hello threading" << std::endl;
 	running = true;
 	auto lastTime = std::chrono::steady_clock::now();
 	while (running)
@@ -25,3 +26,9 @@ void Threading::Run()
 	thread1.join();
 }
 
+void Thread::DoWork(float deltatime)
+{
+	//std::cout << "hello DoWork" << std::endl;
+	//                                                                                                                                                       thread2(*myMeshManager->myObjLoader);
+
+}

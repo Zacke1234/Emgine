@@ -50,10 +50,14 @@ public:
 	bool ObjParser(std::string fileName, Mesh* mesh);
 	void ParseFaceIndices(const std::string& string, Face& face, int vertexIndex);
 	void MeshTexture(char material[]);
-	void WriteToBinary(std::string fileName, std::ostream& f);
+	void WriteToBinary();
+	void ReadFromBinary();
 	//
 	
-	
+	std::string FileName;
+	std::string name;
+	std::string type;
+
 	std::vector <Vertex> tmp;
 	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
 	//std::vector <glm::vec3> temp_vertices; // glm::vec3 

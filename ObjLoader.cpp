@@ -30,6 +30,7 @@ bool ObjLoader::ObjParser(std::string fileName, Mesh* INmesh)
 
 	std::ifstream file(fileName);
 	
+
 	std::vector<Vertex> vertices;
 	std::vector<Face> faces;
 
@@ -86,7 +87,7 @@ bool ObjLoader::ObjParser(std::string fileName, Mesh* INmesh)
 			temp_faces.push_back(face);
 			
 		}
-		if (prefix == "vt") // I gotta read the uv differently here, cause this makes weird values and crashes everything
+		if (prefix == "vt") 
 		{
 			glm::vec2 UV;
 			iss >> UV.x >> UV.y;
@@ -113,16 +114,18 @@ bool ObjLoader::ObjParser(std::string fileName, Mesh* INmesh)
 		
 	}
 
+	
+
 	file.close();
 	
 
-	for (int i = 0; i < temp_faces.size(); i++) // changed this to position instead of face 
+	for (int i = 0; i < temp_faces.size(); i++) 
 	{
 		Face face = temp_faces[i];
 		for (int e = 0; e < 3; e++)
 		{
 			
-			int index = face.positionIndices[e]; // this is probably the cause of the problem
+			int index = face.positionIndices[e]; 
 			
 			
 			if (index == -1)
@@ -133,7 +136,7 @@ bool ObjLoader::ObjParser(std::string fileName, Mesh* INmesh)
 			}
 			else
 			{
-				glm::vec3 position = temp_position[index - 1]; //the index value here is also absurd -858993460
+				glm::vec3 position = temp_position[index - 1]; 
 
 				mesh.data.push_back(position.x);
 				mesh.data.push_back(position.y);
@@ -178,7 +181,8 @@ bool ObjLoader::ObjParser(std::string fileName, Mesh* INmesh)
 		}
 		
 	}
-	
+	/*WriteToBinary(fileName, &file);
+	ReadFromBinary(fileName, *file);*/
 	return true;
 }
 
@@ -231,25 +235,89 @@ void ObjLoader::MeshTexture(char material[])
 	//TextureOfMesh = new Texture(material);
 }
 
-void ObjLoader::WriteToBinary(std::string fileName, std::ostream& f)
+std::ifstream in("./teapot.obj"); // in.txt out.bin | I don't know what else to do with serialisation
+std::ofstream out("./out.bin", std::ios::binary); // does this create a file? Yes, It also changes files cause it can write in them
+
+
+void ObjLoader::WriteToBinary() 
 {
 	size_t size;
+	
+	
+
+
+	//std::ifstream file(FileName);
+
+	/*file.open(FileName, std::ios::binary | std::ios::out);*/
+	if (!out.is_open())
+	{
+		std::cerr << "There is no file for writing" << std::endl;
+
+		//ofstream newFile("binaryFile.bin");
+
+		//exit(1);
+	}
+	else
+	{
+		size = name.size();
+		out.write((char*)&size, sizeof(size_t));
+		out.write((char*)name.c_str(), size);
+		size = type.size();
+		out.write((char*)&size, sizeof(size_t));
+		out.write((char*)type.c_str(), size);
+	}
+
+
+	
+
+}
+
+void ObjLoader::ReadFromBinary()
+{
+	size_t size = 0;
 	char* data;
-	std::ifstream file(fileName);
-	if (f)
+	//in.open("./teapot.obj");
+	
+	double d = 0;
+	while (in >> d)
 	{
 
+		out.write((char*)&d, sizeof d);
 	}
-	// we need to store the data 
-	// 
-	// also I need to first check if there is a file to write too first.
-	f.write((char*)&size, sizeof(size));
-	data = new char[size + 1];
-	f.write(data, size);
-	data[size] = '\0';
-	//type = data;
-	delete data;
+
+	if (!in.is_open())
+	{
+ 		std::cerr << "There is no file for reading" << std::endl;
+
+		
+		
+	}
+
+	else
+	{
+		in.read((char*)&size, sizeof(size));
+		data = new char[size + 1];
+		in.read(data, size);
+		data[size] = '\0';
+		name = data;
+		delete data;
+
+		in.read((char*)&size, sizeof(size));
+		data = new char[size + 1];
+		in.read(data, size);
+		data[size] = '\0';
+		type = data;
+		delete data;
+	}
+	
+	
+
+	
+
+
 }
+
+
 
 void Mesh::InitialiseMesh()
 {

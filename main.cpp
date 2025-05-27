@@ -41,12 +41,14 @@ using namespace std;
 
 int main()
 {
+	
+
 	string message = "Empty";
 	//Message* myMessage = new Message(message); //Enmuerations don't have constructors
 	//myMessage->SendMessage(message, myMessage->type);
 	/*char* imageFile;*/
 	
-	thread t1();
+	//thread t1();
 	if (!glfwInit())
 	{
 		message = "Failed to initialize glfw";
@@ -82,7 +84,9 @@ int main()
 	
 	
 	//myMemory->T1();
-	Threading* myThread{};
+	Threading* myThread;
+
+	
 	
 	Shader* myShader = new Shader("../Shader/VertexShader_1.glsl" ,"../Shader/FragmentShader_1.glsl");
 	Lighting* myLighting = new Lighting();
@@ -98,6 +102,11 @@ int main()
 	
 	UI* myUI = new UI(window);
 	ObjLoader* myObjLoader = new ObjLoader();
+	
+	Thread thread;
+
+	//myThread = &thread;
+
 
 	Physics* Phys = new Physics();
 
@@ -123,11 +132,15 @@ int main()
 
 	Cube* Cubemesh = myMeshManager->LoadCube();
 	
-	Mesh* MeshMesh = myMeshManager->LoadMesh("./fish.obj"); // cacheing happens here when it also loads the meshes in.
-	//MeshMesh->InitialiseMesh();
+	Mesh* MeshMesh = myMeshManager->LoadMesh("./teapot.obj"); // cacheing happens here when it also loads the meshes in.
+												
 	VirtualObject* VirtualObjectMesh{};
 	VirtualObject* CubeVirtualObject{};
 	VirtualObject* PlaneVirtualObject{};
+
+	myObjLoader->ReadFromBinary();
+	myObjLoader->WriteToBinary();
+	
 
 	CubeVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name2, cubeColl);
 	PlaneVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name3, planeColl);
@@ -140,7 +153,7 @@ int main()
 	VirtualObject::Entities.push_back(CubeVirtualObject);
 	VirtualObject::Entities.push_back(PlaneVirtualObject);
 
-	std::shared_ptr<Mesh> TeapotMesh = std::make_shared<Mesh>();
+	// std::shared_ptr<Mesh> TeapotMesh = std::make_shared<Mesh>();
 	
 	while (VirtualObject::Entities.size() < 5) 
 	{
@@ -200,6 +213,9 @@ int main()
 			deltatime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 		}
+		
+		//myThread->DoWork(deltatime);
+
 		myShader->UseShader();
 		
 		myUI->RenderUI(myShader);
