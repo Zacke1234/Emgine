@@ -44,14 +44,16 @@ int main()
 	
 
 	string message = "Empty";
-	//Message* myMessage = new Message(message); //Enmuerations don't have constructors
+	Message* myMessage = new Message(message); //Enmuerations don't have constructors
 	//myMessage->SendMessage(message, myMessage->type);
 	/*char* imageFile;*/
-	
+	MyManager* myManager = new MyManager();
+	//myManager->ProcessMessage(message);
 	//thread t1();
 	if (!glfwInit())
 	{
-		message = "Failed to initialize glfw";
+		
+		std::cout << "Failed to initialize glfw" << endl;
 		//myMessage->SendMessage(message, 0);
 		return -1;
 	}
@@ -60,7 +62,7 @@ int main()
 	GLFWwindow* window;
 	window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Emgine", NULL, NULL);
 
-	 
+	
 	//std::cout << "" + a << std::endl;
 	
 	if (!window) 
@@ -73,8 +75,8 @@ int main()
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
-		message = "Failed to initialize GLAD";
-		
+		//message = "Failed to initialize GLAD";
+		std::cout << "Failed to initialize GLAD" << endl;
 		return -1;
 	}
 
@@ -84,7 +86,7 @@ int main()
 	
 	
 	//myMemory->T1();
-	Threading* myThread;
+	Threading* myThread = new Thread();
 
 	
 	
@@ -103,7 +105,7 @@ int main()
 	UI* myUI = new UI(window);
 	ObjLoader* myObjLoader = new ObjLoader();
 	
-	Thread thread;
+	//Thread thread;
 
 	//myThread = &thread;
 
@@ -197,15 +199,14 @@ int main()
 		GL_CHECK(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
 
 		
-
+		//myThread->DoWork(deltatime);
 		// poll for and process events ?
 		glfwPollEvents();
 
 		myMemory->LoadInMemory(myShader, Cubemesh, myCamera, myLighting, CubeVirtualObject, myUI, myMeshManager, MeshMesh, Phys, collider);
 
 		
-		myLighting->lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;
-		myLighting->lightPos.y = (glfwGetTime() / 2.0f) * 1.0f;
+		
 		
 		if (Phys->TimeTicking)
 		{
@@ -214,7 +215,7 @@ int main()
 			lastFrame = currentFrame;
 		}
 		
-		//myThread->DoWork(deltatime);
+		myThread->DoWork(deltatime);
 
 		myShader->UseShader();
 		

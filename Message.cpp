@@ -59,12 +59,12 @@ void MyManager::ProcessMessage(Message* message)
 	switch (message->GetMessageType())
 	{
 	case Message::MessageType::String:
-		if (msg == "ObjParser") {
-			
+		if (msg == "ObjLoaderStart") {
+			std::cout << msg << endl;
 		}
-		else if (msg == "ObjParserStop")
+		else if (msg == "ObjLoaderStop")
 		{
-			
+			std::cout << msg << endl;
 		}
 		break;
 

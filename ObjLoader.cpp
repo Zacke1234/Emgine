@@ -18,6 +18,10 @@ ObjLoader::ObjLoader()
 bool runOnce = false;
 bool ObjLoader::ObjParser(std::string fileName, Mesh* INmesh)
 {
+	string message = "ObjLoaderStart";
+	Message* mess = new Message(message);
+	
+	
 	if (INmesh == nullptr)
 	{
 		return false;

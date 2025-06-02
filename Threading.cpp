@@ -28,7 +28,8 @@ void Threading::Run()
 
 void Thread::DoWork(float deltatime)
 {
+	mtx2.lock();
 	//std::cout << "hello DoWork" << std::endl;
-	//                                                                                                                                                       thread2(*myMeshManager->myObjLoader);
-
+	                                                                                                           thread2(*myMeshManager->myObjLoader);
+	mtx2.unlock();
 }
