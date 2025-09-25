@@ -10,6 +10,7 @@ float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
 
 Texture::Texture(const char* aPath)
 {
+	msg = "";
 	//std::cout << "texture" << "\n";
 	//aPath = "Default 1.png";
 	int Channels = 0;

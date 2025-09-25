@@ -4,10 +4,12 @@
 #include "vector"
 #include "Message.h"
 #include <map>
+#include "Cube.h"
 
 class MeshManager
 {
-
+	
+	
 public:
 	MeshManager();
 	~MeshManager();
@@ -16,7 +18,8 @@ public:
 //private:
 	static MeshManager* instance; 
 	
-	
+	/*MessageQueueComponent1* c1 = new MessageQueueComponent1;
+	MessageQueueComponent2* c2 = new MessageQueueComponent2;*/
 
 	//static void LoadMesh(char* fromPath);
 

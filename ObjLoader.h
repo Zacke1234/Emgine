@@ -6,7 +6,9 @@
 #include <glfw3.h>
 #include <iostream>
 #include <list>
+#include "fstream"
 #include <vec3.hpp>
+
 
 
 #pragma once
@@ -46,15 +48,17 @@ public:
 class ObjLoader
 {
 public:
+	
 	ObjLoader();
 	bool ObjParser(std::string fileName, Mesh* mesh);
 	void ParseFaceIndices(const std::string& string, Face& face, int vertexIndex);
 	void MeshTexture(char material[]);
-	void WriteToBinary();
-	void ReadFromBinary();
-	//
+	void WriteToBinary(std::ostream& f);
+	void ReadFromBinary(std::istream& f);
 	
-	std::string FileName;
+	MessageQueueComponent1* c1 = new MessageQueueComponent1;
+	MessageQueueComponent2* c2 = new MessageQueueComponent2;
+
 	std::string name;
 	std::string type;
 
@@ -67,5 +71,18 @@ public:
 	std::vector<Face> temp_faces;
 	std::vector<glm::vec3> temp_position;
 	std::string face_result;
+};
+
+class BinaryFile
+{
+private:
+	std::string FileName;
+	std::fstream File;
+public:
+	BinaryFile(std::string FileName) : FileName(FileName) {};
+	void WriteFile();
+
+	void ReadFile();
+	
 };
 

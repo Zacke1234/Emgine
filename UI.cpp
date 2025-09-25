@@ -8,6 +8,7 @@
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_glfw.h>
 #include <iostream>
+#pragma once
 
 
 UI::UI(GLFWwindow* window) // unitilized
@@ -17,11 +18,21 @@ UI::UI(GLFWwindow* window) // unitilized
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	/*io.ConfigFlags |= ImGuiViewportFlags_None;
+	io.ConfigFlags |= ImGuiConfigFlags_None;
+	
+	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+	}*/
+	
 	//camera = new Camera();
 	ImGui::StyleColorsDark();
-	ImGui_ImplGlfw_InitForOpenGL(window, true); // changing this to false makes the hover over highlight effect work on the button, but I still
+	//ImGui_ImplGlfw_InitForOpenGL(window, true); // changing this to false makes the hover over highlight effect work on the button, but I still
 	// can't interact with it, nvm fixed all of this now
 	ImGui_ImplOpenGL3_Init("#version 330");
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	
 }
 
@@ -32,9 +43,11 @@ void UI::RenderUI(Shader* shader)
 	glm::vec3 scale = { 1,1,1 };
 	SphereCollider* sphereColl = new SphereCollider(center, radius, pos);
 	CubeCollider* cubeColl = new CubeCollider(center, extents, pos);
+	
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
+	//ImGui::NewFrame();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	ImGui::Begin("Emgine Properties");
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
@@ -55,7 +68,7 @@ void UI::RenderUI(Shader* shader)
 	textureFile = ImGui::InputText("texture file", buf, sizeof(buf) - 1);  // does not work as intended
 	name = ImGui::InputText("Name", buf2, sizeof(buf2) - 1);
 	charMesh = ImGui::InputText("Mesh", buf_Mesh, sizeof(buf_Mesh) - 1); // not yet implemented
-	
+
 	ImGui::InputFloat("Field of view", &fov, 1.0f, 1.0f, "%.2f");
 
 	ImGui::InputFloat("Camera sensitivity", &sens, 0.1f, 1.0f, "%.2f");
@@ -63,35 +76,35 @@ void UI::RenderUI(Shader* shader)
 
 	//ImGui::Text("Change camera speed");
 	//ImGui::InputFloat("Camera speed", &speed, 1.0f, 1.0f, "%.1f"); // supposed to change speed of camera cause
-	
+
 	// Implement a Camera class and UI to configure it for rendering your scene
 
 	if (ImGui::Button("Create new mesh"))
 	{
 		VirtualObject* meshObj = new VirtualObject();
-		
+
 		texture = new Texture(buf);
 		newCollider = new Collider();
 		/*meshmang = new MeshManager();
 		mesh = new Mesh();*/
-		
 
-		
-		
+
+
+
 		if (textureFile == '\0')
 		{
 			texture = new Texture("Default 1.png");
 		}
-		
+
 		meshObj->SetTexture(*texture);
 		//mesh = meshmang->LoadMesh("fish.obj");
 		mesh = MeshManager::Get().LoadMesh("./fish.obj");
 		if (mesh != nullptr)
 		{
-			
+
 			meshObj->SetMesh(*mesh);
 		}
-		
+
 		//meshObj->CreateMesh();
 
 		meshObj->Position = glm::vec3(1, 1, 1);
@@ -109,45 +122,45 @@ void UI::RenderUI(Shader* shader)
 		VirtualObject::Entities.push_back(meshObj);
 	}
 
-	if (ImGui::Button("Create new cube")) 
+	if (ImGui::Button("Create new cube"))
 	{
 		glm::vec3 center = { 0, 0,0 };
 		glm::vec3 extents = { 0,0,0 };
 		//mesh = new Mesh();
 		VirtualObject* CubeObj = new VirtualObject();
-		texture = new Texture(buf);	
+		texture = new Texture(buf);
 		newCollider = new Collider();
-	
+
 		CubeObj->IsCube = true;
 		CubeObj->IsMesh = false;
-		if (textureFile == '\0') 
+		if (textureFile == '\0')
 		{
 			texture = new Texture("Default 1.png");
 		}
-		
-		
+
+
 		CubeObj->SetTexture(*texture);
-		
+
 		CubeObj->SetCube(*MeshManager::Get().LoadCube());
 		CubeObj->Position = glm::vec3(1, 1, 1);
 		CubeObj->Scale = glm::vec3(1, 1, 1);
 		CubeObj->SetShader(*shader);
-		
+
 		CubeObj->SetName(buf2);
-		
+
 		CubeObj->myCollider = newCollider;
 		newCollider->isKinematic = true;
-		
+
 		if (name == '\0')
 		{
 			CubeObj->SetName("Cube");
 		}
 		VirtualObject::Entities.push_back(CubeObj);
-		
+
 	}
-	 // cubeCollider->isKinematic;
-	
-	//ImGui::Text("IsKinematic", &check);
+	// cubeCollider->isKinematic;
+
+   //ImGui::Text("IsKinematic", &check);
 	if (ImGui::Checkbox("Is kinematic", &check)) // a bit jank
 	{
 		VirtualObject::Entities[VirtualObject::SelectedEntity]->myCollider->isKinematic = check;
@@ -160,7 +173,7 @@ void UI::RenderUI(Shader* shader)
 
 		VirtualObject::Entities[VirtualObject::SelectedEntity]->SetTexture(*texture);
 	}
-	   
+
 	if (ImGui::Button("Change name"))
 	{
 		VirtualObject::Entities[VirtualObject::SelectedEntity]->SetName(buf2);
@@ -168,13 +181,13 @@ void UI::RenderUI(Shader* shader)
 
 	if (ImGui::Button("Play"))
 	{
-		
+
 	}
-	
+
 	ImGui::Text("Mesh Manager");
 	int n = sizeof(virtobj->Entities);
 
-	
+
 
 	float value = 0;
 
@@ -183,7 +196,7 @@ void UI::RenderUI(Shader* shader)
 		ImGui::PushID(i);
 		if (ImGui::Button(VirtualObject::Entities[i]->namn.c_str()))
 		{
-			
+
 			VirtualObject::SelectedEntity = i;
 			printf(R"(%d )", VirtualObject::SelectedEntity);
 			xPos = VirtualObject::Entities[i]->Position[0];
@@ -203,9 +216,9 @@ void UI::RenderUI(Shader* shader)
 		ImGui::PopID();
 	}
 	//ImGui::InputText("texture file", buf, sizeof(buf) - 1);
-	
+
 	ImGui::Text("");
-	
+
 	ImGui::InputFloat("X pos", &xPos, step, step_fast);
 	ImGui::InputFloat("Y pos", &yPos, step, step_fast);
 	ImGui::InputFloat("Z pos", &zPos, step, step_fast);
@@ -218,4 +231,11 @@ void UI::RenderUI(Shader* shader)
 	ImGui::InputFloat("Y scale", &yScale, step, step_fast);
 	ImGui::InputFloat("Z scale", &zScale, step, step_fast);
 	
+	//ImGui_ImplGlfw_Shutdown();
+	ImGui::End();
+	ImGui::EndFrame();; 
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	//glfwSwapBuffers(window);
+	glfwPollEvents();
 }

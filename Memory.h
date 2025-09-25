@@ -35,7 +35,7 @@ public:
 	UI* myUI,
 	MeshManager* myMeshManager,
 	Mesh* ObjLoader,
-	Physics* myPhysics,
+	//Physics* myPhysics,
 	Collider* myCollider);
 
 	void LoadInMemory(Shader* myShader,
@@ -46,7 +46,7 @@ public:
 		UI* myUI,
 		MeshManager* myMeshManager,
 		Mesh* ObjLoader,
-		Physics* myPhysics,
+		//Physics* myPhysics,
 		Collider* myCollider);
 private:
 	Shader* myShader;

@@ -124,7 +124,7 @@ void Camera::ProcessInput(GLFWwindow* window)
 
 void Camera::Mouse_Callback(GLFWwindow* window, double xpos, double ypos)
 {
-	ImGui_ImplGlfw_CursorPosCallback(window, xpos, ypos); //this was the fix to the mouse input not working with the imgui
+ 	ImGui_ImplGlfw_CursorPosCallback(window, xpos, ypos); //this was the fix to the mouse input not working with the imgui
 	lastX = xpos;
 	lastY = ypos;
 }

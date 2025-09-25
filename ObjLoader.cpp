@@ -2,14 +2,22 @@
 #include "ObjLoader.h"
 #include <iostream>
 #include <sstream>
+#include <filesystem>
 #include "Texture.h"
 #include "VirtualObject.h"
+#include "MeshManager.h"
 using namespace std;
 
 // do breakpoints
 
 ObjLoader::ObjLoader()
 {
+	
+
+	std::cout << "\n";
+	std::cout << "Client triggers operation 4 (objLoader)" << "\n";
+	//c1->PerformMessage1();
+	//c2->PerformMessage2();
 	
 }
 
@@ -19,7 +27,7 @@ bool runOnce = false;
 bool ObjLoader::ObjParser(std::string fileName, Mesh* INmesh)
 {
 	string message = "ObjLoaderStart";
-	Message* mess = new Message(message);
+	//Message* mess = new Message(message);
 	
 	
 	if (INmesh == nullptr)
@@ -175,7 +183,7 @@ bool ObjLoader::ObjParser(std::string fileName, Mesh* INmesh)
 			}
 			else
 			{
-				glm::vec2 uv = temp_uvs[index - 1];
+   				glm::vec2 uv = temp_uvs[index - 1];
 				mesh.data.push_back(uv.x);
 				mesh.data.push_back(uv.y);
 			}
@@ -207,7 +215,7 @@ void ObjLoader::ParseFaceIndices(const std::string& string, Face& face, int vert
 {
 	
 	/*auto foundIndex = string.find('/');
-	face_result = string.substr(0, foundIndex);*/
+	face_result = string.substr  (0, foundIndex);*/
 
 	char del = '/';
 
@@ -239,85 +247,61 @@ void ObjLoader::MeshTexture(char material[])
 	//TextureOfMesh = new Texture(material);
 }
 
-std::ifstream in("./teapot.obj"); // in.txt out.bin | I don't know what else to do with serialisation
-std::ofstream out("./out.bin", std::ios::binary); // does this create a file? Yes, It also changes files cause it can write in them
+//std::ifstream in("./out.bin", std::ios::binary); // in.txt out.bin | I don't know what else to do with serialisation
+//std::ofstream out("./fish.obj"); // does this create a file? Yes, It can't write anything though
 
-
-void ObjLoader::WriteToBinary() 
+filesystem::path filePath = "./fish.obj";
+size_t fileSize = filesystem::file_size(filePath);
+void ObjLoader::WriteToBinary(std::ostream& f)
 {
-	size_t size;
 	
 	
-
-
-	//std::ifstream file(FileName);
-
-	/*file.open(FileName, std::ios::binary | std::ios::out);*/
-	if (!out.is_open())
+	
+	std::cerr << "Write to binary" << std::endl;
+	fileSize = name.size(); // <Invalid characters in string> error
+	/*for (int i = 0; i < fileSize; ++i)
 	{
-		std::cerr << "There is no file for writing" << std::endl;
-
-		//ofstream newFile("binaryFile.bin");
-
-		//exit(1);
-	}
-	else
-	{
-		size = name.size();
-		out.write((char*)&size, sizeof(size_t));
-		out.write((char*)name.c_str(), size);
-		size = type.size();
-		out.write((char*)&size, sizeof(size_t));
-		out.write((char*)type.c_str(), size);
-	}
-
+		cout << bitset<8>(fileSize[&i]) << endl;
+	}*/
+	f.write((char*)&fileSize, sizeof(size_t));
+	f.write((char*)name.c_str(), fileSize);
+	fileSize = type.size();
+	f.write((char*)&fileSize, sizeof(size_t));
+	f.write((char*)type.c_str(), fileSize);
+	
+	std::cerr << name << std::endl;
+	
 
 	
 
 }
 
-void ObjLoader::ReadFromBinary()
+void ObjLoader::ReadFromBinary(std::istream& f)
 {
-	size_t size = 0;
-	char* data;
-	//in.open("./teapot.obj");
 	
-	double d = 0;
-	while (in >> d)
-	{
-
-		out.write((char*)&d, sizeof d);
-	}
-
-	if (!in.is_open())
-	{
- 		std::cerr << "There is no file for reading" << std::endl;
-
-		
-		
-	}
-
-	else
-	{
-		in.read((char*)&size, sizeof(size));
-		data = new char[size + 1];
-		in.read(data, size);
-		data[size] = '\0';
-		name = data;
-		delete data;
-
-		in.read((char*)&size, sizeof(size));
-		data = new char[size + 1];
-		in.read(data, size);
-		data[size] = '\0';
-		type = data;
-		delete data;
-	}
+	char *data;
 	
+	std::cerr << "read from binary" << std::endl;
+
+	//f.read((char*)&fileSize, sizeof(fileSize));// This would cause an unhandled exception.
+	data = new char[fileSize + 1];
+	f.read(data, fileSize);
+	data[fileSize] = '\0';
+	name = data;    
+	delete data; 
+
+	f.read((char*)&fileSize, sizeof(fileSize));
+	data = new char[fileSize + 1];
+	f.read(data, fileSize);
+	data[fileSize] = '\0';
+	type = data;
+
+	//std::cerr << data << std::endl;
+	delete data; // memory clearing
+
 	
 
 	
-
 
 }
 
@@ -352,4 +336,26 @@ void Mesh::InitialiseMesh()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	
 	glBindVertexArray(0);
+}
+ObjLoader obj;
+void BinaryFile::WriteFile() {
+	File.open(FileName, std::ios::binary | std::ios::out);
+	if (!File)
+	{
+		std::cerr << "File error" << FileName << ">\n";
+		exit(1);
+	}
+	obj.WriteToBinary(File);
+	File.close();
+}
+
+void BinaryFile::ReadFile() { 
+	File.open(FileName, std::ios::binary | std::ios::in);
+	if (!File)
+	{
+		std::cerr << "File error" << FileName << ">\n";
+		exit(1);
+	}
+	obj.ReadFromBinary(File);
+	File.close();
 }

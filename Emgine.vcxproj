@@ -147,12 +147,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\Downloads\imgui-master\imgui-master\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="..\..\..\..\Downloads\imgui-master\imgui-master\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="..\..\..\..\Downloads\imgui-master\imgui-master\imgui.cpp" />
     <ClCompile Include="..\Dependencies\glad\glad.c" />
-    <ClCompile Include="..\imgui\imgui.cpp" />
     <ClCompile Include="..\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\imgui\imgui_impl_glfw.cpp" />
-    <ClCompile Include="..\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="..\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -164,8 +164,10 @@
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="MeshManager.cpp" />
     <ClCompile Include="Message.cpp" />
+    <ClCompile Include="MessageUI.cpp" />
     <ClCompile Include="ObjLoader.cpp" />
     <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="Rigidbody.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -180,6 +182,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Downloads\imgui-docking\imgui-docking\backends\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="..\..\..\..\Downloads\imgui-master\imgui-master\backends\imgui_impl_glfw.h" />
+    <ClInclude Include="..\..\..\..\Downloads\imgui-master\imgui-master\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="..\..\..\..\Downloads\imgui-master\imgui-master\imgui.h" />
     <ClInclude Include="..\Dependencies\GLFW\include\glfw3.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -187,10 +193,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\imgui\imconfig.h" />
-    <ClInclude Include="..\imgui\imgui.h" />
-    <ClInclude Include="..\imgui\imgui_impl_glfw.h" />
-    <ClInclude Include="..\imgui\imgui_impl_opengl3.h" />
-    <ClInclude Include="..\imgui\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="..\imgui\imgui_internal.h" />
     <ClInclude Include="..\imgui\imstb_rectpack.h" />
     <ClInclude Include="..\imgui\imstb_textedit.h" />
@@ -202,8 +204,10 @@
     <ClInclude Include="Memory.h" />
     <ClInclude Include="MeshManager.h" />
     <ClInclude Include="Message.h" />
+    <ClInclude Include="MessageUI.h" />
     <ClInclude Include="ObjLoader.h" />
     <ClInclude Include="Physics.h" />
+    <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Threading.h" />
@@ -212,6 +216,9 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\Dependencies\GLFW\lib-vc2022\glfw3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgui\imgui.ini" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

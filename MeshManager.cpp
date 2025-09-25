@@ -1,14 +1,25 @@
 
 #include "Cube.h"
+//#include "Message.h"
 #include <cassert>
 #include "MeshManager.h"
+
 #pragma once
 MeshManager* MeshManager::instance = nullptr;
 //VirtualObject* MeshManager::instance = nullptr; 
 //Cube* cube = new Cube();
 MeshManager::MeshManager()
 {
+	MessageQueueComponent1* c1 = new MessageQueueComponent1;
+	MessageQueueComponent2* c2 = new MessageQueueComponent2;
+	ConcreteMessage* message = new ConcreteMessage(c1, c2);
+	std::cout << "Client triggers operation 1 (meshManager)" << "\n";
+	c1->PerformMessage1();
+	c2->PerformMessage4();
+	// the order of all the calls and class calls matters alot 
 	
+	
+
 	// Ensure mesh is bufffered before rendered
 }
 

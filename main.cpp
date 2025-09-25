@@ -10,13 +10,11 @@
 #include "Cube.h"
 #include "Camera.h"
 #include "Lighting.h"
-
-
+#include "string"
 #include <cstdlib>
 #include <gtc/matrix_transform.hpp>
 #include <vector>
 #include <string>
-
 #include "VirtualObject.h"
 #include "UI.h"
 #include "MeshManager.h"
@@ -31,8 +29,6 @@
 #include <mutex>
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-unsigned int fp_Currentstate;
-unsigned int fp_control_state = _controlfp_s(&fp_Currentstate ,_EM_INEXACT, _MCW_EM);
 
 
 
@@ -42,14 +38,10 @@ using namespace std;
 int main()
 {
 	
-
-	string message = "Empty";
-	Message* myMessage = new Message(message); //Enmuerations don't have constructors
-	//myMessage->SendMessage(message, myMessage->type);
-	/*char* imageFile;*/
-	MyManager* myManager = new MyManager();
-	//myManager->ProcessMessage(message);
-	//thread t1();
+	
+	
+	
+	
 	if (!glfwInit())
 	{
 		
@@ -72,6 +64,7 @@ int main()
 	}
 	
 	glfwMakeContextCurrent(window);
+	
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -86,10 +79,21 @@ int main()
 	
 	
 	//myMemory->T1();
-	Threading* myThread = new Thread();
+	//thread thread1;
+	Threading* myThread = new Thread(); 
+	/*std::thread t1(myThread);
+	t1.join();*/
+	//Threading::thread1(myThread->DoWork);
+	
+	/*std::thread t1(test);
+	
+	std::thread t2(test);
+	t1.join();
+	t2.join();
+	std::cout << number;*/
+	
+	//MessageUI* messageUI = new MessageUI(window);
 
-	
-	
 	Shader* myShader = new Shader("../Shader/VertexShader_1.glsl" ,"../Shader/FragmentShader_1.glsl");
 	Lighting* myLighting = new Lighting();
 	
@@ -101,16 +105,22 @@ int main()
 	MeshManager::Allocate();
 	MeshManager* myMeshManager = &MeshManager::Get(); // the mesh manager, it also caches my meshes.
 
+	/*Message* myMessage;
+	string test = "test";
+	myMessage->Notify();*/
 	
-	UI* myUI = new UI(window);
+	
 	ObjLoader* myObjLoader = new ObjLoader();
 	
+	UI* myUI = new UI(window);
+
 	//Thread thread;
+	//thread1.join();
 
-	//myThread = &thread;
+	//myThread = &thread   ;
 
 
-	Physics* Phys = new Physics();
+	//Physics* Phys = new Physics();
 
 	
 
@@ -134,14 +144,25 @@ int main()
 
 	Cube* Cubemesh = myMeshManager->LoadCube();
 	
-	Mesh* MeshMesh = myMeshManager->LoadMesh("./teapot.obj"); // cacheing happens here when it also loads the meshes in.
-												
+	Mesh* MeshMesh = myMeshManager->LoadMesh("./out.bin"); // cacheing happens here when it also loads the meshes in.
+	// teapot mesh looks weird at the handle				
+
 	VirtualObject* VirtualObjectMesh{};
 	VirtualObject* CubeVirtualObject{};
 	VirtualObject* PlaneVirtualObject{};
+	
+	BinaryFile bin("./out.bin");
+	//bin.ReadFile();
+	//bin.WriteFile();
 
-	myObjLoader->ReadFromBinary();
-	myObjLoader->WriteToBinary();
+	ofstream write("./out.bin", std::ios::binary); // ./out.bin
+	ifstream read("./fish.obj");
+
+	myObjLoader->ReadFromBinary(read);
+	myObjLoader->WriteToBinary(write);
+	
+	write.close();
+	read.close();
 	
 
 	CubeVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name2, cubeColl);
@@ -155,7 +176,6 @@ int main()
 	VirtualObject::Entities.push_back(CubeVirtualObject);
 	VirtualObject::Entities.push_back(PlaneVirtualObject);
 
-	// std::shared_ptr<Mesh> TeapotMesh = std::make_shared<Mesh>();
 	
 	while (VirtualObject::Entities.size() < 5) 
 	{
@@ -181,6 +201,9 @@ int main()
 
 	myCamera->myPosition = glm::vec3(0, 3, 0);
 
+	
+	//ConcreteMessage* message = new ConcreteMessage(myObjLoader->c1, myMeshManager->c2);
+
 	Memory* myMemory = new Memory();
 	myMemory->HasMemoryAvailable(megaBytes);
 	/*thread t1(myObjLoader);
@@ -203,29 +226,30 @@ int main()
 		// poll for and process events ?
 		glfwPollEvents();
 
-		myMemory->LoadInMemory(myShader, Cubemesh, myCamera, myLighting, CubeVirtualObject, myUI, myMeshManager, MeshMesh, Phys, collider);
+		myMemory->LoadInMemory(myShader, Cubemesh, myCamera, myLighting, CubeVirtualObject, myUI, myMeshManager, MeshMesh, collider);
 
 		
 		
 		
-		if (Phys->TimeTicking)
+		/*if (Phys->TimeTicking)
 		{
 			double currentFrame = glfwGetTime();
 			deltatime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
-		}
+		}*/
 		
-		myThread->DoWork(deltatime);
+		
 
 		myShader->UseShader();
 		
-		myUI->RenderUI(myShader);
+		
+		//messageUI->RenderUI();
 
 		
 		
 		myLighting->Use(myCamera, myShader);
 
-		Phys->Simulate(deltatime);
+		
 		
 		for (auto& o : VirtualObject::Entities)
 		{
@@ -233,7 +257,7 @@ int main()
 			o->Draw(myCamera, myShader); // draws the cubes
 			
 		}
-
+		myUI->RenderUI(myShader);
 		
 		 
 		
@@ -250,10 +274,10 @@ int main()
 		myCamera->fieldOfView = myUI->fov;
 		myCamera->sensitivity = myUI->sens;
 
-		ImGui::End();
+		/*ImGui::End();
 
 		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());*/
 
 
 		// swaps front and back buffers
@@ -267,7 +291,7 @@ int main()
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 	//myMessage->~Message();
-	myMemory->ClearMemory(myShader, Cubemesh, myCamera, myLighting, CubeVirtualObject, myUI, myMeshManager, MeshMesh, Phys, collider);
+	myMemory->ClearMemory(myShader, Cubemesh, myCamera, myLighting, CubeVirtualObject, myUI, myMeshManager, MeshMesh, collider);
 	//delete myMemory;
 	glfwTerminate();
 	//std::cout << "hello engime" << std::endl;
