@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include "imgui.h"
-
 #include <iostream>
 #include <glad.h>
 #include <glfw3.h>
@@ -15,7 +14,7 @@
 #include <gtc/matrix_transform.hpp>
 #include <vector>
 #include <string>
-#include "VirtualObject.h"
+#include "Object.h"
 #include "UI.h"
 #include "MeshManager.h"
 #include "ObjLoader.h"
@@ -24,6 +23,7 @@
 #include "Collider.h"
 #include "Message.h"
 #include "Threading.h"
+#include "Observer.h"
 #include <float.h>
 #include <thread>
 #include <mutex>
@@ -34,6 +34,36 @@
 
 using namespace std;
 #pragma once
+
+
+
+
+int update_camera(Camera* cam, UI* myUI, GLFWwindow* window)
+{
+	cam->ProcessInput(window);
+	cam->CameraUpdate(window);
+	cam->fieldOfView = myUI->fov;
+	cam->sensitivity = myUI->sens;
+	return 0;
+}
+int update_ui(UI* myUI, Shader* myShader)
+{
+	myUI->RenderUI(myShader);
+	Object::Entities[Object::SelectedEntity]->Position = glm::vec3(myUI->xPos, myUI->yPos, myUI->zPos);
+	Object::Entities[Object::SelectedEntity]->Rotation = glm::vec3(
+		glm::radians(myUI->xRot),
+		glm::radians(myUI->yRot),
+		glm::radians(myUI->zRot));
+	Object::Entities[Object::SelectedEntity]->Scale = glm::vec3(myUI->xScale, myUI->yScale, myUI->zScale);
+	return 0;
+}
+int update_meshes(Cube* cubeMesh, Mesh* myMesh, CubeCollider* cubeColl) {
+	
+	
+	return 0;
+}
+
+ 
 
 int main()
 {
@@ -94,14 +124,23 @@ int main()
 	
 	//MessageUI* messageUI = new MessageUI(window);
 
+
+	//init shader/lighting
 	Shader* myShader = new Shader("../Shader/VertexShader_1.glsl" ,"../Shader/FragmentShader_1.glsl");
 	Lighting* myLighting = new Lighting();
 	
+	//init camera
 	Camera* myCamera = new Camera();
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, myCamera->Mouse_Callback);
+
+	//loading Textures
 	Texture* wallTex = new Texture("wall.jpg");
 	Texture* myTexture = new Texture("Default 1.png");
+	//load_textures();
 	
 
+	//init meshmanager
 	MeshManager::Allocate();
 	MeshManager* myMeshManager = &MeshManager::Get(); // the mesh manager, it also caches my meshes.
 
@@ -120,18 +159,23 @@ int main()
 	//myThread = &thread   ;
 
 
-	//Physics* Phys = new Physics();
+	Physics* Phys = new Physics();
+
+	Observer* Observe = new Observer();
+	Subject* subject = new Subject();
+	
+	Output output;
+	subject->Attach(Observe);
+	string message = "Test";
+	/*Observe->Update(message);
+	subject->Notify();*/
+
 
 	
-
 	
 	
-	string name = "Mesh";
-	string name2 = "Cube";
-	string name3 = "Plane";
 	
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPosCallback(window, myCamera->Mouse_Callback);
+	
 
 	glm::vec3 extents = { myUI->xScale / 2, myUI->yScale / 2, myUI->zScale / 2};
 	glm::vec3 extentsPlane = { 7 / 2, 0.5f / 2, 7 / 2};
@@ -144,19 +188,19 @@ int main()
 
 	Cube* Cubemesh = myMeshManager->LoadCube();
 	
-	Mesh* MeshMesh = myMeshManager->LoadMesh("./out.bin"); // cacheing happens here when it also loads the meshes in.
+	Mesh* MeshMesh = myMeshManager->LoadMesh("out.bin"); // cacheing happens here when it also loads the meshes in.
 	// teapot mesh looks weird at the handle				
 
-	VirtualObject* VirtualObjectMesh{};
-	VirtualObject* CubeVirtualObject{};
-	VirtualObject* PlaneVirtualObject{};
+	Object* ObjectMesh{};
+	Object* CubeObject{};
+	Object* PlaneObject{};
 	
-	BinaryFile bin("./out.bin");
+	BinaryFile bin("out.bin");
 	//bin.ReadFile();
 	//bin.WriteFile();
 
-	ofstream write("./out.bin", std::ios::binary); // ./out.bin
-	ifstream read("./fish.obj");
+	ofstream write("out.bin", std::ios::binary); // ./out.bin
+	ifstream read("fish.obj");
 
 	myObjLoader->ReadFromBinary(read);
 	myObjLoader->WriteToBinary(write);
@@ -164,30 +208,34 @@ int main()
 	write.close();
 	read.close();
 	
+	string name = "Mesh";
+	string name2 = "Cube";
+	string name3 = "Plane";
 
-	CubeVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name2, cubeColl);
-	PlaneVirtualObject = new VirtualObject(Cubemesh, myTexture, myShader, name3, planeColl);
+	CubeObject = new Object(Cubemesh, myTexture, myShader, name2, cubeColl);
+	PlaneObject = new Object(Cubemesh, myTexture, myShader, name3, planeColl);
 
+	//update_meshes();
 
-	PlaneVirtualObject->myCollider->isKinematic = true;
-	PlaneVirtualObject->Scale = glm::vec3(7, 0.5f, 7);
-	PlaneVirtualObject->Position = glm::vec3(0, 0, 0);
+	PlaneObject->myCollider->isKinematic = true;
+	PlaneObject->Scale = glm::vec3(7, 0.5f, 7);
+	PlaneObject->Position = glm::vec3(0, 0, 0);
 
-	VirtualObject::Entities.push_back(CubeVirtualObject);
-	VirtualObject::Entities.push_back(PlaneVirtualObject);
+	Object::Entities.push_back(CubeObject);
+	Object::Entities.push_back(PlaneObject);
 
 	
-	while (VirtualObject::Entities.size() < 5) 
+	while (Object::Entities.size() < 5) 
 	{
 		SphereCollider* sphereColl = new SphereCollider(center, radius, pos);
-		VirtualObjectMesh = new VirtualObject(MeshMesh, myTexture, myShader, name, sphereColl);
+		ObjectMesh = new Object(MeshMesh, myTexture, myShader, name, sphereColl);
 		
 		
-		VirtualObject::Entities.push_back(VirtualObjectMesh);
+		Object::Entities.push_back(ObjectMesh);
 		
-		VirtualObjectMesh->myCollider->isKinematic = false;
+		ObjectMesh->myCollider->isKinematic = false;
 		
-		VirtualObjectMesh->Position = glm::vec3(rand() % 5, 10, rand() % 5);
+		ObjectMesh->Position = glm::vec3(rand() % 5, 10, rand() % 5);
 		
 	}  
 	
@@ -197,7 +245,7 @@ int main()
 	unsigned int depthMap = 0;
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 
-	
+	//ConcreteMessage* message = new ConcreteMessage(myMeshManager->c1, myObjLoader->c2);
 
 	myCamera->myPosition = glm::vec3(0, 3, 0);
 
@@ -223,20 +271,22 @@ int main()
 
 		
 		//myThread->DoWork(deltatime);
+		
 		// poll for and process events ?
 		glfwPollEvents();
 
-		myMemory->LoadInMemory(myShader, Cubemesh, myCamera, myLighting, CubeVirtualObject, myUI, myMeshManager, MeshMesh, collider);
+		myMemory->LoadInMemory(myShader, Cubemesh, myCamera, myLighting, CubeObject, myUI, myMeshManager, MeshMesh, collider);
 
 		
 		
 		
-		/*if (Phys->TimeTicking)
+		if (Phys->TimeTicking)
 		{
 			double currentFrame = glfwGetTime();
 			deltatime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
-		}*/
+			Phys->Simulate(deltatime);
+		}
 		
 		
 
@@ -250,29 +300,21 @@ int main()
 		myLighting->Use(myCamera, myShader);
 
 		
-		
-		for (auto& o : VirtualObject::Entities)
+		//Drawcall objects
+		for (auto& o : Object::Entities)
 		{
 			
 			o->Draw(myCamera, myShader); // draws the cubes
 			
 		}
-		myUI->RenderUI(myShader);
+
+
+		// render UI (after/ON TOP OF drawcall)
+		update_ui(myUI, myShader);
+
+		//update camera
+		update_camera(myCamera, myUI, window);
 		
-		 
-		
-		VirtualObject::Entities[VirtualObject::SelectedEntity]->Position = glm::vec3(myUI->xPos, myUI->yPos, myUI->zPos);
-		VirtualObject::Entities[VirtualObject::SelectedEntity]->Rotation = glm::vec3(
-			glm::radians(myUI->xRot), 
-			glm::radians(myUI->yRot),
-			glm::radians(myUI->zRot));
-		VirtualObject::Entities[VirtualObject::SelectedEntity]->Scale = glm::vec3(myUI->xScale, myUI->yScale, myUI->zScale);
-		
-		myCamera->ProcessInput(window);
-		
-		myCamera->CameraUpdate(window);
-		myCamera->fieldOfView = myUI->fov;
-		myCamera->sensitivity = myUI->sens;
 
 		/*ImGui::End();
 
@@ -291,7 +333,7 @@ int main()
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 	//myMessage->~Message();
-	myMemory->ClearMemory(myShader, Cubemesh, myCamera, myLighting, CubeVirtualObject, myUI, myMeshManager, MeshMesh, collider);
+	myMemory->ClearMemory(myShader, Cubemesh, myCamera, myLighting, CubeObject, myUI, myMeshManager, MeshMesh, collider);
 	//delete myMemory;
 	glfwTerminate();
 	//std::cout << "hello engime" << std::endl;
