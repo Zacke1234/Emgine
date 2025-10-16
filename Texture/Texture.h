@@ -1,6 +1,8 @@
-#include "Message.h"
+
 //using namespace std;
 #pragma once
+#include <string>
+
 class Texture
 {
 public:

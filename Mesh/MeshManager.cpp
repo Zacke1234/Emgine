@@ -1,8 +1,6 @@
-
-#include "Cube.h"
-//#include "Message.h"
-#include <cassert>
 #include "MeshManager.h"
+#include <cassert>
+
 
 #pragma once
 MeshManager* MeshManager::instance = nullptr;
@@ -18,12 +16,11 @@ MeshManager* MeshManager::instance = nullptr;
 //Cube* cube = new Cube();
 MeshManager::MeshManager()
 {
-	
-	
+	objLoader = new ObjLoader();
 	std::cout << "Client triggers operation 1 (meshManager)" << "\n";
-	c1->PerformMessage1();
+	/*c1->PerformMessage1();
 	c2->PerformMessage4();
-	c1->setMessage(message);
+	c1->setMessage(message);*/
 	// the order of all the calls and class calls matters alot 
 	
 	 
@@ -39,7 +36,7 @@ MeshManager::~MeshManager()
 		
 	}
 	delete cube;
-	delete myObjLoader;
+	delete objLoader;
 }
 
 void MeshManager::Allocate()
@@ -47,6 +44,7 @@ void MeshManager::Allocate()
 	assert(instance == nullptr); // once max ?
 	if (instance) return;
 	instance = new MeshManager();
+	
 }
 
 MeshManager& MeshManager::Get()//Gets the singleton
@@ -77,7 +75,7 @@ Mesh* MeshManager::LoadMesh(std::string fromPath)
 	else{
 		Mesh* mesh = new Mesh();
 
-		if (!myObjLoader->ObjParser(fromPath, mesh))
+		if (!objLoader->ObjParser(fromPath, mesh))
 		{
 			delete mesh;
 			return nullptr;

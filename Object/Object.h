@@ -2,11 +2,11 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "Camera.h"
+#include "Shader\Lighting.h"
 #include "Collider.h"
 #include <vector>
 #include <iostream>
-#include "../../../../OpenGLTest1/Dependencies/glad/glad.h"
-#include <ObjLoader.h>
+#include "MeshManager.h"
 #include <Cube.h>
 
 
@@ -30,13 +30,24 @@ inline void CheckOpenGLError(const char* stmt, const char* fname, int line)
 #endif
 
 class Cube;
+struct Mesh;
+struct LightData;
+
+enum ObjectType
+{
+	Type_Light,
+	Type_Mesh,
+};
+
+
 class Object
 {
 public:
+	enum ObjectType type;
 	
-	Object();
-	Object(Mesh* Mesh, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll); 
-	Object(Cube* Cube, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll);
+	
+	Object(std::string _namn, Mesh* Mesh, Texture* aTexture, Shader* aShader, Collider* coll);
+	
 	// should a virtual object contain a IsKinematic bool?
 	void SetCube(Cube& aCube); 
 	//void CreateCube(Cube& aCube); 
@@ -44,6 +55,7 @@ public:
 	void SetTexture(Texture& aTexture);
 	void SetShader(Shader& aShader);
 	void SetCollider(Collider& collider);
+	void SetLightData(LightData* lightdata);
 	Mesh* CreateMesh();
 	
 	
@@ -56,6 +68,7 @@ public:
 	glm::vec3 Position;
 	glm::vec3 Scale;
 	glm::vec3 Rotation;
+
 
 	
 	std::string namn;
@@ -79,13 +92,16 @@ public:
 	Mesh* myMesh;
 	
 	
+	
 private:
 	
 	Texture* myTexture;
 	Shader* MyShader;
 	Cube* myCube;
+	LightData* myLightData;
+	//Lighting* lighting;
 	
-	ObjLoader* myObjLoader;
+	//ObjLoader* myObjLoader;
 	
 	//Lighting* myLight;
 	//std::shared_ptr<Mesh> aMesh = std::make_shared<Mesh>();

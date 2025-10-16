@@ -1,5 +1,5 @@
-#include "fstream"
 #include "ObjLoader.h"
+#include "fstream"
 #include <iostream>
 #include <sstream>
 #include <filesystem>
@@ -12,13 +12,14 @@ using namespace std;
 
 ObjLoader::ObjLoader()
 {
-	
+	FileHandling();
 
 	std::cout << "\n";
 	std::cout << "Client triggers operation 4 (objLoader)" << "\n";
-	c1->PerformMessage2();
+	
+	/*c1->PerformMessage2();
 	c2->PerformMessage3();
-	c2->setMessage(message);
+	c2->setMessage(message);*/
 	
 }
 
@@ -199,7 +200,7 @@ bool ObjLoader::ObjParser(std::string fileName, Mesh* INmesh)
 	return true;
 }
 
-inline std::vector<std::string> SplitString(const std::string& str, char delimeter) {
+static inline std::vector<std::string> SplitString(const std::string& str, char delimeter) {
 	std::vector<std::string> tokens;
 	std::stringstream ss(str);
 	std::string token;
@@ -251,16 +252,37 @@ void ObjLoader::MeshTexture(char material[])
 //std::ifstream in("./out.bin", std::ios::binary); // in.txt out.bin | I don't know what else to do with serialisation
 //std::ofstream out("./fish.obj"); // does this create a file? Yes, It can't write anything though
 
-filesystem::path filePath = "out.bin"; //
+void ObjLoader::FileHandling()
+{
+	// size_t fSize, std::filesystem::path fPath
+	
+
+	
+	/*fPath = "fish.obj";
+	fSize = filesystem::file_size(fPath);
+	if (fPath.empty())
+	{
+		std::cerr << "File path is empty" << std::endl;
+		return;
+	}
+	
+	std::cerr << "File size: " << fSize << " bytes" << std::endl;*/
+}
+
+// $(SolutionDir)resoure
+
+//ofstream filePath("out.bin", std::ios::binary);
+//ofstream fileSize("out.bin", std::ios::binary);
+
+filesystem::path filePath = "C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\resource\\meshes\\fish.obj"; //
 size_t fileSize = filesystem::file_size(filePath);
 
 void ObjLoader::WriteToBinary(std::ostream& f)
 {
 	
-	
-	
+
 	std::cerr << "Write to binary" << std::endl;
-	fileSize = name.size(); // <Invalid characters in string> error
+	
 	/*for (int i = 0; i < fileSize; ++i)
 	{
 		cout << bitset<8>(fileSize[&i]) << endl;
@@ -339,8 +361,8 @@ void Mesh::InitialiseMesh()
 	
 	glBindVertexArray(0);
 }
-ObjLoader obj;
-void BinaryFile::WriteFile() {
+
+void BinaryFile::WriteFile(ObjLoader obj) {
 	File.open(FileName, std::ios::binary | std::ios::out);
 	if (!File)
 	{
@@ -351,7 +373,7 @@ void BinaryFile::WriteFile() {
 	File.close();
 }
 
-void BinaryFile::ReadFile() { 
+void BinaryFile::ReadFile(ObjLoader obj) {
 	File.open(FileName, std::ios::binary | std::ios::in);
 	if (!File)
 	{

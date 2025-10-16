@@ -7,7 +7,6 @@
 #include "ObjLoader.h"
 #include <cassert>    
 #include "vector"
-#include <glad.h>
 #include "Physics.h"
 using namespace std;
 

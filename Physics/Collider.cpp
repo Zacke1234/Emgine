@@ -39,19 +39,30 @@ Collider::Collider()
 
 void Collider::SetTheCollision()
 {
-	std::cout << "set the collision" << std::endl;
+	Cube* cube = new Cube();
+	Mesh* mesh = new Mesh();
+	LightData* light = new LightData();
+
+	
 	//CubeCollider* cubeColl = new CubeCollider(center, extents, pos);
 	for (auto& o : Object::Entities)
 	{
-		if (Type::Null == Type::Cube) // ?
+		if (&cube) // ?
 		{
+			ColliderType::Cube;
 			//o->Scale = CubeCollider::extents;
 		}
-		if(Type::Null == Type::Sphere)
+		if(&mesh)
 		{
+			ColliderType::Sphere;
 			//o->Scale = SphereCollider::center;
 		}
-
-
+		if (&light)
+		{
+			ColliderType::Null;
+		}
+		
+		
 	}
+	//std::cout << "set the collision" << std::endl;
 }

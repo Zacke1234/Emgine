@@ -13,7 +13,6 @@
 #include <cstdlib>
 #include <gtc/matrix_transform.hpp>
 #include <vector>
-#include <string>
 #include "Object.h"
 #include "UI.h"
 #include "MeshManager.h"
@@ -29,6 +28,7 @@
 #include <mutex>
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include <Managers/ObjectManager.h>
 
 
 
@@ -36,9 +36,19 @@ using namespace std;
 #pragma once
 
 
+GLFWwindow* window;
+//Threading* myThread = new Thread(); 
+Shader* myShader;
+Lighting* myLighting;
+Camera* myCamera;
+MeshManager* myMeshManager;
+ObjectManager* myObjectManager;
+ObjLoader* myObjLoader = nullptr;
+UI* myUI;
+Message* myMessage;
+Collider* coll;
 
-
-int update_camera(Camera* cam, UI* myUI, GLFWwindow* window)
+int static update_camera(Camera* cam, UI* myUI, GLFWwindow* window)
 {
 	cam->ProcessInput(window);
 	cam->CameraUpdate(window);
@@ -46,7 +56,7 @@ int update_camera(Camera* cam, UI* myUI, GLFWwindow* window)
 	cam->sensitivity = myUI->sens;
 	return 0;
 }
-int update_ui(UI* myUI, Shader* myShader)
+int static update_ui(UI* myUI, Shader* myShader)
 {
 	myUI->RenderUI(myShader);
 	Object::Entities[Object::SelectedEntity]->Position = glm::vec3(myUI->xPos, myUI->yPos, myUI->zPos);
@@ -55,23 +65,24 @@ int update_ui(UI* myUI, Shader* myShader)
 		glm::radians(myUI->yRot),
 		glm::radians(myUI->zRot));
 	Object::Entities[Object::SelectedEntity]->Scale = glm::vec3(myUI->xScale, myUI->yScale, myUI->zScale);
-	return 0;
-}
-int update_meshes(Cube* cubeMesh, Mesh* myMesh, CubeCollider* cubeColl) {
-	
 	
 	return 0;
 }
 
- 
+
+class DisplayMessage : public Observer {
+public:
+	
+	
+	void Update(std::string message_from_subject) override
+	{
+		std::cout << "Message to: " << message_from_subject << "\n";
+	}
+	
+};
 
 int main()
 {
-	
-	
-	
-	
-	
 	if (!glfwInit())
 	{
 		
@@ -81,7 +92,7 @@ int main()
 	}
 	unsigned int SCR_WIDTH = 1920;
 	unsigned int SCR_HEIGHT = 1080;
-	GLFWwindow* window;
+	
 	window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Emgine", NULL, NULL);
 
 	
@@ -106,11 +117,21 @@ int main()
 	
 	int megaBytes = 0;
 
-	
+	myObjectManager = new ObjectManager();
+
+	myMeshManager = new MeshManager();
+
+	// Create Cube
+	myObjectManager->Create(
+		"Cube",
+		myMeshManager.Create("Path"),
+		myTextureManager.Create("Path"),
+		myShaderManager.Create("Path"),
+		MyColliderManager.Create("Path")
+	)
 	
 	//myMemory->T1();
 	//thread thread1;
-	Threading* myThread = new Thread(); 
 	/*std::thread t1(myThread);
 	t1.join();*/
 	//Threading::thread1(myThread->DoWork);
@@ -124,34 +145,36 @@ int main()
 	
 	//MessageUI* messageUI = new MessageUI(window);
 
+	
+	//Message myMessage;
 
 	//init shader/lighting
-	Shader* myShader = new Shader("../Shader/VertexShader_1.glsl" ,"../Shader/FragmentShader_1.glsl");
-	Lighting* myLighting = new Lighting();
+	glm::vec3 PointLight1;
+	glm::vec3 DirectionalLight1;
+	glm::vec3 SpotLight;
+	myShader = new Shader("../Shader/VertexShader_1.glsl" ,"../Shader/FragmentShader_1.glsl");
+	myLighting = new Lighting();
 	
 	//init camera
-	Camera* myCamera = new Camera();
+	myCamera = new Camera();
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, myCamera->Mouse_Callback);
 
 	//loading Textures
-	Texture* wallTex = new Texture("wall.jpg");
-	Texture* myTexture = new Texture("Default 1.png");
+	Texture* wallTex = new Texture("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\resource\\textures\\wall.jpg"); // file set up is wrong!
+	Texture* myTexture = new Texture("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\resource\\textures\\Default 1.png");
 	//load_textures();
 	
 
 	//init meshmanager
 	MeshManager::Allocate();
-	MeshManager* myMeshManager = &MeshManager::Get(); // the mesh manager, it also caches my meshes.
+	myMeshManager = &MeshManager::Get(); // the mesh manager, it also caches my meshes.
 
-	/*Message* myMessage;
-	string test = "test";
-	myMessage->Notify();*/
 	
+	myObjLoader = new ObjLoader();
 	
-	ObjLoader* myObjLoader = new ObjLoader();
-	
-	UI* myUI = new UI(window);
+	myUI = new UI(window);
+	//Physics* Phys = new Physics();
 
 	//Thread thread;
 	//thread1.join();
@@ -159,19 +182,36 @@ int main()
 	//myThread = &thread   ;
 
 
-	Physics* Phys = new Physics();
-
-	Observer* Observe = new Observer();
-	Subject* subject = new Subject();
 	
-	Output output;
-	subject->Attach(Observe);
-	string message = "Test";
+
+	//Observer* Observe = new Observer();
+	//Subject* subject = new Subject();
+	
+	//Output output;
+	//subject->Notify();
+	
 	/*Observe->Update(message);
 	subject->Notify();*/
 
+	// observer == observer
+	// message contains the string like the "weather station"
+	// display is in messag but owned by observer
 
+	myMessage = new Message;
 	
+	DisplayMessage displayMessage1;
+	DisplayMessage displayMessage2;
+
+	myMessage->Attach(&displayMessage1);
+	myMessage->Attach(&displayMessage2);
+	/*myMessage->AttachMesh(myMeshManager);
+	myMessage->AttachObjLoader(myObjLoader);*/
+	
+	myMessage->setMessage("Mesh loaded");
+	myMessage->setMessage("Object loaded");
+	//myMessage->Notify();
+	
+	//observer.Attach(myMessage);
 	
 	
 	
@@ -187,35 +227,45 @@ int main()
 	CubeCollider* planeColl = new CubeCollider(center, extentsPlane, pos);
 
 	Cube* Cubemesh = myMeshManager->LoadCube();
+	BinaryFile bin("out.bin");
+	//bin.ReadFile();
+	//bin.WriteFile();
+
+	ofstream write("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\out.bin", std::ios::binary); // ./out.bin
+	ifstream read("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\resource\\meshes\\fish.obj");
+
+	myObjLoader->ReadFromBinary(read);
+	myObjLoader->WriteToBinary(write);
 	
-	Mesh* MeshMesh = myMeshManager->LoadMesh("out.bin"); // cacheing happens here when it also loads the meshes in.
+	Mesh* MeshMesh = myMeshManager->LoadMesh("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\resource\\meshes\\fish.obj"); // cacheing happens here when it also loads the meshes in.
 	// teapot mesh looks weird at the handle				
 
 	Object* ObjectMesh{};
 	Object* CubeObject{};
 	Object* PlaneObject{};
+	Object* PointLightObject{};
+	//Object* DirectionalLightObject{};
 	
-	BinaryFile bin("out.bin");
-	//bin.ReadFile();
-	//bin.WriteFile();
 
-	ofstream write("out.bin", std::ios::binary); // ./out.bin
-	ifstream read("fish.obj");
-
-	myObjLoader->ReadFromBinary(read);
-	myObjLoader->WriteToBinary(write);
 	
 	write.close();
 	read.close();
 	
-	string name = "Mesh";
-	string name2 = "Cube";
-	string name3 = "Plane";
+	
 
-	CubeObject = new Object(Cubemesh, myTexture, myShader, name2, cubeColl);
-	PlaneObject = new Object(Cubemesh, myTexture, myShader, name3, planeColl);
+	CubeObject = new Object("Cube" , Cubemesh, myTexture, myShader, cubeColl);
+	PlaneObject = new Object(Cubemesh, myTexture, myShader, "Plane", planeColl);
 
+	LightData* myLightDataP = new LightData();
+	LightData* myLightDataD = new LightData();
+	//myLightData->type = (LightType)1;
+	myLightDataP->PointLight = glm::vec3(1.0f, 1.0f, 1.0f);
+	//myLightData->PointLight;
+
+	PointLightObject = new Object(myLightDataP, "Pointlight", myShader);
+	//DirectionalLightObject = new Object(myLightData, "Directional light", myShader);
 	//update_meshes();
+	
 
 	PlaneObject->myCollider->isKinematic = true;
 	PlaneObject->Scale = glm::vec3(7, 0.5f, 7);
@@ -223,12 +273,14 @@ int main()
 
 	Object::Entities.push_back(CubeObject);
 	Object::Entities.push_back(PlaneObject);
+	Object::Entities.push_back(PointLightObject);
+	//Object::Entities.push_back(DirectionalLightObject);
 
 	
 	while (Object::Entities.size() < 5) 
 	{
 		SphereCollider* sphereColl = new SphereCollider(center, radius, pos);
-		ObjectMesh = new Object(MeshMesh, myTexture, myShader, name, sphereColl);
+		ObjectMesh = new Object(MeshMesh, myTexture, myShader, "Mesh", sphereColl);
 		
 		
 		Object::Entities.push_back(ObjectMesh);
@@ -280,13 +332,13 @@ int main()
 		
 		
 		
-		if (Phys->TimeTicking)
-		{
-			double currentFrame = glfwGetTime();
-			deltatime = currentFrame - lastFrame;
-			lastFrame = currentFrame;
-			Phys->Simulate(deltatime);
-		}
+		//if (Phys->TimeTicking)
+		//{
+		//	double currentFrame = glfwGetTime();
+		//	deltatime = currentFrame - lastFrame;
+		//	lastFrame = currentFrame;
+		//	//Phys->Simulate(deltatime);
+		//}
 		
 		
 
@@ -294,10 +346,14 @@ int main()
 		
 		
 		//messageUI->RenderUI();
-
-		
-		
 		myLighting->Use(myCamera, myShader);
+		
+	
+
+		for (auto& c : Object::Entities)
+		{
+			coll->SetTheCollision();
+		}
 
 		
 		//Drawcall objects
@@ -307,8 +363,7 @@ int main()
 			o->Draw(myCamera, myShader); // draws the cubes
 			
 		}
-
-
+		
 		// render UI (after/ON TOP OF drawcall)
 		update_ui(myUI, myShader);
 
@@ -341,4 +396,7 @@ int main()
 	/*delete myShader;*/
 	return 0;
 }
+
+
+
 

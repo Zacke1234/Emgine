@@ -1,8 +1,7 @@
+#include "UI.h"
 #include "Object.h"
-#include "MeshManager.h"
 #include "vector"
 #include "imgui.h"
-#include "UI.h"
 #include "Shader.h"
 #include "Texture.h"
 #include <imgui_impl_opengl3.h>
@@ -206,8 +205,7 @@ void UI::RenderUI(Shader* shader)
 
 	ImGui::Text("Mesh Manager");
 	//int n = sizeof(virtobj->Entities);
-
-
+	
 
 	float value = 0;
 

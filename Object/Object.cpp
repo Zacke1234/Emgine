@@ -1,14 +1,10 @@
 #include <Object.h>
-#include "Shader.h"
-#include "Cube.h"
-#include "ObjLoader.h"
-#include "MeshManager.h"
 #include "Physics.h"
 #include <cassert>
 #include <glad.h>
 #include <thread>
-#include "Collider.h"
 #include <mutex>
+#include "Texture.h" 
 
 std::mutex mtx;
 
@@ -19,82 +15,47 @@ int Object::SelectedEntity;
 
 
 
-//auto object = new Object(mesh, myTexture, myShader);
-Object::Object() // unitilized
+
+
+Object::Object(std::string _namn = "new_object", Mesh* Mesh = NULL, Texture* aTexture = NULL, Shader* aShader = NULL, Collider* aCollider = NULL) : Object()
 {
-	glm::vec3 center = { 0, 0,0 }; float radius = 10; glm::vec3 pos = { 0,0,0 };
-	glm::vec3 scale = { 1,1,1 };
-	glm::vec3 extents = { 1,1,1 };
+		// Name
+	if (_namn != "new_object")
+	{
+		this->namn = _namn;
+	}
 
-	myCube = nullptr;
-	myTexture = nullptr;
-	MyShader = nullptr;
-	myMesh = nullptr;
-	myCollider = nullptr;
-	trans = Math::identity4;
-	IsTransformValid = false;
-	//mySphereColl = nullptr;
-
-
-	
-	/*o->myCubeColl = new CubeCollider(center, extents, pos);
-	o->mySphereColl = new SphereCollider(center, radius, pos);*/
-	//myLight = nullptr;
-	//isCube = false;
-
-	Position = glm::vec3(0, 0, 0);
-	Rotation = glm::vec3(0, 0, 0);
-	Scale = glm::vec3(1, 1, 1);
-	//Name[255] = nullptr;
+		//Components
+	if (Mesh)
+	{
+		SetMesh(*Mesh);
+	}
+	else {
+		std::cout << "No mesh assigned to object: " << namn << "\n";
+	}
+	if (aTexture)
+	{
+		SetTexture(*aTexture);
+	}
+	else {
+		std::cout << "No texture assigned to object: " << namn << "\n";
+	}
+	if (aShader)
+	{
+		SetShader(*aShader);
+	}
+	else {
+		std::cout << "No shader assigned to object: " << namn << "\n";
+	}
+	if (aCollider)
+	{
+		SetCollider(*aCollider);
+	}
+	else {
+		std::cout << "No collider assigned to object: " << namn << "\n";
+	}
 }
 
-Object::Object(Mesh* Mesh, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll) : Object()
-{
-	myTexture = aTexture;
-	MyShader = aShader;
-	myMesh = Mesh;
-	
-	this->namn = _namn;
-	IsMesh = true;
-
-	Position = glm::vec3(0, 0, 0);
-	Rotation = glm::vec3(0, 0, 0);
-	Scale = glm::vec3(1, 1, 1);
-
-	myCollider = coll;
-
-	coll->position = this->Position;
-	
-	coll->isKinematic = false;
-	coll->scale = Scale;
-	//coll->mySphereColl;
-	
-	
-
-}
-
-Object::Object(Cube* cube, Texture* aTexture, Shader* aShader, std::string _namn, Collider* coll) : Object()
-{
-	myTexture = aTexture;
-	MyShader = aShader;
-	myCube = cube;
-	
-	this->namn = _namn;
-	IsCube = true;
-
-	myCollider = coll;
-	
-	
-	Position = glm::vec3(0, 0, 0);
-	Rotation = glm::vec3(0, 0, 0);
-	Scale = glm::vec3(1, 1, 1);
-
-	coll->position = this->Position;
-	
-	coll->isKinematic = false;
-	coll->scale = Scale;
-
-}
 
 
 void Object::SetCube(Cube& aCube)
@@ -107,8 +68,10 @@ void Object::SetCube(Cube& aCube)
 void Object::SetMesh(Mesh& mesh)
 {
 	myMesh = &mesh;
-	IsMesh = true;
-	IsCube = false;
+	type = ObjectType::Type_Mesh;
+	Position = glm::vec3(0, 0, 0);
+	Rotation = glm::vec3(0, 0, 0);
+	Scale = glm::vec3(1, 1, 1);
 }
 
 void Object::SetTexture(Texture& aTexture)
@@ -124,6 +87,13 @@ void Object::SetShader(Shader& aShader)
 void Object::SetCollider(Collider& aCollider)
 {
 	myCollider = &aCollider;
+	myCollider->position = this->Position;
+	myCollider->isKinematic = false;
+	myCollider->scale = Scale;
+}
+void Object::SetLightData(LightData* lightdata)
+{
+	myLightData = lightdata;
 }
 
 Mesh* Object::CreateMesh() 
@@ -141,7 +111,10 @@ void Object::SetName(std::string name)
 
 void Object::Draw(Camera* aCamera, Shader* myShader)
 {
-	
+	if (!this)
+	{
+		return;
+	}
 	if (IsCube)
 	{
 		//std::thread T1(DrawCube(aCamera, myShader));

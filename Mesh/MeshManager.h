@@ -1,15 +1,17 @@
 #pragma once
-
+#include "ObjLoader.h"
 #include <string>
 #include "vector"
-#include "Message.h"
+#include <Message.h>
 #include <map>
 #include "Cube.h"
+class ObjLoader;
+class Cube;
 
-class MeshManager
+class MeshManager // observer? subject? message to objloader? 
 {
 	
-	
+	ObjLoader* objLoader = nullptr;
 public:
 	MeshManager();
 	~MeshManager();
@@ -18,16 +20,15 @@ public:
 //private:
 	static MeshManager* instance; 
 	
-	MessageQueueComponent1* c1 = new MessageQueueComponent1;
-	MessageQueueComponent2* c2 = new MessageQueueComponent2;
-	ConcreteMessage* message = new ConcreteMessage(c1,c2);
+	
+	//ConcreteMessage* message = new ConcreteMessage(c1,c2);
 	//static void LoadMesh(char* fromPath);
 
 	std::string msg;
 	//Message* message = new Message(msg);
 
 
-	ObjLoader* myObjLoader = new ObjLoader();
+	
 	
 	Cube* LoadCube();
 	Mesh* LoadMesh(std::string fromPath);

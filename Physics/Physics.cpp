@@ -41,9 +41,9 @@ void Physics::GatherAllPhysicObjects()
 void Physics::Simulate(const float& aDeltaTime)
 {
 	colliders = UpdatePhysicsScene();
+	
 	std::vector<Collision> collisions = CheckIntersections(colliders);
-	
-	
+		
 	// gotta update this
 	
 	// Just setting the positions of the colliders to match the visual
@@ -52,18 +52,23 @@ void Physics::Simulate(const float& aDeltaTime)
 	// checking for any intersections and storing their data in a vector of collisions
 	//std::vector<Collision> collisions = CheckIntersections(cols);
 	
-	
-	ApplyGravity(colliders, aDeltaTime);
+	coll = new Collider();
+	if (coll->CollType != ColliderType::Null)
+	{
+		ApplyGravity(colliders, aDeltaTime);
 
-	ApplyCollision(aDeltaTime, collisions);
+		ApplyCollision(aDeltaTime, collisions);
+
+		//As a result of those collisions what should happen?
+		HandleCollisions(collisions);
+
+
+		//at the moment this only applying gravity to my colliders since I have no calculations for linear and angular velocity based on collisions.
+		//This should ideally be in HandleCollisions
+		ApplyVelocity(cols, aDeltaTime);
+	}
+
 	
-	//As a result of those collisions what should happen?
-	HandleCollisions(collisions);
-	
-	
-	//at the moment this only applying gravity to my colliders since I have no calculations for linear and angular velocity based on collisions.
-	//This should ideally be in HandleCollisions
-	ApplyVelocity(cols, aDeltaTime);
 
 	//Making sure that the visuals of the colliders aligned with the colliders
 	UpdateVisuals();
@@ -82,7 +87,7 @@ void Physics::UpdateVisuals()
 		//std::thread T1(o->UpdateTransform());
 		  
 		
-		o->Position = o->myCollider->position;
+		//o->Position = o->myCollider->position;
 
 		//o->myCollider->transform = o->trans;
 		
@@ -155,13 +160,19 @@ void Physics::ApplyVelocity(std::vector<Collider*> colliders, const float& dt)
 
 }
 
+
+
 void Physics::ApplyGravity(std::vector<Collider*> colliders, const float& dt)
 {
+	
 	for (Collider* c : colliders)
 	{
+		
 		for(Collider* c2 : colliders)
-		if (!c->isKinematic) 
+		
+		if (!c->isKinematic)
 		{
+			
 			// && CheckCollision(c, c2)
 			//std::cout << "apply gravity";
 			glm::vec3 position = glm::vec3(c->transform[3]);

@@ -11,6 +11,7 @@
 
 
 
+
 #pragma once
 struct Face {
 	
@@ -45,7 +46,7 @@ public:
 };
 
 
-class ObjLoader
+class ObjLoader// observer? subject? message to meshmanager?
 {
 public:
 	
@@ -55,13 +56,18 @@ public:
 	void MeshTexture(char material[]);
 	void WriteToBinary(std::ostream& f);
 	void ReadFromBinary(std::istream& f);
-	
-	MessageQueueComponent1* c1 = new MessageQueueComponent1;
+	void FileHandling();
+	// size_t fileSize, std::filesystem::path filePath
+	/*MessageQueueComponent1* c1 = new MessageQueueComponent1;
 	MessageQueueComponent2* c2 = new MessageQueueComponent2;
-	ConcreteMessage* message = new ConcreteMessage(c1, c2);
+	ConcreteMessage* message = new ConcreteMessage(c1, c2);*/
 	std::string name;
 	std::string type;
 
+	
+	/*size_t fileSize;*/
+	 
+	
 	std::vector <Vertex> tmp;
 	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
 	//std::vector <glm::vec3> temp_vertices; // glm::vec3 
@@ -80,9 +86,9 @@ private:
 	std::fstream File;
 public:
 	BinaryFile(std::string FileName) : FileName(FileName) {};
-	void WriteFile();
+	void WriteFile(ObjLoader obj);
 
-	void ReadFile();
+	void ReadFile(ObjLoader obj);
 	
 };
 
