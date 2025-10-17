@@ -13,7 +13,7 @@
 UI::UI(GLFWwindow* window) // unitilized
 {
 	
-	isCube = false;
+	
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -80,7 +80,7 @@ void UI::RenderUI(Shader* shader)
 
 	if (ImGui::Button("Create new mesh"))
 	{
-		Object* meshObj = new Object();
+		Object* meshObj = new Object("Mesh", mesh, texture, shader, cubeColl);
 
 		texture = new Texture(buf);
 		newCollider = new Collider();
@@ -97,7 +97,7 @@ void UI::RenderUI(Shader* shader)
 
 		meshObj->SetTexture(*texture);
 		//mesh = meshmang->LoadMesh("fish.obj");
-		mesh = MeshManager::Get().LoadMesh("out.bin");
+		mesh = MeshManager::Get().LoadMesh("cube.obj");
 		if (mesh != nullptr)
 		{
 
@@ -122,7 +122,7 @@ void UI::RenderUI(Shader* shader)
 		
 		
 		
-		
+		type = ObjectType::Type_Mesh;
 		
 		
 		Object::Entities.push_back(meshObj);
@@ -133,12 +133,12 @@ void UI::RenderUI(Shader* shader)
 		glm::vec3 center = { 0, 0,0 };
 		glm::vec3 extents = { 0,0,0 };
 		//mesh = new Mesh();
-		Object* CubeObj = new Object();
+		Object* CubeObj = new Object("Cube",mesh, texture, shader, cubeColl);
 		texture = new Texture(buf);
 		newCollider = new Collider();
 
-		CubeObj->IsCube = true;
-		CubeObj->IsMesh = false;
+		type = ObjectType::Type_Mesh;
+		
 		if (textureFile == '\0')
 		{
 			texture = new Texture("Default 1.png");
@@ -147,7 +147,12 @@ void UI::RenderUI(Shader* shader)
 
 		CubeObj->SetTexture(*texture);
 
-		CubeObj->SetCube(*MeshManager::Get().LoadCube());
+		mesh = MeshManager::Get().LoadMesh("out.bin");
+		if (mesh != nullptr)
+		{
+
+			CubeObj->SetMesh(*mesh);
+		}
 		CubeObj->Position = glm::vec3(1, 1, 1);
 		CubeObj->Scale = glm::vec3(1, 1, 1);
 		CubeObj->SetShader(*shader);

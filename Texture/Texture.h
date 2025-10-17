@@ -17,5 +17,7 @@ public:
 	int Height = 0;
 
 	unsigned int TextureObject = 0;
+
+	
 };
 

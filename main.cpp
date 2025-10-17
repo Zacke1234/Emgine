@@ -26,9 +26,13 @@
 #include <float.h>
 #include <thread>
 #include <mutex>
+#include <Managers/ColliderManager.h>
+#include <Managers/ObjectManager.h>
+#include <Managers/ShaderManager.h>
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include <Managers/ObjectManager.h>
+#include <Managers/TextureManager.h>
 
 
 
@@ -43,10 +47,16 @@ Lighting* myLighting;
 Camera* myCamera;
 MeshManager* myMeshManager;
 ObjectManager* myObjectManager;
+ShaderManager* myShaderManager;
+ColliderManager* MyColliderManager;
+TextureManager* myTextureManager;
+
 ObjLoader* myObjLoader = nullptr;
 UI* myUI;
 Message* myMessage;
 Collider* coll;
+
+
 
 int static update_camera(Camera* cam, UI* myUI, GLFWwindow* window)
 {
@@ -121,14 +131,16 @@ int main()
 
 	myMeshManager = new MeshManager();
 
+	myTextureManager = new TextureManager();
+
 	// Create Cube
 	myObjectManager->Create(
 		"Cube",
-		myMeshManager.Create("Path"),
-		myTextureManager.Create("Path"),
-		myShaderManager.Create("Path"),
-		MyColliderManager.Create("Path")
-	)
+		myMeshManager->LoadMesh("cube.obj"),
+		myTextureManager->Create("Path"),
+		myShaderManager->Create("Path"),
+		MyColliderManager->Create("Path")
+	);
 	
 	//myMemory->T1();
 	//thread thread1;
@@ -226,7 +238,7 @@ int main()
 	CubeCollider* cubeColl = new CubeCollider(center, extents, pos);
 	CubeCollider* planeColl = new CubeCollider(center, extentsPlane, pos);
 
-	Cube* Cubemesh = myMeshManager->LoadCube();
+	// = myMeshManager->LoadCube();
 	BinaryFile bin("out.bin");
 	//bin.ReadFile();
 	//bin.WriteFile();
@@ -238,6 +250,7 @@ int main()
 	myObjLoader->WriteToBinary(write);
 	
 	Mesh* MeshMesh = myMeshManager->LoadMesh("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\resource\\meshes\\fish.obj"); // cacheing happens here when it also loads the meshes in.
+	Mesh* Cubemesh = myMeshManager->LoadMesh("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\resource\\meshes\\cube.obj"); // cacheing happens here when it also loads the meshes in.
 	// teapot mesh looks weird at the handle				
 
 	Object* ObjectMesh{};
@@ -252,9 +265,9 @@ int main()
 	read.close();
 	
 	
-
-	CubeObject = new Object("Cube" , Cubemesh, myTexture, myShader, cubeColl);
-	PlaneObject = new Object(Cubemesh, myTexture, myShader, "Plane", planeColl);
+	
+	CubeObject = new Object("Cube", Cubemesh, myTexture, myShader, cubeColl);
+	PlaneObject = new Object("Plane", Cubemesh, myTexture, myShader, planeColl);
 
 	LightData* myLightDataP = new LightData();
 	LightData* myLightDataD = new LightData();
@@ -262,7 +275,7 @@ int main()
 	myLightDataP->PointLight = glm::vec3(1.0f, 1.0f, 1.0f);
 	//myLightData->PointLight;
 
-	PointLightObject = new Object(myLightDataP, "Pointlight", myShader);
+	//PointLightObject = new Object(myLightDataP, "Pointlight", myShader);
 	//DirectionalLightObject = new Object(myLightData, "Directional light", myShader);
 	//update_meshes();
 	
@@ -280,7 +293,7 @@ int main()
 	while (Object::Entities.size() < 5) 
 	{
 		SphereCollider* sphereColl = new SphereCollider(center, radius, pos);
-		ObjectMesh = new Object(MeshMesh, myTexture, myShader, "Mesh", sphereColl);
+		ObjectMesh = new Object("Mesh", MeshMesh, myTexture, myShader, sphereColl);
 		
 		
 		Object::Entities.push_back(ObjectMesh);
@@ -327,7 +340,7 @@ int main()
 		// poll for and process events ?
 		glfwPollEvents();
 
-		myMemory->LoadInMemory(myShader, Cubemesh, myCamera, myLighting, CubeObject, myUI, myMeshManager, MeshMesh, collider);
+		myMemory->LoadInMemory(myShader, myCamera, myLighting, CubeObject, myUI, myMeshManager, MeshMesh, collider);
 
 		
 		
@@ -388,7 +401,7 @@ int main()
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 	//myMessage->~Message();
-	myMemory->ClearMemory(myShader, Cubemesh, myCamera, myLighting, CubeObject, myUI, myMeshManager, MeshMesh, collider);
+	myMemory->ClearMemory(myShader, myCamera, myLighting, CubeObject, myUI, myMeshManager, MeshMesh, collider);
 	//delete myMemory;
 	glfwTerminate();
 	//std::cout << "hello engime" << std::endl;

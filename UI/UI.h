@@ -12,6 +12,7 @@
 class UI
 {
 public:
+	enum ObjectType type;
 	UI(GLFWwindow* window);
 	void RenderUI(Shader* shader);
 	//ImGuiIO& io;
@@ -44,8 +45,6 @@ public:
 	char name;
 
 	char charMesh;
-
-	bool isCube;
 
 	bool check;
 

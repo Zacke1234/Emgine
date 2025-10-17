@@ -28,7 +28,6 @@ public:
 	std::thread T1();
 
 	void ClearMemory(Shader* myShader,
-	Cube* myCube,
 	Camera* myCamera,
 	Lighting* myLighting,
 	Object* virtObj,
@@ -39,7 +38,6 @@ public:
 	Collider* myCollider);
 
 	void LoadInMemory(Shader* myShader,
-		Cube* myCube,
 		Camera* myCamera,
 		Lighting* myLighting,
 		Object* virtObj,
@@ -50,7 +48,7 @@ public:
 		Collider* myCollider);
 private:
 	Shader* myShader;
-	Cube* myCube;
+	
 	Camera* myCamera;
 	Lighting* myLighting;
 	Object* virtObj;

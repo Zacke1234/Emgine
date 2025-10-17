@@ -92,3 +92,9 @@ Mesh* MeshManager::LoadMesh(std::string fromPath)
 	
 }
 
+Mesh* MeshManager::Create(Mesh* myMesh)
+{
+	//myMesh->InitialiseMesh();
+	return nullptr;
+}
+

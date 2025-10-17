@@ -8,6 +8,9 @@ public:
 	Object* Create(std::string aName, Mesh* Mesh, Texture* aTexture, Shader* aShader, Collider* aCollider);
 	void Destroy(Object* obj);
 
-
+	/*
+	Object* CubeObject{};
+	Object* PlaneObject{};
+	Object* PointLightObject{};*/
 };
 
