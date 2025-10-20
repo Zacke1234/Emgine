@@ -34,7 +34,7 @@ public:
 	Mesh* LoadMesh(std::string fromPath);
 	Cube* cube;
 	std::map<std::string, Mesh*> MeshCache;
-	Mesh* Create(Mesh* myMes);
+	Mesh* Create(Mesh* myMesh);
 	
 };
 

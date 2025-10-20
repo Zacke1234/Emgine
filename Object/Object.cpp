@@ -17,7 +17,7 @@ int Object::SelectedEntity;
 
 
 
-Object::Object(std::string _namn = "new_object", Mesh* Mesh = NULL, Texture* aTexture = NULL, Shader* aShader = NULL, Collider* aCollider = NULL) : Object()
+Object::Object(std::string _namn = "new_object", Mesh* Mesh = NULL, Texture* aTexture = NULL, Shader* aShader = NULL, Collider* aCollider = NULL)
 {
 		// Name
 	if (_namn != "new_object")

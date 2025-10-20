@@ -6,7 +6,6 @@
 #include <fstream>
 #include <sstream>
 #include "Shader.h"
-#include "Cube.h"
 #include "Camera.h"
 #include "Lighting.h"
 #include "string"
@@ -55,8 +54,8 @@ ObjLoader* myObjLoader = nullptr;
 UI* myUI;
 Message* myMessage;
 Collider* coll;
-
-
+Mesh* myMesh;
+Texture* myTexture1;
 
 int static update_camera(Camera* cam, UI* myUI, GLFWwindow* window)
 {
@@ -69,6 +68,7 @@ int static update_camera(Camera* cam, UI* myUI, GLFWwindow* window)
 int static update_ui(UI* myUI, Shader* myShader)
 {
 	myUI->RenderUI(myShader);
+	
 	Object::Entities[Object::SelectedEntity]->Position = glm::vec3(myUI->xPos, myUI->yPos, myUI->zPos);
 	Object::Entities[Object::SelectedEntity]->Rotation = glm::vec3(
 		glm::radians(myUI->xRot),
@@ -136,10 +136,10 @@ int main()
 	// Create Cube
 	myObjectManager->Create(
 		"Cube",
-		myMeshManager->LoadMesh("cube.obj"),
-		myTextureManager->Create("Path"),
-		myShaderManager->Create("Path"),
-		MyColliderManager->Create("Path")
+		myMeshManager->Create(myMesh),
+		myTextureManager->Create(myTexture1),
+		myShaderManager->Create(myShader),
+		MyColliderManager->Create(coll)
 	);
 	
 	//myMemory->T1();

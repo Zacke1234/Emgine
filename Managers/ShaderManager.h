@@ -4,6 +4,6 @@
 class ShaderManager
 {
 public:
-	Shader* Create(std::string fromPath);
+	Shader* Create(Shader* myShader);
 };
 

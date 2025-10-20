@@ -4,6 +4,6 @@
 class TextureManager
 {
 public:
-	Texture* Create(std::string fromPath);
+	Texture* Create(Texture* myTexture);
 };
 

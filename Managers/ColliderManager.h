@@ -4,6 +4,6 @@
 class ColliderManager
 {
 public:
-	Collider* Create(std::string fromPath);
+	Collider* Create(Collider* myColl);
 };
 

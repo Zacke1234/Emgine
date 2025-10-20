@@ -1,5 +1,6 @@
 #include "ColliderManager.h"
-Collider* ColliderManager::Create(std::string path)
+Collider* ColliderManager::Create(Collider* myColl = NULL)
 {
+	myColl = new Collider();
 	return nullptr;
 }

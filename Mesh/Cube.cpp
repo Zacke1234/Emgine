@@ -1,6 +1,5 @@
 #include "Cube.h"
 #include <glad.h>
-#include "Texture.h"
 #include "Shader.h"
 #include <Object.h>
 #include <ext/matrix_transform.hpp>
