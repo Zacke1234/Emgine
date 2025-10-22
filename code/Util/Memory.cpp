@@ -34,18 +34,18 @@ std::thread Memory::T1()
 	return std::thread();
 }
 
-void Memory::ClearMemory(Shader* CmyShader, Cube* CmyCube, Camera* CmyCamera, Lighting* CmyLighting, Object* CvirtObj, UI* CmyUI, MeshManager* CmyMeshManager, Mesh* CObjLoader, Collider* CmyCollider)
+void Memory::ClearMemory(Shader* CmyShader, Camera* CmyCamera, Lighting* CmyLighting, ObjectManager* ObjManager, UI* CmyUI, MeshManager* CmyMeshManager, Mesh* CObjLoader, Collider* CmyCollider)
 {
 	myShader = CmyShader;
 	delete CmyShader;
-	myCube = CmyCube;
-	delete CmyCube;
+	/*myCube = CmyCube;
+	delete CmyCube;*/
 	myCamera = CmyCamera;
 	delete CmyCamera;
 	myLighting = CmyLighting;
 	delete CmyLighting;
-	virtObj = CvirtObj;
-	delete CvirtObj;
+	OBJManager = ObjManager;
+	delete ObjManager;
 	myUI = CmyUI;
 	delete CmyUI;
 	myMeshManager = CmyMeshManager;
@@ -59,7 +59,7 @@ void Memory::ClearMemory(Shader* CmyShader, Cube* CmyCube, Camera* CmyCamera, Li
 	
 }
 
-void Memory::LoadInMemory(Shader* myShader, Cube* myCube, Camera* myCamera, Lighting* myLighting, Object* virtObj, UI* myUI, MeshManager* myMeshManager, Mesh* ObjLoader, Collider* myCollider)
+void Memory::LoadInMemory(Shader* myShader, Camera* myCamera, Lighting* myLighting, ObjectManager* virtObj, UI* myUI, MeshManager* myMeshManager, Mesh* ObjLoader, Collider* myCollider)
 {
 	
 }

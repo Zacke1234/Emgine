@@ -23,12 +23,8 @@ public:
 	std::string message;
 	virtual void Attach(Observer *observer) = 0;
 	virtual void Detach(Observer *observer) = 0;
-	//virtual void AttachMesh(MeshManager* meshManager) = 0;
-	//virtual void AttachObjLoader(ObjLoader* objload) = 0;
 	virtual void Notify() = 0;
 
 	~Subject() {};
 
 }; 
-
-

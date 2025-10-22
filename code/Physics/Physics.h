@@ -49,6 +49,9 @@ public:
 	bool Testgravity = true;
 
 	bool TimeTicking = true;
+
+	Collider* coll; 
+	ColliderType* type;
 private:
 	std::vector<Collider*> colliders;
 

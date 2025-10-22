@@ -7,6 +7,9 @@
 #include <queue>
 #include "iostream"
 #include "Observer.h"
+#include "MeshManager.h"
+#include "MeshLoader.h"
+
 
 
 //// Mediator pattern
@@ -25,57 +28,42 @@
 //
 class Message : public Subject
 {
-
 public:
+	Message();
+
+private:
 	std::vector<Observer*> observers;
 	std::string message;
 
-	void Subject::Attach(Observer* observer) override {
+public:
+	void Attach(Observer* observer) override {
 		observers.push_back(observer);
 
 	}
-	void Subject::Detach(Observer* observer) override {
+	void Detach(Observer* observer) override {
 		observers.erase(std::remove(observers.begin(), observers.end(), observer), observers.end());
 	}
-	/*void Subject::AttachMesh(MeshManager* meshManager) override {
-		observers.push_back(meshManager);
-	}
-	void Subject::AttachObjLoader(ObjLoader* objload) override {
-		observers.push_back(objload);
-	*/}
-
-	void Subject::Notify() override {
+	void Notify() override {
 		for (Observer* observer : observers)
 		{
 			observer->Update(message);
 		}
 	}
-
 	void setMessage(std::string message) {
 		this->message = message;
 		Notify();
 	}
-	/*Message();
-	virtual void Notify(MyBaseManager* sender, std::string event) const = 0;*/
 
 };
 
 
 
-	/*virtual enum class MessageType {
-		String,
-		FloatMessage,
-		Component
-	};
-
-	
-
-	Message(std::string msg);
-	~Message();
-	
-	std::string GetStringData();
-	float GetFloatData();
-	MessageType GetMessageType();*/
+/*void AttachMesh(MeshManager* meshManager) override {
+	observers.push_back((Observer*)meshManager);
+}
+void AttachObjLoader(ObjLoader* objload) override {
+	observers.push_back((Observer*)objload);
+}*/
 	
 //private:
 //	

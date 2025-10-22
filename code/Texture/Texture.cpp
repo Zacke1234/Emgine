@@ -5,7 +5,7 @@
 #include <iostream>
 #include "glm.hpp"
 
-
+#pragma once
 float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
 
 Texture::Texture(const char* aPath)

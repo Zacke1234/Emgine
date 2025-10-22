@@ -2,7 +2,7 @@
 #include "MeshManager.h"
 #include "Physics.h"
 #include "Camera.h"
-#include "ObjLoader.h"
+#include "MeshLoader.h"
 #include "Cube.h"
 #include <Object.h>
 
@@ -12,6 +12,7 @@
 class UI
 {
 public:
+	enum ObjectType type;
 	UI(GLFWwindow* window);
 	void RenderUI(Shader* shader);
 	//ImGuiIO& io;
@@ -45,15 +46,13 @@ public:
 
 	char charMesh;
 
-	bool isCube;
-
 	bool check;
 
 	float fov = 70.0f;
 	float sens = 0.1f;
 	float speed = 10.0f;
 	
-	ObjLoader* objLoader;
+	MeshLoader* meshLoader;
 private:
 
 	Mesh* mesh;

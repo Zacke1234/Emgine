@@ -1,8 +1,9 @@
 #include "Message.h"
-#include "MeshManager.h"
-#include "ObjLoader.h"
 #include <stdio.h>
 #include <map>
+Message::Message() {
+
+}
 // 
 //
 //

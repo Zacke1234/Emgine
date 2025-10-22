@@ -1,5 +1,6 @@
 #pragma once
 #include <stdio.h>
+#include "Managers/ObjectManager.h"
 #include "Shader.h"
 #include "Cube.h"
 #include "Camera.h"
@@ -28,10 +29,9 @@ public:
 	std::thread T1();
 
 	void ClearMemory(Shader* myShader,
-	Cube* myCube,
 	Camera* myCamera,
 	Lighting* myLighting,
-	Object* virtObj,
+	ObjectManager* myObjectManager,
 	UI* myUI,
 	MeshManager* myMeshManager,
 	Mesh* ObjLoader,
@@ -39,10 +39,9 @@ public:
 	Collider* myCollider);
 
 	void LoadInMemory(Shader* myShader,
-		Cube* myCube,
 		Camera* myCamera,
 		Lighting* myLighting,
-		Object* virtObj,
+		ObjectManager* myObjectManager,
 		UI* myUI,
 		MeshManager* myMeshManager,
 		Mesh* ObjLoader,
@@ -50,13 +49,13 @@ public:
 		Collider* myCollider);
 private:
 	Shader* myShader;
-	Cube* myCube;
+	
 	Camera* myCamera;
 	Lighting* myLighting;
-	Object* virtObj;
+	ObjectManager* OBJManager;
 	UI* myUI;
 	MeshManager* myMeshManager;
-	ObjLoader* ObjLoader;
+	MeshLoader* ObjLoader;
 	Physics* myPhysics;
 	Collider* myCollider;
 	Mesh* myMesh;

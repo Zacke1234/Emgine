@@ -1,8 +1,12 @@
 #pragma once
 #include <glm.hpp>
 #include <iostream>
-#include <glm.hpp>
 
+
+
+enum class ColliderType {
+	Null, Sphere, Cube, Raycast
+};
 
 glm::mat3 ComputeMomentOfInertiaCube(float mass, glm::vec3 extents);
 glm::mat3 ComputeMomentOfInertiaSphere(float mass, float radius);
@@ -19,9 +23,7 @@ public:
 	
 
 	//void UpdateCollider(SphereCollider* sphere, CubeCollider* cube);
-	enum class Type{
-		Null, Sphere, Cube, Raycast
-	};
+	
 	glm::mat4 transform;
 	glm::vec3 extents;
 	glm::vec3 pos;
@@ -32,7 +34,7 @@ public:
 	float mass;
 	glm::vec3 position;
 	bool isKinematic;
-	Type type = Type::Null;
+	ColliderType CollType = ColliderType::Null;
 	glm::vec3 angularVelocity;
 	glm::vec3 scale;
 	//glm::vec3 extents;
@@ -67,7 +69,7 @@ public:
 	
 	SphereCollider(const glm::vec3& aCenter, const float& aRadius, glm::vec3 Apos) : Collider()
 	{
-		type = Type::Sphere;
+		CollType = ColliderType::Sphere;
 		velocity = glm::vec3(0, 0, 0);
 		hasGravity = false;
 		center = aCenter;
@@ -85,7 +87,7 @@ public:
 	// glm::vec3 aScale
 	CubeCollider(const glm::vec3& aCenter, const glm::vec3& someExtents, glm::vec3 Apos)  : Collider()
 	{
-		type = Type::Cube;
+		CollType = ColliderType::Cube;
 		velocity = glm::vec3(0, 0, 0);
 		hasGravity = false;
 		center = aCenter;

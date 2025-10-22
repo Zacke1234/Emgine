@@ -1,6 +1,8 @@
-#include "Message.h"
+
 //using namespace std;
 #pragma once
+#include <string>
+
 class Texture
 {
 public:
@@ -10,10 +12,12 @@ public:
 
 	std::string msg;
 	//Message* message = new Message(msg);
-	
+	std::string name;
 	int Width = 0;
 	int Height = 0;
 
 	unsigned int TextureObject = 0;
+
+	
 };
 

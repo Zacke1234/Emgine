@@ -1,34 +1,14 @@
-
-#include "Cube.h"
-//#include "Message.h"
-#include <cassert>
 #include "MeshManager.h"
+#include <cassert>
+#include <MeshLoader.h>
+
 
 #pragma once
-MeshManager* MeshManager::instance = nullptr;
 
-//
-// 
-// 
-// 
-// 
-// 
-// 
-// * MeshManager::instance = nullptr; 
-//Cube* cube = new Cube();
 MeshManager::MeshManager()
 {
-	
-	
+	meshLoader = new MeshLoader();
 	std::cout << "Client triggers operation 1 (meshManager)" << "\n";
-	/*c1->PerformMessage1();
-	c2->PerformMessage4();
-	c1->setMessage(message);*/
-	// the order of all the calls and class calls matters alot 
-	
-	 
-
-	// Ensure mesh is bufffered before rendered
 }
 
 MeshManager::~MeshManager()
@@ -36,61 +16,53 @@ MeshManager::~MeshManager()
 	for (auto& [key, value] : MeshCache)
 	{
 		delete value;
-		
 	}
-	delete cube;
-	delete myObjLoader;
+	delete meshLoader;
 }
 
-void MeshManager::Allocate()
-{
-	assert(instance == nullptr); // once max ?
-	if (instance) return;
-	instance = new MeshManager();
-}
 
-MeshManager& MeshManager::Get()//Gets the singleton
-{
-	return *instance;
-}
 
-Cube* MeshManager::LoadCube()
-{
-	if (cube == nullptr)
-	{
-		cube = new Cube();
-		msg = "Cube loaded in";
-		//message->SendMessage(msg, 0);
-		cube->InitializeCube();
-	}
-	
-	
-	return cube;
-}
 
 Mesh* MeshManager::LoadMesh(std::string fromPath)
 {
-	if (MeshCache.find(fromPath) != MeshCache.end()) 
+	BinaryFile bin("out.bin");
+	//bin.ReadFile();
+	//bin.WriteFile();
+
+	std::ofstream write("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\out.bin", std::ios::binary); // ./out.bin
+	std::ifstream read("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\resource\\meshes\\fish.obj");
+
+	meshLoader->ReadFromBinary(read);
+	meshLoader->WriteToBinary(write);
+
+	write.close();
+	read.close();
+
+	Mesh* mesh = new Mesh();
+
+	if (!meshLoader->ObjParser("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\out.bin", mesh))
 	{
-		return MeshCache[fromPath];
+		delete mesh;
+		return nullptr;
 	}
-	else{
-		Mesh* mesh = new Mesh();
 
-		if (!myObjLoader->ObjParser(fromPath, mesh))
-		{
-			delete mesh;
-			return nullptr;
-		}
+	msg = "Mesh loaded in";
+	//message->SendMessage(msg, 0);
+	mesh->InitialiseMesh();
+	//MeshCache.emplace(fromPath, mesh);
 
-		msg = "Mesh loaded in";
-		//message->SendMessage(msg, 0);
-		mesh->InitialiseMesh();
-		MeshCache.emplace(fromPath, mesh);
+	return mesh;
+}	
 
-		
-		return mesh;
-	}
-	
+Mesh* MeshManager::Create(std::string name, std::string path_end)
+{
+	std::string path = "C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\resource\\meshes\\";
+	Mesh* mesh = new Mesh();
+	mesh->name = name;
+	mesh = LoadMesh((path + path_end).c_str());
+	std::cout << "Mesh loaded in: " << name << " from path: " << path + path_end << "\n";
+	MeshCache.emplace(name, mesh);
+	std::cout << "Mesh created: " << name << " from path: " << path + path_end << "\n";
+	return mesh;
 }
 
