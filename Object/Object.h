@@ -37,6 +37,7 @@ enum ObjectType
 {
 	Type_Light,
 	Type_Mesh,
+	Type_Cube
 };
 
 
@@ -79,8 +80,7 @@ public:
 
 	static int SelectedEntity;
 
-	bool IsCube;
-	bool IsMesh;
+	
 	bool IsTransformValid;
 	
 	//std::mutex mtx; can't do mutex in header files

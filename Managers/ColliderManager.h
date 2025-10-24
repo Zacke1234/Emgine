@@ -5,5 +5,8 @@ class ColliderManager
 {
 public:
 	Collider* Create(Collider* myColl);
+	CubeCollider* planeColl;
+	CubeCollider* cubeColl;
+	SphereCollider* sphereColl;
 };
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <stdio.h>
+#include "Managers/ObjectManager.h"
 #include "Shader.h"
 #include "Cube.h"
 #include "Camera.h"
@@ -30,7 +31,7 @@ public:
 	void ClearMemory(Shader* myShader,
 	Camera* myCamera,
 	Lighting* myLighting,
-	Object* virtObj,
+	ObjectManager* myObjectManager,
 	UI* myUI,
 	MeshManager* myMeshManager,
 	Mesh* ObjLoader,
@@ -40,7 +41,7 @@ public:
 	void LoadInMemory(Shader* myShader,
 		Camera* myCamera,
 		Lighting* myLighting,
-		Object* virtObj,
+		ObjectManager* myObjectManager,
 		UI* myUI,
 		MeshManager* myMeshManager,
 		Mesh* ObjLoader,
@@ -51,10 +52,10 @@ private:
 	
 	Camera* myCamera;
 	Lighting* myLighting;
-	Object* virtObj;
+	ObjectManager* OBJManager;
 	UI* myUI;
 	MeshManager* myMeshManager;
-	ObjLoader* ObjLoader;
+	MeshLoader* ObjLoader;
 	Physics* myPhysics;
 	Collider* myCollider;
 	Mesh* myMesh;

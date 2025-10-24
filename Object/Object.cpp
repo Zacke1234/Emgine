@@ -60,9 +60,8 @@ Object::Object(std::string _namn = "new_object", Mesh* Mesh = NULL, Texture* aTe
 
 void Object::SetCube(Cube& aCube)
 {
+	type = ObjectType::Type_Cube;
 	myCube = &aCube;
-	IsMesh = false;
-	IsCube = true;
 }
 
 void Object::SetMesh(Mesh& mesh)
@@ -93,6 +92,7 @@ void Object::SetCollider(Collider& aCollider)
 }
 void Object::SetLightData(LightData* lightdata)
 {
+	type = ObjectType::Type_Light;
 	myLightData = lightdata;
 }
 
@@ -111,20 +111,8 @@ void Object::SetName(std::string name)
 
 void Object::Draw(Camera* aCamera, Shader* myShader)
 {
-	if (!this)
-	{
-		return;
-	}
-	if (IsCube)
-	{
-		//std::thread T1(DrawCube(aCamera, myShader));
-		DrawCube(aCamera, myShader);
-	}
-	else if(IsMesh)
-	{
-		
-		DrawObject(aCamera, myShader);
-	}
+	DrawObject(aCamera, myShader);
+	
 }
 
 void Object::DrawCube(Camera* aCamera, Shader* myShader)

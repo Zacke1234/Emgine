@@ -12,7 +12,7 @@ public:
 
 	std::string msg;
 	//Message* message = new Message(msg);
-	
+	std::string name;
 	int Width = 0;
 	int Height = 0;
 

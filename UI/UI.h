@@ -2,7 +2,11 @@
 #include "MeshManager.h"
 #include "Physics.h"
 #include "Camera.h"
-#include "ObjLoader.h"
+#include "MeshLoader.h"
+#include "Managers/ObjectManager.h"
+#include "Managers/ShaderManager.h"
+#include "Managers/ColliderManager.h"
+#include "Managers/TextureManager.h"
 #include "Cube.h"
 #include <Object.h>
 
@@ -14,7 +18,7 @@ class UI
 public:
 	enum ObjectType type;
 	UI(GLFWwindow* window);
-	void RenderUI(Shader* shader);
+	void RenderUI(ShaderManager* shader, ObjectManager* objectmanager);
 	//ImGuiIO& io;
 
 	float yPos = 0;
@@ -28,10 +32,11 @@ public:
 	float yScale = 1;
 	float xScale = 1;
 	float zScale = 1;
-	char buf[255]{};
-	char buf2[255]{};
+	char textureBuffer[255]{};
+	char textureNameBuffer[255]{};
+	char nameBuffer[255]{};
 	char buf3[255]{};
-	char buf_Mesh[255];
+	char meshBuffer[255];
 	char buf_fov[2];
 	float test[255];
 	float step = 0;
@@ -52,7 +57,7 @@ public:
 	float sens = 0.1f;
 	float speed = 10.0f;
 	
-	ObjLoader* objLoader;
+	MeshLoader* meshLoader;
 private:
 
 	Mesh* mesh;
@@ -63,7 +68,8 @@ private:
 	CubeCollider* cubeCollider;
 	Collider* newCollider;
 	Physics* physics;
-	MeshManager* meshmang;
+	
+	
 	
 };
 

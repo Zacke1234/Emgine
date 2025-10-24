@@ -1,40 +1,31 @@
 #pragma once
-#include "ObjLoader.h"
+#include "MeshLoader.h"
 #include <string>
 #include "vector"
 #include <Message.h>
 #include <map>
 #include "Cube.h"
-class ObjLoader;
+class MeshLoader;
 class Cube;
 
 class MeshManager // observer? subject? message to objloader? 
 {
 	
-	ObjLoader* objLoader = nullptr;
+	MeshLoader* meshLoader = nullptr;
 public:
+	//Constructor and Destructor
 	MeshManager();
 	~MeshManager();
-	static void Allocate();
-	static MeshManager& Get(); // Gets the singleton
-//private:
-	static MeshManager* instance; 
-	
-	
+
+	// Message System Components
 	//ConcreteMessage* message = new ConcreteMessage(c1,c2);
-	//static void LoadMesh(char* fromPath);
-
-	std::string msg;
 	//Message* message = new Message(msg);
+	std::string msg;
 
-
-	
-	
-	Cube* LoadCube();
-	Mesh* LoadMesh(std::string fromPath);
-	Cube* cube;
+	// Mesh Management
 	std::map<std::string, Mesh*> MeshCache;
-	Mesh* Create(Mesh* myMesh);
+	Mesh* LoadMesh(std::string fromPath);
+	Mesh* Create(std::string name = "newmesh", std::string path_end = NULL);
 	
 };
 

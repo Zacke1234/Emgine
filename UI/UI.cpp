@@ -9,6 +9,26 @@
 #include <iostream>
 #pragma once
 
+CubeCollider* cubeColl2;
+MeshManager* meshmang;
+ObjectManager* objectMang;
+ShaderManager* shaderMang;
+ColliderManager* colliderMang;
+TextureManager* textureMang;
+
+int init_colliders2() {
+	glm::vec3 extents = { 1,1, 1 };
+	glm::vec3 extentsPlane = { 7 / 2, 0.5f / 2, 7 / 2 };
+	glm::vec3 center = { 0, 0,0 }; float radius = 0.5f; glm::vec3 pos = { 0,0,0 };
+	glm::vec3 scale = { 1,1,1 };
+
+	cubeColl2 = new CubeCollider(center, extents, pos);
+	shaderMang = new ShaderManager();
+	colliderMang = new ColliderManager();
+	textureMang = new TextureManager();
+	meshmang = new MeshManager();
+	return 0;
+}
 
 UI::UI(GLFWwindow* window) // unitilized
 {
@@ -33,16 +53,12 @@ UI::UI(GLFWwindow* window) // unitilized
 	ImGui_ImplOpenGL3_Init("#version 330");
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	
+	
+	init_colliders2();
 }
 
-void UI::RenderUI(Shader* shader)
+void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 {
-	glm::vec3 extents = { 1,1,1 };
-	glm::vec3 center = { 0, 0,0 }; float radius = 0.5f; glm::vec3 pos = { 0,0,0 };
-	glm::vec3 scale = { 1,1,1 };
-	SphereCollider* sphereColl = new SphereCollider(center, radius, pos);
-	CubeCollider* cubeColl = new CubeCollider(center, extents, pos);
-	
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
@@ -64,15 +80,15 @@ void UI::RenderUI(Shader* shader)
 	}
 	ImGui::Text("Type in the exact file name");
 
-	textureFile = ImGui::InputText("texture file", buf, sizeof(buf) - 1);  // does not work as intended
-	name = ImGui::InputText("Name", buf2, sizeof(buf2) - 1);
-	charMesh = ImGui::InputText("Mesh", buf_Mesh, sizeof(buf_Mesh) - 1); // not yet implemented
+	textureFile = ImGui::InputText("texture file", textureBuffer, sizeof(textureBuffer) - 1);  // does not work as intended
+	name = ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer) - 1);
+	charMesh = ImGui::InputText("Mesh", meshBuffer, sizeof(meshBuffer) - 1); // not yet implemented
 
 	ImGui::InputFloat("Field of view", &fov, 1.0f, 1.0f, "%.2f");
 
 	ImGui::InputFloat("Camera sensitivity", &sens, 0.1f, 1.0f, "%.2f");
 
-
+	std::string tex = "_tex";
 	//ImGui::Text("Change camera speed");
 	//ImGui::InputFloat("Camera speed", &speed, 1.0f, 1.0f, "%.1f"); // supposed to change speed of camera cause
 
@@ -80,94 +96,34 @@ void UI::RenderUI(Shader* shader)
 
 	if (ImGui::Button("Create new mesh"))
 	{
-		Object* meshObj = new Object("Mesh", mesh, texture, shader, cubeColl);
-
-		texture = new Texture(buf);
-		newCollider = new Collider();
-		/*meshmang = new MeshManager();
-		mesh = new Mesh();*/
-
-
-
-		// \0
-		if (textureFile == '0')
-		{
-			texture = new Texture("Default 1.png");
-		}
-
-		meshObj->SetTexture(*texture);
-		//mesh = meshmang->LoadMesh("fish.obj");
-		mesh = MeshManager::Get().LoadMesh("cube.obj");
-		if (mesh != nullptr)
-		{
-
-			meshObj->SetMesh(*mesh);
-		}
-
-		//meshObj->CreateMesh();
-
-		meshObj->Position = glm::vec3(1, 1, 1);
-		meshObj->Scale = glm::vec3(1, 1, 1);
-		meshObj->SetShader(*shader);
-		meshObj->SetName(buf2);
-
-		meshObj->SetCollider(*newCollider);
-		newCollider->isKinematic = true;
-
-		if (name == '\0')
-		{
-			meshObj->SetName("Mesh");
-		}
+			
 		
-		
-		
+		objectmanager->Create(
+			nameBuffer, // Name
+			meshmang->Create(nameBuffer, meshBuffer),
+			textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
+			shader->DefaultShader,
+			colliderMang->Create(cubeColl2)
+		);
+
+		//Object::Entities.push_back(objectMang->ObjectMesh);
 		
 		type = ObjectType::Type_Mesh;
 		
 		
-		Object::Entities.push_back(meshObj);
+		
 	}
 
 	if (ImGui::Button("Create new cube"))
 	{
-		glm::vec3 center = { 0, 0,0 };
-		glm::vec3 extents = { 0,0,0 };
-		//mesh = new Mesh();
-		Object* CubeObj = new Object("Cube",mesh, texture, shader, cubeColl);
-		texture = new Texture(buf);
-		newCollider = new Collider();
-
-		type = ObjectType::Type_Mesh;
 		
-		if (textureFile == '\0')
-		{
-			texture = new Texture("Default 1.png");
-		}
-
-
-		CubeObj->SetTexture(*texture);
-
-		mesh = MeshManager::Get().LoadMesh("out.bin");
-		if (mesh != nullptr)
-		{
-
-			CubeObj->SetMesh(*mesh);
-		}
-		CubeObj->Position = glm::vec3(1, 1, 1);
-		CubeObj->Scale = glm::vec3(1, 1, 1);
-		CubeObj->SetShader(*shader);
-
-		CubeObj->SetName(buf2);
-
-		CubeObj->SetCollider(*newCollider);
-
-		newCollider->isKinematic = true;
-
-		if (name == '\0')
-		{
-			CubeObj->SetName("Cube");
-		}
-		Object::Entities.push_back(CubeObj);
+		objectmanager->Create(nameBuffer,
+			meshmang->Create("cube", "cube.obj"),
+			textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
+			shader->DefaultShader,
+			colliderMang->Create(cubeColl2)
+		);
+		type = ObjectType::Type_Cube;
 
 	}
 	// cubeCollider->isKinematic;
@@ -181,26 +137,13 @@ void UI::RenderUI(Shader* shader)
 
 	if (ImGui::Button("Change Texture"))
 	{
-		 
-		
-		if (textureFile == '\0')
-		{
-			texture = new Texture("Default 1.png");
-		}
-		// wall.jpg
-		// 
-		//std::cout << "changed texture" << "\n";
-		texture = new Texture(buf);
+		textureMang->Find(std::string(nameBuffer + tex));
 
-		Object::Entities[Object::SelectedEntity]->SetTexture(*texture);
-		Object::Entities[Object::SelectedEntity]->SetShader(*shader); // works a little bit better but...
-		// png is blank
-		
+		 
 	}
 
 	if (ImGui::Button("Change name"))
 	{
-		Object::Entities[Object::SelectedEntity]->SetName(buf2);
 	}
 
 	if (ImGui::Button("Play"))
