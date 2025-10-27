@@ -8,7 +8,7 @@
 class MeshLoader;
 class Cube;
 
-class MeshManager // observer? subject? message to objloader? 
+class MeshManager : public Observer
 {
 	
 	MeshLoader* meshLoader = nullptr;
@@ -17,9 +17,12 @@ public:
 	MeshManager();
 	~MeshManager();
 
-	// Message System Components
-	//ConcreteMessage* message = new ConcreteMessage(c1,c2);
-	//Message* message = new Message(msg);
+
+
+	void Update(std::string message_from_subject) override {
+		std::cout << "MeshManager received message: " << message_from_subject << "\n";
+	};
+
 	std::string msg;
 
 	// Mesh Management

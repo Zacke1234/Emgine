@@ -33,6 +33,7 @@
 #include <Managers/ObjectManager.h>
 #include <Managers/TextureManager.h>
 #include "../DisplayMessage.h"
+#include <Managers/LightingManager.h>
 
 
 
@@ -52,22 +53,20 @@ ColliderManager* MyColliderManager;
 TextureManager* myTextureManager;
 Memory* myMemory;
 MeshLoader* myMeshLoader = nullptr;
-//UI* myUI;
+UI* myUI;
 Message* myMessage;
 CubeCollider* cubeColl;
+SphereCollider* sphereColl;
+LightingManager* myLightingManager;
 
 
 int message_stuff() {
 	myMessage = new Message;
 
-	DisplayMessage displayMessage1;
-	DisplayMessage displayMessage2;
+	myMessage->Attach(myMeshManager);
+	
+	myMessage->setMessage(myObjectManager->message = "ObjectManager attached");
 
-	myMessage->Attach(&displayMessage1);
-	myMessage->Attach(&displayMessage2);
-
-	myMessage->setMessage("Mesh loaded");
-	myMessage->setMessage("Object loaded");
 	return 0;
 }
 
@@ -116,13 +115,16 @@ int init_memory_tracker() {
 	return 0;
 }
 
+
 int init_managers() {
-
-	myMeshManager = new MeshManager();
-
+	
+	myLightingManager = new LightingManager();
+	myMeshManager = new MeshManager;
+	myShaderManager = new ShaderManager();
 	myTextureManager = new TextureManager();
+	MyColliderManager = new ColliderManager();
 	//TODO: init shader, collider, and rigidbodymanager
-	myObjectManager = new ObjectManager();
+	myObjectManager = new ObjectManager;
 	return 0;
 }
 
@@ -141,6 +143,7 @@ int init_colliders() {
 	glm::vec3 scale = { 1,1,1 };
 
 	cubeColl = new CubeCollider(center, extents, pos);
+	sphereColl = new SphereCollider(center, radius, pos);
 	return 0;
 }
 
@@ -168,20 +171,19 @@ int init_physics() {
 
 // Update Functions
 
-int static update_camera(Camera* cam, /*UI* myUI,*/ GLFWwindow* window)
+int static update_camera(Camera* cam, UI* myUI, GLFWwindow* window)
 {
 	cam->ProcessInput(window);
 	cam->CameraUpdate(window);
-	cam->fieldOfView = 70;
-	cam->sensitivity = 0.1f;
-	/*cam->fieldOfView = myUI->fov;
-	cam->sensitivity = myUI->sens;*/
+	
+	cam->fieldOfView = myUI->fov;
+	cam->sensitivity = myUI->sens;
 	return 0;
 }
 
-int static update_ui(UI* myUI, Shader* myShader)
+int static update_ui(UI* myUI, ShaderManager* myShader, ObjectManager* objManager)
 {
-	myUI->RenderUI(myShader);
+	myUI->RenderUI(myShader, objManager);
 	
 	Object::Entities[Object::SelectedEntity]->Position = glm::vec3(myUI->xPos, myUI->yPos, myUI->zPos);
 	Object::Entities[Object::SelectedEntity]->Rotation = glm::vec3(
@@ -210,10 +212,12 @@ int main()
 	//Create Textures
 	Texture* wall = myTextureManager->Create("Wall", "wall.jpg");
 	myTextureManager->Create("Default", "Default 1.png");
+	
+	//Message calling
+	message_stuff();
+	
 
-	//Create Meshes
-
-	Mesh* fish = myMeshManager->Create("fish", "fish.obj");
+	
 
 	init_colliders();
 
@@ -221,21 +225,32 @@ int main()
 	
 	myShaderManager->InitDefaultShader();
 	
-	//myUI = new UI(window);
+	myUI = new UI(window);
 
-
+	
 	// Object Creation
 
 
-	myObjectManager->Create(
-		"fishObj",
-		fish,
+	myObjectManager->Create( // this also pushes to Object::Entities
+		"cubeObj",
+		myMeshManager->Create("cube", "cube.obj"),
 		wall,
 		myShaderManager->DefaultShader,
 		MyColliderManager->Create(cubeColl)
+		
 	);
+	
+	
+	myObjectManager->Create( // this also pushes to Object::Entities
+		"fishObj",
+		myMeshManager->Create("fish", "fish.obj"),
+		wall,
+		myShaderManager->DefaultShader,
+		MyColliderManager->Create(sphereColl)
 
-
+	);
+	
+	
 
 
 	glEnable(GL_DEPTH_TEST);
@@ -272,6 +287,8 @@ int main()
 		
 		//messageUI->RenderUI();
 		myLighting->Use(myCamera, myShaderManager->DefaultShader);
+
+		
 		
 	
 
@@ -290,10 +307,10 @@ int main()
 		}
 		
 		// render UI (after/ON TOP OF drawcall)
-		//update_ui(myUI, myShaderManager->DefaultShader);
+		update_ui(myUI, myShaderManager, myObjectManager);
 
 		//update camera
-		update_camera(myCamera, /*myUI,*/ window);
+		update_camera(myCamera, myUI, window);
 		
 
 		/*ImGui::End();

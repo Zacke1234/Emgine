@@ -1,16 +1,28 @@
 #pragma once
 #include <vector>
 #include <Object.h>
-class ObjectManager
+class ObjectManager : public Subject
 {
 public:
 	std::vector<Object*> objects;
-	Object* Create(std::string aName, Mesh* Mesh, Texture* aTexture, Shader* aShader, Collider* aCollider);
+	virtual Object* Create(std::string aName, Mesh* Mesh, Texture* aTexture, Shader* aShader, Collider* aCollider) ;
 	void Destroy(Object* obj);
-
 	
-	Object* ObjectMesh{};
-	Object* CubeObject{};
-	Object* PlaneObject{};
+
+	void Attach(Observer* observer) override {
+		observers.push_back(observer);
+
+	}
+	void Detach(Observer* observer) override {
+		observers.erase(std::remove(observers.begin(), observers.end(), observer), observers.end());
+	}
+
+	void Notify() override {
+		for (Observer* observer : observers)
+		{
+			observer->Update(message);
+		}
+	}
+	
 };
 

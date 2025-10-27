@@ -6,9 +6,12 @@ Shader* ShaderManager::InitDefaultShader()
 	return DefaultShader;
 }
 
-Shader* ShaderManager::Create(Shader* myShader = NULL)
+Shader* ShaderManager::Create(Shader* myShader)
 {
+	
 	myShader = new Shader("../Shader/VertexShader_1.glsl", "../Shader/FragmentShader_1.glsl");
 	DefaultShader = myShader;
-	return nullptr;
+	return myShader;
 }
+
+// C:\Users\zackarias.hager\source\repos\Emgine\Shader

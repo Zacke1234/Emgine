@@ -8,7 +8,7 @@
 MeshManager::MeshManager()
 {
 	meshLoader = new MeshLoader();
-	std::cout << "Client triggers operation 1 (meshManager)" << "\n";
+	//std::cout << "Client triggers operation 1 (meshManager)" << "\n";
 }
 
 MeshManager::~MeshManager()
@@ -30,11 +30,14 @@ Mesh* MeshManager::LoadMesh(std::string fromPath)
 	//bin.WriteFile();
 
 	std::ofstream write("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\out.bin", std::ios::binary); // ./out.bin
-	std::ifstream read("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\resource\\meshes\\fish.obj");
-
+	std::ifstream read(fromPath);
+	
 	meshLoader->ReadFromBinary(read);
 	meshLoader->WriteToBinary(write);
-
+	
+	
+	
+	
 	write.close();
 	read.close();
 
@@ -42,6 +45,7 @@ Mesh* MeshManager::LoadMesh(std::string fromPath)
 
 	if (!meshLoader->ObjParser("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\out.bin", mesh))
 	{
+		
 		delete mesh;
 		return nullptr;
 	}

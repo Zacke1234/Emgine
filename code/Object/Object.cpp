@@ -54,6 +54,14 @@ Object::Object(std::string _namn = "new_object", Mesh* Mesh = NULL, Texture* aTe
 	else {
 		std::cout << "No collider assigned to object: " << namn << "\n";
 	}
+	if (ObjectType::Type_Light)
+	{
+		myLightData = nullptr;
+	}
+	else
+	{
+		std::cout << "No light data assigned to object: " << namn << "\n";
+	}
 }
 
 
