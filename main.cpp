@@ -33,6 +33,7 @@
 #include <Managers/ObjectManager.h>
 #include <Managers/TextureManager.h>
 #include "../DisplayMessage.h"
+#include <Managers/LightingManager.h>
 
 
 
@@ -56,18 +57,16 @@ UI* myUI;
 Message* myMessage;
 CubeCollider* cubeColl;
 SphereCollider* sphereColl;
+LightingManager* myLightingManager;
 
-int message_stuff() {
+
+int message_stuff() { // message passing between meshmanager and objectmanager
 	myMessage = new Message;
 
-	DisplayMessage displayMessage1;
-	DisplayMessage displayMessage2;
+	myMessage->Attach(myMeshManager);
+	
+	myMessage->setMessage(myObjectManager->message = "ObjectManager attached");
 
-	myMessage->Attach(&displayMessage1);
-	myMessage->Attach(&displayMessage2);
-
-	myMessage->setMessage("Mesh loaded");
-	myMessage->setMessage("Object loaded");
 	return 0;
 }
 
@@ -116,14 +115,16 @@ int init_memory_tracker() {
 	return 0;
 }
 
-int init_managers() {
 
-	myMeshManager = new MeshManager();
+int init_managers() {
+	
+	myLightingManager = new LightingManager();
+	myMeshManager = new MeshManager;
 	myShaderManager = new ShaderManager();
 	myTextureManager = new TextureManager();
 	MyColliderManager = new ColliderManager();
 	//TODO: init shader, collider, and rigidbodymanager
-	myObjectManager = new ObjectManager();
+	myObjectManager = new ObjectManager;
 	return 0;
 }
 
@@ -211,11 +212,12 @@ int main()
 	//Create Textures
 	Texture* wall = myTextureManager->Create("Wall", "wall.jpg");
 	myTextureManager->Create("Default", "Default 1.png");
+	
+	//Message calling
+	message_stuff();
+	
 
-	//Create Meshes
-
-	Mesh* fish = myMeshManager->Create("fish", "fish.obj");
-	Mesh* cube = myMeshManager->Create("cube", "cube.obj");
+	
 
 	init_colliders();
 
@@ -231,19 +233,22 @@ int main()
 
 	myObjectManager->Create( // this also pushes to Object::Entities
 		"cubeObj",
-		cube,
+		myMeshManager->Create("cube", "cube.obj"),
 		wall,
 		myShaderManager->DefaultShader,
 		MyColliderManager->Create(cubeColl)
+		
 	);
+	
+	
 	myObjectManager->Create( // this also pushes to Object::Entities
 		"fishObj",
-		fish,
+		myMeshManager->Create("fish", "fish.obj"),
 		wall,
 		myShaderManager->DefaultShader,
 		MyColliderManager->Create(sphereColl)
-	);
 
+	);
 	
 	
 
@@ -282,6 +287,8 @@ int main()
 		
 		//messageUI->RenderUI();
 		myLighting->Use(myCamera, myShaderManager->DefaultShader);
+
+		
 		
 	
 
