@@ -12,14 +12,6 @@ using namespace std;
 
 MeshLoader::MeshLoader()
 {
-	FileHandling();
-
-	std::cout << "\n";
-	std::cout << "Client triggers operation 4 (objLoader)" << "\n";
-	
-	/*c1->PerformMessage2();
-	c2->PerformMessage3();
-	c2->setMessage(message);*/
 	
 }
 
@@ -244,31 +236,6 @@ void MeshLoader::ParseFaceIndices(const std::string& string, Face& face, int ver
 	}
 }
 
-void MeshLoader::MeshTexture(char material[])
-{
-	//TextureOfMesh = new Texture(material);
-}
-
-//std::ifstream in("./out.bin", std::ios::binary); // in.txt out.bin | I don't know what else to do with serialisation
-//std::ofstream out("./fish.obj"); // does this create a file? Yes, It can't write anything though
-
-void MeshLoader::FileHandling()
-{
-	// size_t fSize, std::filesystem::path fPath
-	
-
-	
-	/*fPath = "fish.obj";
-	fSize = filesystem::file_size(fPath);
-	if (fPath.empty())
-	{
-		std::cerr << "File path is empty" << std::endl;
-		return;
-	}
-	
-	std::cerr << "File size: " << fSize << " bytes" << std::endl;*/
-}
-
 // $(SolutionDir)resoure
 
 //ofstream filePath("out.bin", std::ios::binary);
@@ -297,7 +264,6 @@ void MeshLoader::WriteToBinary(std::ostream& f)
 	
 
 	
-
 }
 
 void MeshLoader::ReadFromBinary(std::istream& f)
@@ -311,7 +277,7 @@ void MeshLoader::ReadFromBinary(std::istream& f)
 	data = new char[fileSize + 1];
 	f.read(data, fileSize);
 	data[fileSize] = '\0';
-	name = data;    
+	name = data;   
 	delete data; 
 
 	f.read((char*)&fileSize, sizeof(fileSize));
@@ -319,6 +285,7 @@ void MeshLoader::ReadFromBinary(std::istream& f)
 	f.read(data, fileSize);
 	data[fileSize] = '\0';
 	type = data;
+	
 
 	//std::cerr << data << std::endl;
 	delete data; // memory clearing

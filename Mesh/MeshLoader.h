@@ -53,10 +53,9 @@ public:
 	MeshLoader();
 	bool ObjParser(std::string fileName, Mesh* mesh);
 	void ParseFaceIndices(const std::string& string, Face& face, int vertexIndex);
-	void MeshTexture(char material[]);
+
 	void WriteToBinary(std::ostream& f);
 	void ReadFromBinary(std::istream& f);
-	void FileHandling();
 	// size_t fileSize, std::filesystem::path filePath
 	/*MessageQueueComponent1* c1 = new MessageQueueComponent1;
 	MessageQueueComponent2* c2 = new MessageQueueComponent2;

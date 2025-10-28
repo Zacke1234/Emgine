@@ -42,8 +42,7 @@ using namespace std;
 
 
 GLFWwindow* window;
-//Threading* myThread = new Thread(); 
-//Shader* myShader;
+
 Lighting* myLighting;
 Camera* myCamera;
 MeshManager* myMeshManager;
@@ -55,18 +54,36 @@ Memory* myMemory;
 MeshLoader* myMeshLoader = nullptr;
 UI* myUI;
 Message* myMessage;
+MessageQueue* myMessageQueue;
 CubeCollider* cubeColl;
 SphereCollider* sphereColl;
 LightingManager* myLightingManager;
+//Threading* myThreading;
+Thread* myThread; 
 
 
 int message_stuff() { // message passing between meshmanager and objectmanager
 	myMessage = new Message;
+	myMessageQueue = new MessageQueue;
+
+	myThread = new Thread();
+	myThread->DoWork(myMeshManager, myMessage);
+	myMessage->setMessage("Thread started for MeshManager");
+	
 
 	myMessage->Attach(myMeshManager);
-	
-	myMessage->setMessage(myObjectManager->message = "ObjectManager attached");
+	myMessage->setMessage(myObjectManager->message = "MeshManager attached to ObjectManager (Subject)"); // Subject attaches to Observer, because the observer observes the subject
 
+	myMessage->setMessage("Queue the message");
+	myMessageQueue->Enqueue(myMessage);
+	
+	
+
+	myMessage->setMessage("Detach MeshManager from Message");
+	myMessage->setMessage("Dequeue the message");
+	myMessage->Detach(myMeshManager);
+	myMessageQueue->Dequeue(myMessage);
+	
 	return 0;
 }
 
@@ -229,11 +246,22 @@ int main()
 
 	
 	// Object Creation
+	Mesh* fish = myMeshManager->Create("fish", "fish.obj");
+	Mesh* cube = myMeshManager->Create("cube", "cube.obj");
 
+	myObjectManager->CreateLight( // this also pushes to Object::Entities
+		"lightObj",
+		NULL,
+		NULL,
+		myShaderManager->DefaultShader,
+		NULL,
+		//myLightingManager->CreatePointLight(glm::vec3(0, 5, 0), glm::vec3(1, 1, 1), 1.0f)
+		myLightingManager->Create();
+	);
 
 	myObjectManager->Create( // this also pushes to Object::Entities
 		"cubeObj",
-		myMeshManager->Create("cube", "cube.obj"),
+		cube,
 		wall,
 		myShaderManager->DefaultShader,
 		MyColliderManager->Create(cubeColl)
@@ -243,7 +271,7 @@ int main()
 	
 	myObjectManager->Create( // this also pushes to Object::Entities
 		"fishObj",
-		myMeshManager->Create("fish", "fish.obj"),
+		fish,
 		wall,
 		myShaderManager->DefaultShader,
 		MyColliderManager->Create(sphereColl)

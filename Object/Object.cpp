@@ -13,7 +13,9 @@ using namespace std;
 vector<Object*> Object::Entities;
 int Object::SelectedEntity;
 
-
+// Objects should hold all my meshes and lights
+// Meshes should hold meshses like teapots, fishes and cubes
+// Lighting should have lights, like directional, pointlight and spotlight etc (is that lightdata?)
 
 
 
@@ -53,6 +55,14 @@ Object::Object(std::string _namn = "new_object", Mesh* Mesh = NULL, Texture* aTe
 	}
 	else {
 		std::cout << "No collider assigned to object: " << namn << "\n";
+	}
+	if (ObjectType::Type_Light)
+	{
+		myLightData = nullptr;
+	}
+	else
+	{
+		std::cout << "No light data assigned to object: " << namn << "\n";
 	}
 }
 

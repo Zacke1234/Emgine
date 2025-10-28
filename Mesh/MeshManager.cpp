@@ -8,7 +8,7 @@
 MeshManager::MeshManager()
 {
 	meshLoader = new MeshLoader();
-	std::cout << "Client triggers operation 1 (meshManager)" << "\n";
+	//std::cout << "Client triggers operation 1 (meshManager)" << "\n";
 }
 
 MeshManager::~MeshManager()
@@ -23,26 +23,32 @@ MeshManager::~MeshManager()
 
 
 
-Mesh* MeshManager::LoadMesh(std::string fromPath)
+Mesh* MeshManager::LoadMesh(std::string fromPath, std::string name)
 {
-	BinaryFile bin("out.bin");
+	BinaryFile bin((name + ".bin").c_str());
+	/*bin.ReadFile(*meshLoader);
+	bin.WriteFile(*meshLoader);*/
+
 	//bin.ReadFile();
 	//bin.WriteFile();
 
-	std::ofstream write("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\out.bin", std::ios::binary); // ./out.bin
+	std::ofstream write("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\" + name + ".bin", std::ios::binary); // ./out.bin
 	std::ifstream read(fromPath);
 	
 	meshLoader->ReadFromBinary(read);
 	meshLoader->WriteToBinary(write);
-
+	
+	
+	
 	
 	write.close();
 	read.close();
 
 	Mesh* mesh = new Mesh();
 
-	if (!meshLoader->ObjParser("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\out.bin", mesh))
+	if (!meshLoader->ObjParser("C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\" + name + ".bin", mesh)) // herein lies the problem....
 	{
+		
 		delete mesh;
 		return nullptr;
 	}
@@ -60,7 +66,7 @@ Mesh* MeshManager::Create(std::string name, std::string path_end)
 	std::string path = "C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\resource\\meshes\\";
 	Mesh* mesh = new Mesh();
 	mesh->name = name;
-	mesh = LoadMesh((path + path_end).c_str());
+	mesh = LoadMesh((path + path_end).c_str(), name);
 	std::cout << "Mesh loaded in: " << name << " from path: " << path + path_end << "\n";
 	MeshCache.emplace(name, mesh);
 	std::cout << "Mesh created: " << name << " from path: " << path + path_end << "\n";
