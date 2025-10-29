@@ -4,6 +4,8 @@
 #include <glfw3.h>
 #include <gtc/type_ptr.hpp>
 
+std::vector<LightData*> lightsList;
+// 
 // shadow mapping  
 float near_plane = 1.0f, far_plane = 7.5f;
 glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
@@ -50,6 +52,7 @@ int PointLightShaderSetting(Shader* shader)
 	shader->SetVec3("Plight[3].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
 	shader->SetVec3("Plight[3].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
 	shader->SetVec3("Plight[3].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+	return 0;
 }
 
 Lighting::Lighting()
@@ -67,22 +70,25 @@ void Lighting::Use(Camera* aCamera, Shader* shader)
 	{
 	case 0: //NULL
 		//std::cout << "Null light" << std::endl;
-		shader->SetFloat("light.constant", 0.0f);
-		shader->SetFloat("light.linear", 0.0f);
-		shader->SetFloat("light.quadratic", 0.00f);
+		/*shader->SetFloat("PLight.constant", 1.0f);
+		shader->SetFloat("PLight.linear", 0.09f);
+		shader->SetFloat("PLight.quadratic", 0.032f);
 
-		shader->SetVec3("light.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
-		shader->SetVec3("light.diffuse", glm::vec3(0.0f, 0.0f, 0.0f));
-		shader->SetVec3("light.specular", glm::vec3(0.0f, 0.0f, 0.0f));
+		shader->SetVec3("PLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+		shader->SetVec3("PLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+		shader->SetVec3("PLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));*/
 
 		shader->SetVec3("lightColor", glm::vec3(0.0f, 0.0f, 0.0f));
-		shader->SetVec3("lightPos", glm::vec3(0.0f, 0.0f, 0.0f));
+		shader->SetVec3("lightPos", glm::vec3(3.0f, 4.0f, 1.0f));
 		shader->SetVec3("objectColor", glm::vec3(0.0f, 0.0f, 0.0f));
 		shader->SetFloat("ambientStrength", ambientStrength);
 		shader->SetVec3("viewPos", aCamera->myPosition);
 		shader->SetMatrix("lightSpaceMatrix", lightSpaceMatrix);
-		shader->SetInt("material.diffuse", 0);
-		shader->SetInt("material.specular", 0);
+		shader->SetVec3("material.ambient", glm::vec3(1.0f, 0.5, 0.31));
+		shader->SetInt("material.diffuse", 1);
+		shader->SetInt("material.specular", 1);
+		shader->SetFloat("material.shininess", 32.0f);
+
 		break;
 	case 1: //Point
 		std::cout << "Point light" << std::endl;
@@ -104,11 +110,11 @@ void Lighting::Use(Camera* aCamera, Shader* shader)
 		shader->SetMatrix("lightSpaceMatrix", lightSpaceMatrix);
 
 		shader->SetVec3("material.ambient", glm::vec3(1.0f, 0.5, 0.31));
-		shader->SetInt("material.diffuse", 0);
-		shader->SetInt("material.specular", 0);
+		shader->SetInt("material.diffuse", 1);
+		shader->SetInt("material.specular", 1);
 		shader->SetFloat("material.shininess", 32.0f);
 
-		shader->SetFloat("Plight[0].constant", 1.0f);
+		
 		//std::cout << "light pos", myLightData->lightPos;
 		// for point light
 		break;
@@ -125,8 +131,8 @@ void Lighting::Use(Camera* aCamera, Shader* shader)
 		shader->SetFloat("ambientStrength", ambientStrength);
 		shader->SetVec3("viewPos", aCamera->myPosition);
 		shader->SetMatrix("lightSpaceMatrix", lightSpaceMatrix);
-		shader->SetInt("material.diffuse", 0);
-		shader->SetInt("material.specular", 0);
+		shader->SetInt("material.diffuse", 1);
+		shader->SetInt("material.specular", 1);
 		break;
 	case 3: // Spot
 		//std::cout << "Spot light" << std::endl;
@@ -138,14 +144,16 @@ void Lighting::Use(Camera* aCamera, Shader* shader)
 		shader->SetVec3("lightPos", glm::vec3(1.0f, 1.0f, 1.0f));
 		shader->SetVec3("objectColor", glm::vec3(1.0f, 0.0f, 1.0f));
 		shader->SetFloat("ambientStrength", ambientStrength);
-		shader->SetVec3("viewPos", glm::vec3(0, 0, 0));
+		shader->SetVec3("viewPos", aCamera->myPosition);
 		shader->SetMatrix("lightSpaceMatrix", lightSpaceMatrix);
-		shader->SetInt("material.diffuse", 0);
-		shader->SetInt("material.specular", 0);
+		shader->SetInt("material.diffuse", 1);
+		shader->SetInt("material.specular", 1);
 		break;
 		
 	}
 }
 
+void LightData::InitialiseLightData()
+{
 
-
+}

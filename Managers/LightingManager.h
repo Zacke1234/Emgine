@@ -3,8 +3,12 @@
 class LightingManager
 {
 public: 
-	LightData* CreateData();
-	Lighting* Create();
-	void Destroy(Lighting* light);
+
+	Lighting* DefaultLighting;
+
+	LightData* CreateData(LightData* lightData);
+	Lighting* Create(Lighting* lighting);
+	void Destroy(Lighting* light, LightData* lightData);
+	
 };
 

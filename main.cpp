@@ -67,8 +67,8 @@ int message_stuff() { // message passing between meshmanager and objectmanager
 	myMessageQueue = new MessageQueue;
 
 	myThread = new Thread();
-	myThread->DoWork(myMeshManager, myMessage);
-	myMessage->setMessage("Thread started for MeshManager");
+	//myThread->DoWork(myMeshManager, myMessage);
+	//myMessage->setMessage("Thread started for MeshManager");
 	
 
 	myMessage->Attach(myMeshManager);
@@ -140,6 +140,7 @@ int init_managers() {
 	myShaderManager = new ShaderManager();
 	myTextureManager = new TextureManager();
 	MyColliderManager = new ColliderManager();
+	
 	//TODO: init shader, collider, and rigidbodymanager
 	myObjectManager = new ObjectManager;
 	return 0;
@@ -249,15 +250,14 @@ int main()
 	Mesh* fish = myMeshManager->Create("fish", "fish.obj");
 	Mesh* cube = myMeshManager->Create("cube", "cube.obj");
 
-	myObjectManager->CreateLight( // this also pushes to Object::Entities
-		"lightObj",
-		NULL,
-		NULL,
-		myShaderManager->DefaultShader,
-		NULL,
-		//myLightingManager->CreatePointLight(glm::vec3(0, 5, 0), glm::vec3(1, 1, 1), 1.0f)
-		myLightingManager->Create();
-	);
+	//myObjectManager->CreateLight( // this also pushes to Object::Entities
+	//	"lightObj",
+	//	NULL,
+	//	NULL,
+	//	myShaderManager->DefaultShader,
+	//	NULL,
+	//	//myLightingManager->CreatePointLight(glm::vec3(0, 5, 0), glm::vec3(1, 1, 1), 1.0f)
+	//);
 
 	myObjectManager->Create( // this also pushes to Object::Entities
 		"cubeObj",
@@ -318,8 +318,7 @@ int main()
 
 		
 		
-	
-
+		 
 		/*for (auto& c : Collider::)
 		{
 			c->SetTheCollision();

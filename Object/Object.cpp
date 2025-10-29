@@ -12,7 +12,7 @@ using namespace std;
 
 vector<Object*> Object::Entities;
 int Object::SelectedEntity;
-
+vector<LightObject*> LightObject::LightEntities;
 // Objects should hold all my meshes and lights
 // Meshes should hold meshses like teapots, fishes and cubes
 // Lighting should have lights, like directional, pointlight and spotlight etc (is that lightdata?)
@@ -33,40 +33,85 @@ Object::Object(std::string _namn = "new_object", Mesh* Mesh = NULL, Texture* aTe
 		SetMesh(*Mesh);
 	}
 	else {
-		std::cout << "No mesh assigned to object: " << namn << "\n";
+		std::cout << "No mesh assigned to object: " << _namn << "\n";
 	}
 	if (aTexture)
 	{
 		SetTexture(*aTexture);
 	}
 	else {
-		std::cout << "No texture assigned to object: " << namn << "\n";
+		std::cout << "No texture assigned to object: " << _namn << "\n";
 	}
 	if (aShader)
 	{
 		SetShader(*aShader);
 	}
 	else {
-		std::cout << "No shader assigned to object: " << namn << "\n";
+		std::cout << "No shader assigned to object: " << _namn << "\n";
 	}
 	if (aCollider)
 	{
 		SetCollider(*aCollider);
 	}
 	else {
-		std::cout << "No collider assigned to object: " << namn << "\n";
+		std::cout << "No collider assigned to object: " << _namn << "\n";
 	}
-	if (ObjectType::Type_Light)
+	/*if (ObjectType::Type_Light)
 	{
 		myLightData = nullptr;
+		
+	}*/
+	
+}
+
+LightObject::LightObject(std::string _namn = "new_object", Mesh* Mesh = NULL, Texture* aTexture = NULL, Shader* aShader = NULL, Collider* aCollider = NULL, LightData* aLightData = NULL)
+{
+
+	// Name
+	if (_namn != "new_object")
+	{
+		this->namn = _namn;
+	}
+
+	//Components
+	if (Mesh)
+	{
+
+		SetMesh(*Mesh);
+	}
+	else {
+		std::cout << "No mesh assigned to object: " << _namn << "\n";
+	}
+	if (aTexture)
+	{
+		SetTexture(*aTexture);
+	}
+	else {
+		std::cout << "No texture assigned to object: " << _namn << "\n";
+	}
+	if (aShader)
+	{
+		SetShader(*aShader);
+	}
+	else {
+		std::cout << "No shader assigned to object: " << _namn << "\n";
+	}
+	if (aCollider)
+	{
+		SetCollider(*aCollider);
+	}
+	else {
+		std::cout << "No collider assigned to object: " << _namn << "\n";
+	}
+	if (aLightData)
+	{
+		SetLightData(*aLightData);
 	}
 	else
 	{
-		std::cout << "No light data assigned to object: " << namn << "\n";
+		std::cout << "No light data assigned to object: " << _namn << "\n";
 	}
 }
-
-
 
 void Object::SetCube(Cube& aCube)
 {
@@ -100,11 +145,19 @@ void Object::SetCollider(Collider& aCollider)
 	myCollider->isKinematic = false;
 	myCollider->scale = Scale;
 }
-void Object::SetLightData(LightData* lightdata)
+void Object::SetLightData(LightData& lightdata)
 {
 	type = ObjectType::Type_Light;
-	myLightData = lightdata;
+	myLightData = &lightdata;
+	myLightData->lightPos = this->Position;
+	
 }
+
+//void Object::SetLighting(Lighting& myLighting)
+//{
+//	type = ObjectType::Type_Light;
+//	//lighting = &myLighting;
+//}
 
 Mesh* Object::CreateMesh() 
 {

@@ -8,7 +8,7 @@ public:
 	virtual Object* Create(std::string aName, Mesh* Mesh, Texture* aTexture, Shader* aShader, Collider* aCollider) ;
 	void Destroy(Object* obj);
 	
-	virtual Object* CreateLight(std::string aName, Mesh* Mesh, Texture* aTexture, Shader* aShader, Collider* aCollider, LightData* lightData);
+	virtual LightObject* CreateLight(std::string aName, Mesh* Mesh, Texture* aTexture, Shader* aShader, Collider* aCollider, LightData* lightData);
 
 	void Attach(Observer* observer) override {
 		observers.push_back(observer);

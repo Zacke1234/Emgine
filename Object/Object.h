@@ -41,6 +41,7 @@ enum ObjectType
 };
 
 
+
 class Object
 {
 public:
@@ -49,6 +50,7 @@ public:
 	
 	Object(std::string _namn, Mesh* Mesh, Texture* aTexture, Shader* aShader, Collider* coll);
 	
+
 	// should a virtual object contain a IsKinematic bool?
 	void SetCube(Cube& aCube); 
 	//void CreateCube(Cube& aCube); 
@@ -56,7 +58,8 @@ public:
 	void SetTexture(Texture& aTexture);
 	void SetShader(Shader& aShader);
 	void SetCollider(Collider& collider);
-	void SetLightData(LightData* lightdata);
+	void SetLightData(LightData& lightdata);
+	//void SetLighting(Lighting& lighting);
 	Mesh* CreateMesh();
 	
 	
@@ -93,12 +96,13 @@ public:
 	
 	
 	
-private:
+private: 
 	
 	Texture* myTexture;
 	Shader* MyShader;
 	Cube* myCube;
 	LightData* myLightData;
+	
 	//Lighting* lighting;
 	
 	//ObjLoader* myObjLoader;
@@ -112,3 +116,9 @@ private:
 
 };
 
+class LightObject : public Object
+{
+public:
+	LightObject(std::string _namn, Mesh* Mesh, Texture* aTexture, Shader* aShader, Collider* coll, LightData* myLightData);
+	static std::vector<LightObject*> LightEntities;
+};

@@ -10,23 +10,27 @@
 #pragma once
 
 CubeCollider* cubeColl2;
+Lighting* light;
 MeshManager* meshmang;
 ObjectManager* objectMang;
 ShaderManager* shaderMang;
 ColliderManager* colliderMang;
 TextureManager* textureMang;
+LightingManager* lightMang;
+//const char* lightItems[255] = { "Directional", "Spot", "Spot" };
 
 int init_colliders2() {
 	glm::vec3 extents = { 1,1, 1 };
 	glm::vec3 extentsPlane = { 7 / 2, 0.5f / 2, 7 / 2 };
 	glm::vec3 center = { 0, 0,0 }; float radius = 0.5f; glm::vec3 pos = { 0,0,0 };
 	glm::vec3 scale = { 1,1,1 };
-
+	
 	cubeColl2 = new CubeCollider(center, extents, pos);
 	shaderMang = new ShaderManager();
 	colliderMang = new ColliderManager();
 	textureMang = new TextureManager();
 	meshmang = new MeshManager();
+	lightMang = new LightingManager();
 	return 0;
 }
 
@@ -91,12 +95,15 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 	std::string tex = "_tex";
 	//ImGui::Text("Change camera speed");
 	//ImGui::InputFloat("Camera speed", &speed, 1.0f, 1.0f, "%.1f"); // supposed to change speed of camera cause
-
+	std::string cubeName = "Cube";
 	// Implement a Camera class and UI to configure it for rendering your scene
 
 	if (ImGui::Button("Create new mesh"))
 	{
-			
+		if (nameBuffer == "")
+		{
+			mesh->name = "Cube";
+		}
 		
 		objectmanager->Create(
 			nameBuffer, // Name
@@ -126,6 +133,38 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 		type = ObjectType::Type_Cube;
 
 	}
+
+	if (ImGui::Button("Create new light"))
+	{
+		newLightData->Point;
+		objectmanager->CreateLight(nameBuffer,
+			meshmang->Create("cube", "cube.obj"),
+			textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
+			shader->DefaultShader,
+			NULL,
+			lightMang->CreateData(newLightData)
+		);
+		type = ObjectType::Type_Light;
+		
+	}
+	if (ImGui::Button("Directional light"))
+	{
+		newLightData->Directional;
+		//lightType = LightType::Directional;
+	}
+	if (ImGui::Button("Spot light"))
+	{
+		newLightData->Spot;
+	}
+	if (ImGui::Button("Point light"))
+	{
+		newLightData->Point;
+	}
+	ImGui::Text("");
+	/*if (ImGui::ListBox("LightListBox", 0, lightItems, 3, 1))
+	{
+		
+	}*/
 	// cubeCollider->isKinematic;
 
    //ImGui::Text("IsKinematic", &check);
@@ -144,7 +183,9 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 
 	if (ImGui::Button("Change name"))
 	{
+		mesh->name = nameBuffer;
 	}
+
 
 	if (ImGui::Button("Play"))
 	{

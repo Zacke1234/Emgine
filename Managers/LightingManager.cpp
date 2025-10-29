@@ -1,6 +1,6 @@
 #include "LightingManager.h"
 
-LightData* LightingManager::CreateData()
+LightData* LightingManager::CreateData(LightData* lightData)
 {
 	LightData* lightdata = new LightData();
 	//Lighting* light = new Lighting();
@@ -8,13 +8,15 @@ LightData* LightingManager::CreateData()
 	return lightdata;
 }
 
-Lighting* LightingManager::Create()
+Lighting* LightingManager::Create(Lighting* myLighting)
 {
-	Lighting* light = new Lighting();
-	return light;
+	myLighting = new Lighting();
+	DefaultLighting = myLighting;
+	
+	return myLighting;
 }
 
-void LightingManager::Destroy(Lighting* light)
+void LightingManager::Destroy(Lighting* light, LightData* lightData)
 {
-	Destroy(light);
+	Destroy(light, lightData);
 }

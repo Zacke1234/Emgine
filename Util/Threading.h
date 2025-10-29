@@ -8,13 +8,14 @@ class Threading
 {
 public:
 	Threading();
-	virtual void DoWork(float deltatime) = 0;
+	virtual void DoWork(Observer* observer, Message* myMessage) = 0;
 	int SleepFor = 10;
-	std::thread thread1;
+	std::thread thread1; 
 private:
 	void Run();
-	
-	
+	// Which manager? MeshManager, ObjManager? Or maybe something else?
+	Observer *observer;
+	Message *myMessage;
 	bool running = false;
 protected:
 	std::mutex mutexRun;
@@ -24,8 +25,8 @@ protected:
 class Thread : public Threading {
 
 public:
-	void DoWork(float deltatime);
-	MeshManager* myMeshManager;
+	void DoWork(Observer* observer, Message* myMessage) override;
+	
 	std::thread thread2;
 };
 

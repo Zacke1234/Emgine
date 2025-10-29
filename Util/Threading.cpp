@@ -1,5 +1,7 @@
 #include "Threading.h"
+#include "functional"
 #include <chrono>
+
 
 Threading::Threading() :
 	thread1(&Threading::Run, this)
@@ -21,8 +23,9 @@ void Threading::Run()
 		const std::chrono::duration<double, std::milli> deltaTP{ std::chrono::steady_clock::now() - lastTime };
 		const auto deltaMs = std::chrono::duration_cast<std::chrono::milliseconds>(deltaTP);
 		float deltatime = deltaTP.count() / 1000;
-		DoWork(deltatime);
+		DoWork(observer, myMessage);
 
+		
 		//std::thread t1(void DoWork(float dt));
 		//std::thread thread1(&DoWork, deltatime);
 		//std::thread t3(&Threading::DoWork, deltatime);
@@ -41,8 +44,18 @@ void Threading::Run()
 
 float lastFrame = 0.0f;
 Physics* Phys = new Physics();
-void Thread::DoWork(float deltatime)
+// float deltatime, 
+void Thread::DoWork(Observer *observer, Message *myMessage)
 {
+	//myMessage->Attach(observer
+	//std::bind(observer, this);
+	std::thread tObserver;
+	if (tObserver.joinable())
+	{
+		tObserver.join();
+		std::cout << "Thread joined" << std::endl;
+	}
+
 	
 	/*if (Phys->TimeTicking)
 	{
