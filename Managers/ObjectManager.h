@@ -5,6 +5,9 @@ class ObjectManager : public Subject
 {
 public:
 	std::vector<Object*> objects;
+
+	std::vector<LightObject> lightsObjects;
+
 	virtual Object* Create(std::string aName, Mesh* Mesh, Texture* aTexture, Shader* aShader, Collider* aCollider) ;
 	void Destroy(Object* obj);
 	

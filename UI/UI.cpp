@@ -17,6 +17,7 @@ ShaderManager* shaderMang;
 ColliderManager* colliderMang;
 TextureManager* textureMang;
 LightingManager* lightMang;
+LightData* newLightData;
 //const char* lightItems[255] = { "Directional", "Spot", "Spot" };
 
 int init_colliders2() {
@@ -26,6 +27,7 @@ int init_colliders2() {
 	glm::vec3 scale = { 1,1,1 };
 	
 	cubeColl2 = new CubeCollider(center, extents, pos);
+	newLightData = new LightData();
 	shaderMang = new ShaderManager();
 	colliderMang = new ColliderManager();
 	textureMang = new TextureManager();
@@ -124,6 +126,7 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 	if (ImGui::Button("Create new cube"))
 	{
 		
+		
 		objectmanager->Create(nameBuffer,
 			meshmang->Create("cube", "cube.obj"),
 			textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
@@ -136,7 +139,7 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 
 	if (ImGui::Button("Create new light"))
 	{
-		newLightData->Point;
+		newLightData->SetPoint();
 		objectmanager->CreateLight(nameBuffer,
 			meshmang->Create("cube", "cube.obj"),
 			textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
@@ -149,16 +152,21 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 	}
 	if (ImGui::Button("Directional light"))
 	{
-		newLightData->Directional;
-		//lightType = LightType::Directional;
+		/*if (LightObject::SelectedEntity == ObjectType::Type_Light)
+		{
+			LightObject::Entities[LightObject::SelectedEntity]->SetLightData(*newLightData);
+		}*/
+		
 	}
 	if (ImGui::Button("Spot light"))
 	{
-		newLightData->Spot;
+		newLightData->SetSpot();
+		
 	}
 	if (ImGui::Button("Point light"))
 	{
-		newLightData->Point;
+		newLightData->SetPoint();
+		
 	}
 	ImGui::Text("");
 	/*if (ImGui::ListBox("LightListBox", 0, lightItems, 3, 1))

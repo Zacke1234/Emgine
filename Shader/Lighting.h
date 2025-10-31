@@ -9,19 +9,23 @@
 
 struct LightData {
 
-		glm::vec3 PointLight;
+	/*	glm::vec3 PointLight;
 		glm::vec3 DirectionalLight;
-		glm::vec3 SpotLight;
+		glm::vec3 SpotLight;*/
 		//int lightType = 0; // 0 = point, 1 = directional, 2 = spot.
-		const enum LightType {
+		enum LightType {
 			Null, Point, Directional, Spot
 		};
-		
+		float ambientStrength = 0.1f;
 		glm::vec3 lightPos;
+		enum LightType myVar = Null; 
 		
 public:
-	void InitialiseLightData();
+	void InitialiseLightData(Camera* aCamera, Shader* shader);
 
+	void SetDirectional();
+	void SetPoint();
+	void SetSpot();
 };
 
 
@@ -29,13 +33,13 @@ class Lighting
 {
 public:
 	
-	enum LightType light;
-
+	 
+	
 	Lighting();
 	//std::vector<LightData> Lightdata;
 	void Use(Camera* aCamera, Shader* aShader);
 	//LightData* myLightData
-	float ambientStrength = 0.1f;
+	
 
 	
 	

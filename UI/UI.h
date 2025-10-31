@@ -70,7 +70,7 @@ private:
 	CubeCollider* cubeCollider;
 	Collider* newCollider;
 	Physics* physics;
-	LightData* newLightData;
+	
 	
 	
 	

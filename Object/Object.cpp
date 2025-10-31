@@ -80,28 +80,28 @@ LightObject::LightObject(std::string _namn = "new_object", Mesh* Mesh = NULL, Te
 		SetMesh(*Mesh);
 	}
 	else {
-		std::cout << "No mesh assigned to object: " << _namn << "\n";
+		std::cout << "No mesh assigned to light object: " << _namn << "\n";
 	}
 	if (aTexture)
 	{
 		SetTexture(*aTexture);
 	}
 	else {
-		std::cout << "No texture assigned to object: " << _namn << "\n";
+		std::cout << "No texture assigned to light object: " << _namn << "\n";
 	}
 	if (aShader)
 	{
 		SetShader(*aShader);
 	}
 	else {
-		std::cout << "No shader assigned to object: " << _namn << "\n";
+		std::cout << "No shader assigned to light object: " << _namn << "\n";
 	}
 	if (aCollider)
 	{
 		SetCollider(*aCollider);
 	}
 	else {
-		std::cout << "No collider assigned to object: " << _namn << "\n";
+		std::cout << "No collider assigned to light object: " << _namn << "\n";
 	}
 	if (aLightData)
 	{
@@ -109,7 +109,7 @@ LightObject::LightObject(std::string _namn = "new_object", Mesh* Mesh = NULL, Te
 	}
 	else
 	{
-		std::cout << "No light data assigned to object: " << _namn << "\n";
+		std::cout << "No light data assigned to light object: " << _namn << "\n";
 	}
 }
 
@@ -145,7 +145,7 @@ void Object::SetCollider(Collider& aCollider)
 	myCollider->isKinematic = false;
 	myCollider->scale = Scale;
 }
-void Object::SetLightData(LightData& lightdata)
+void LightObject::SetLightData(LightData& lightdata)
 {
 	type = ObjectType::Type_Light;
 	myLightData = &lightdata;
