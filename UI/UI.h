@@ -23,6 +23,9 @@ public:
 	void RenderUI(ShaderManager* shader, ObjectManager* objectmanager);
 	//ImGuiIO& io;
 
+	const char* Items[3] = {"Directional", "Point", "Spot"};
+	int SelectedItem = 0;
+
 	float yPos = 0;
 	float xPos = 0;
 	float zPos = 0;

@@ -279,7 +279,15 @@ int main()
 		MyColliderManager->Create(sphereColl)
 
 	);
-	
+	//myObjectManager->CreateLight( // this also pushes to Object::Entities and LightObject::lightEntities
+	//	"lightObj",
+	//	cube,
+	//	wall,
+	//	myShaderManager->DefaultShader,
+	//	NULL,
+	//	myLightingManager->CreateData(myLightData)
+	//);
+
 	
 
 
@@ -299,7 +307,7 @@ int main()
 
 		//myMemory->LoadInMemory(myShaderManager->DefaultShader, myCamera, myLighting, myObjectManager, myUI, myMeshManager, fish, cubeColl);
 
-		
+		//myLightData->InitialiseLightData(myShaderManager->DefaultShader, myLightData);
 		
 		
 		//if (Phys->TimeTicking)
@@ -311,13 +319,21 @@ int main()
 		//}
 		
 		
+		for (auto& lObjs : LightObject::LightEntities)
+		{
+			//std::string number = sizeof(lObjs);
+			myLightData->lightPos = lObjs->Position;
+			myLightData->InitialiseLightData(myShaderManager->DefaultShader, myLightData);
+			
 
+
+		}
 		myShaderManager->DefaultShader->UseShader();
-		
-		
+		myLighting->Use(myCamera, myShaderManager->DefaultShader);
+		//myLightData->InitialiseLightData(myShaderManager->DefaultShader, myLightData);
 		//messageUI->RenderUI();
-		myLightData->InitialiseLightData(myCamera, myShaderManager->DefaultShader);
-		//myLighting->Use(myCamera, myShaderManager->DefaultShader);
+		//myLightData->InitialiseLightData(myCamera, myShaderManager->DefaultShader);
+		
 		
 		
 		for (auto& l : LightObject::LightEntities)

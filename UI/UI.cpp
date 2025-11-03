@@ -102,78 +102,124 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 
 	if (ImGui::Button("Create new mesh"))
 	{
-		if (nameBuffer == "")
+		if (nameBuffer[0] == '\0' && nameBuffer != NULL)
 		{
-			mesh->name = "Cube";
+			objectmanager->Create(
+				"Mesh", // Name
+				meshmang->Create(nameBuffer, meshBuffer),
+				textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
+				shader->DefaultShader,
+				colliderMang->Create(cubeColl2)
+			);
 		}
-		
-		objectmanager->Create(
-			nameBuffer, // Name
-			meshmang->Create(nameBuffer, meshBuffer),
-			textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
-			shader->DefaultShader,
-			colliderMang->Create(cubeColl2)
-		);
+		else
+		{
+			objectmanager->Create(
+				nameBuffer, // Name
+				meshmang->Create(nameBuffer, meshBuffer),
+				textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
+				shader->DefaultShader,
+				colliderMang->Create(cubeColl2)
+			);
+		}
+
 
 		//Object::Entities.push_back(objectMang->ObjectMesh);
-		
-		type = ObjectType::Type_Mesh;
-		
-		
-		
-	}
 
+		type = ObjectType::Type_Mesh;
+
+
+
+	}
+	//std::string test = nameBuffer;
 	if (ImGui::Button("Create new cube"))
 	{
-		
-		
-		objectmanager->Create(nameBuffer,
-			meshmang->Create("cube", "cube.obj"),
-			textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
-			shader->DefaultShader,
-			colliderMang->Create(cubeColl2)
-		);
+		if (nameBuffer[0] == '\0' && nameBuffer != NULL)
+		{
+			std::cout << "name field is empty" << std::endl;
+			//name[254] = 'cube';
+			objectmanager->Create("Cube",
+				meshmang->Create("cube", "cube.obj"),
+				textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
+				shader->DefaultShader,
+				colliderMang->Create(cubeColl2)
+			);
+		}
+		else
+		{
+			objectmanager->Create(nameBuffer,
+				meshmang->Create("cube", "cube.obj"),
+				textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
+				shader->DefaultShader,
+				colliderMang->Create(cubeColl2)
+			);
+		}
+
+
+
+
+
 		type = ObjectType::Type_Cube;
 
 	}
 
 	if (ImGui::Button("Create new light"))
 	{
-		newLightData->SetPoint();
-		objectmanager->CreateLight(nameBuffer,
-			meshmang->Create("cube", "cube.obj"),
-			textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
-			shader->DefaultShader,
-			NULL,
-			lightMang->CreateData(newLightData)
-		);
-		type = ObjectType::Type_Light;
-		
-	}
-	if (ImGui::Button("Directional light"))
-	{
-		/*if (LightObject::SelectedEntity == ObjectType::Type_Light)
+
+		if (nameBuffer[0] == '\0' && nameBuffer != NULL)
 		{
-			LightObject::Entities[LightObject::SelectedEntity]->SetLightData(*newLightData);
-		}*/
+			objectmanager->CreateLight("Light",
+				meshmang->Create("cube", "cube.obj"),
+				textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
+				shader->DefaultShader,
+				NULL,
+				newLightData
+			);
+			type = ObjectType::Type_Light;
+		}
+		else {
+			objectmanager->CreateLight(nameBuffer,
+				meshmang->Create("cube", "cube.obj"),
+				textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
+				shader->DefaultShader,
+				NULL,
+				newLightData
+			);
+			type = ObjectType::Type_Light;
+		}
+
+
+		//newLightData->SetPoint();
+
 		
+		//newLightData->InitialiseLightData(shader->DefaultShader, newLightData);
+
+
+		//const char* Items[]{ "Directional", "Point", "Spot"};
 	}
-	if (ImGui::Button("Spot light"))
+	
+	if (ImGui::Combo("Light type", &SelectedItem, Items, IM_ARRAYSIZE(Items)))
 	{
-		newLightData->SetSpot();
-		
-	}
-	if (ImGui::Button("Point light"))
-	{
-		newLightData->SetPoint();
-		
-	}
+		if (SelectedItem == 0)
+		{
+			
+			LightObject::LightEntities[LightObject::SelectedLightEntity]->SetDirectional(newLightData);
+			std::cout << "directional" << std::endl;
+		}
+		if (SelectedItem == 1)
+		{
+			//LightObject::LightEntities[LightObject::SelectedEntity]->SetPoint(newLightData);
+			std::cout << "point" << std::endl;
+		}
+		if (SelectedItem == 2)
+		{
+			LightObject::LightEntities[LightObject::SelectedEntity]->SetDirectional(newLightData);
+			std::cout << "spot" << std::endl;
+		}
+	};
+	
 	ImGui::Text("");
-	/*if (ImGui::ListBox("LightListBox", 0, lightItems, 3, 1))
-	{
-		
-	}*/
-	// cubeCollider->isKinematic;
+	
 
    //ImGui::Text("IsKinematic", &check);
 	if (ImGui::Checkbox("Is kinematic", &check)) // a bit jank
@@ -184,14 +230,13 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 
 	if (ImGui::Button("Change Texture"))
 	{
-		textureMang->Find(std::string(nameBuffer + tex));
-
-		 
+		texture = new Texture(textureBuffer);
+		Object::Entities[Object::SelectedEntity]->SetTexture(*texture);
 	}
 
 	if (ImGui::Button("Change name"))
 	{
-		mesh->name = nameBuffer;
+		Object::Entities[Object::SelectedEntity]->SetName(nameBuffer);
 	}
 
 
@@ -202,7 +247,7 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 
 	ImGui::Text("Mesh Manager");
 	//int n = sizeof(virtobj->Entities);
-	
+
 
 	float value = 0;
 
@@ -246,12 +291,14 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 	ImGui::InputFloat("X scale", &xScale, step, step_fast);
 	ImGui::InputFloat("Y scale", &yScale, step, step_fast);
 	ImGui::InputFloat("Z scale", &zScale, step, step_fast);
-	
+
 	//ImGui_ImplGlfw_Shutdown();
 	ImGui::End();
-	ImGui::EndFrame();; 
+	ImGui::EndFrame();;
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	//glfwSwapBuffers(window);
 	glfwPollEvents();
+
 }
+		

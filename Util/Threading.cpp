@@ -68,7 +68,7 @@ void Thread::DoWork(Observer *observer, Message *myMessage)
 	//
 	//std::unique_lock lock{ mutex };
 	//std::cout << "hello DoWork" << std::endl;
-	std::cout << "Started thread id=" << std::this_thread::get_id() << std::endl;
+	//std::cout << "Started thread id=" << std::this_thread::get_id() << std::endl;
 	  //thread2(*myMeshManager->myObjLoader);
 	//
 	std::this_thread::sleep_for(std::chrono::milliseconds(1000));

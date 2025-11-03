@@ -12,6 +12,7 @@ using namespace std;
 
 vector<Object*> Object::Entities;
 int Object::SelectedEntity;
+int LightObject::SelectedLightEntity;
 vector<LightObject*> LightObject::LightEntities;
 // Objects should hold all my meshes and lights
 // Meshes should hold meshses like teapots, fishes and cubes
@@ -64,11 +65,11 @@ Object::Object(std::string _namn = "new_object", Mesh* Mesh = NULL, Texture* aTe
 	
 }
 
-LightObject::LightObject(std::string _namn = "new_object", Mesh* Mesh = NULL, Texture* aTexture = NULL, Shader* aShader = NULL, Collider* aCollider = NULL, LightData* aLightData = NULL)
+LightObject::LightObject(std::string _namn = "new_lightObject", Mesh* Mesh = NULL, Texture* aTexture = NULL, Shader* aShader = NULL, Collider* aCollider = NULL, LightData* aLightData = NULL)
 {
 
 	// Name
-	if (_namn != "new_object")
+	if (_namn != "new_lightObject")
 	{
 		this->namn = _namn;
 	}
@@ -151,6 +152,20 @@ void LightObject::SetLightData(LightData& lightdata)
 	myLightData = &lightdata;
 	myLightData->lightPos = this->Position;
 	
+}
+void LightObject::SetDirectional(LightData* aLightData)
+{
+	aLightData->LightVar = aLightData->DirLight;
+}
+
+void LightObject::SetPoint(LightData* aLightData)
+{
+	aLightData->PointLight;
+}
+
+void LightObject::SetSpot(LightData* aLightData)
+{
+	aLightData->SpotLight;
 }
 
 //void Object::SetLighting(Lighting& myLighting)

@@ -11,7 +11,7 @@ void ObjectManager::Destroy(Object* obj) {
 	Destroy(obj);
 }
 
-LightObject* ObjectManager::CreateLight(std::string aName = "new_object", Mesh* Mesh = NULL, Texture* aTexture = NULL, Shader* aShader = NULL, Collider* aCollider = NULL, LightData* aLightData = NULL)
+LightObject* ObjectManager::CreateLight(std::string aName = "new_lightObject", Mesh* Mesh = NULL, Texture* aTexture = NULL, Shader* aShader = NULL, Collider* aCollider = NULL, LightData* aLightData = NULL)
 {
 	LightObject* lightObj = new LightObject(aName, Mesh, aTexture, aShader, aCollider, aLightData);
 	//lightObj->type = ObjectType::Type_Light;
@@ -20,6 +20,20 @@ LightObject* ObjectManager::CreateLight(std::string aName = "new_object", Mesh* 
 	Object::Entities.push_back(lightObj);
 	LightObject::LightEntities.push_back(lightObj);
 	return lightObj;
+}
+
+Object* Find(std::string aName)
+{
+	for (Object* object : Object::Entities)
+	{
+		if (object->namn == aName)
+		{
+			return object;
+			std::cout << "Object found: " << aName << "\n";
+		}
+	}
+	std::cout << "Object not found: " << aName << "\n";
+	return nullptr;
 }
 
 // Lightdata is part of Object Yes?

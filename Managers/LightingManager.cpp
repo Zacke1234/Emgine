@@ -2,10 +2,11 @@
 
 LightData* LightingManager::CreateData(LightData* lightData)
 {
-	LightData* lightdata = new LightData();
+	lightData = new LightData();
+	
 	//Lighting* light = new Lighting();
 	//LightData::lightsList.push_back(lightdata);
-	return lightdata;
+	return lightData;
 }
 
 Lighting* LightingManager::Create(Lighting* myLighting)

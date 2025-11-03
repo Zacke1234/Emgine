@@ -73,7 +73,7 @@ public:
 	glm::vec3 Scale;
 	glm::vec3 Rotation;
 
-
+	
 	
 	std::string namn;
 
@@ -119,10 +119,15 @@ private:
 class LightObject : public Object
 {
 public:
+	
 	LightObject(std::string _namn, Mesh* Mesh, Texture* aTexture, Shader* aShader, Collider* coll, LightData* myLightData);
 	static std::vector<LightObject*> LightEntities;
 	LightData* myLightData;
 
 	void SetLightData(LightData& lightdata);
 	
+	void SetDirectional(LightData* aLightData);
+	void SetPoint(LightData* aLightData);
+	void SetSpot(LightData* aLightData);
+	static int SelectedLightEntity;
 };
