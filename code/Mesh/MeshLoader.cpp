@@ -264,7 +264,6 @@ void MeshLoader::WriteToBinary(std::ostream& f)
 	
 
 	
-
 }
 
 void MeshLoader::ReadFromBinary(std::istream& f)
@@ -278,7 +277,7 @@ void MeshLoader::ReadFromBinary(std::istream& f)
 	data = new char[fileSize + 1];
 	f.read(data, fileSize);
 	data[fileSize] = '\0';
-	name = data;    
+	name = data;   
 	delete data; 
 
 	f.read((char*)&fileSize, sizeof(fileSize));
@@ -286,6 +285,7 @@ void MeshLoader::ReadFromBinary(std::istream& f)
 	f.read(data, fileSize);
 	data[fileSize] = '\0';
 	type = data;
+	
 
 	//std::cerr << data << std::endl;
 	delete data; // memory clearing

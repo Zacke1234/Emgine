@@ -5,9 +5,15 @@ class ObjectManager : public Subject
 {
 public:
 	std::vector<Object*> objects;
+
+	std::vector<LightObject> lightsObjects;
+
 	virtual Object* Create(std::string aName, Mesh* Mesh, Texture* aTexture, Shader* aShader, Collider* aCollider) ;
 	void Destroy(Object* obj);
 	
+	virtual LightObject* CreateLight(std::string aName, Mesh* Mesh, Texture* aTexture, Shader* aShader, Collider* aCollider, LightData* lightData);
+
+	Object* Find(std::string name);
 
 	void Attach(Observer* observer) override {
 		observers.push_back(observer);
@@ -23,6 +29,8 @@ public:
 			observer->Update(message);
 		}
 	}
+
+	
 	
 };
 

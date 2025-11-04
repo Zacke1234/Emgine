@@ -33,22 +33,17 @@ class Cube;
 struct Mesh;
 struct LightData;
 
-enum ObjectType
-{
-	Type_Light,
-	Type_Mesh,
-	Type_Cube
-};
+
 
 
 class Object
 {
 public:
-	enum ObjectType type;
 	
 	
 	Object(std::string _namn, Mesh* Mesh, Texture* aTexture, Shader* aShader, Collider* coll);
 	
+
 	// should a virtual object contain a IsKinematic bool?
 	void SetCube(Cube& aCube); 
 	//void CreateCube(Cube& aCube); 
@@ -56,7 +51,8 @@ public:
 	void SetTexture(Texture& aTexture);
 	void SetShader(Shader& aShader);
 	void SetCollider(Collider& collider);
-	void SetLightData(LightData* lightdata);
+	
+	//void SetLighting(Lighting& lighting);
 	Mesh* CreateMesh();
 	
 	
@@ -70,6 +66,15 @@ public:
 	glm::vec3 Scale;
 	glm::vec3 Rotation;
 
+	enum ObjectType
+	{
+		Type_NULL,
+		Type_Light,
+		Type_Mesh,
+		Type_Cube
+	};
+
+	ObjectType ObjType;
 
 	
 	std::string namn;
@@ -79,6 +84,7 @@ public:
 	static std::vector<Object*> Entities;
 
 	static int SelectedEntity;
+	static std::vector <Object*> SelectedEntityVec;
 
 	
 	bool IsTransformValid;
@@ -93,12 +99,13 @@ public:
 	
 	
 	
-private:
+private: 
 	
 	Texture* myTexture;
 	Shader* MyShader;
 	Cube* myCube;
-	LightData* myLightData;
+	
+	
 	//Lighting* lighting;
 	
 	//ObjLoader* myObjLoader;
@@ -112,3 +119,18 @@ private:
 
 };
 
+class LightObject : public Object
+{
+public:
+	
+	LightObject(std::string _namn, Mesh* Mesh, Texture* aTexture, Shader* aShader, Collider* coll, LightData* myLightData);
+	static std::vector<LightObject*> LightEntities;
+	LightData* myLightData;
+
+	void SetLightData(LightData& lightdata);
+	
+	void SetDirectional(LightData* aLightData);
+	void SetPoint(LightData* aLightData);
+	void SetSpot(LightData* aLightData);
+	static int SelectedLightEntity;
+};

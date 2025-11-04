@@ -7,6 +7,7 @@
 #include "Managers/ShaderManager.h"
 #include "Managers/ColliderManager.h"
 #include "Managers/TextureManager.h"
+#include "Managers/LightingManager.h"
 #include "Cube.h"
 #include <Object.h>
 
@@ -17,9 +18,13 @@ class UI
 {
 public:
 	enum ObjectType type;
+	enum LightType lightType;
 	UI(GLFWwindow* window);
 	void RenderUI(ShaderManager* shader, ObjectManager* objectmanager);
 	//ImGuiIO& io;
+
+	const char* Items[3] = {"Directional", "Point", "Spot"};
+	int SelectedItem = 0;
 
 	float yPos = 0;
 	float xPos = 0;
@@ -41,6 +46,9 @@ public:
 	float test[255];
 	float step = 0;
 	float step_fast = 0;
+	
+	int SetLightType;
+	int GetObjectType;
 
 	int step2 = 1;
 	int step2_fast = 100;
@@ -68,6 +76,7 @@ private:
 	CubeCollider* cubeCollider;
 	Collider* newCollider;
 	Physics* physics;
+	
 	
 	
 	
