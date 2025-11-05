@@ -51,9 +51,10 @@ public:
 	void SetTexture(Texture& aTexture);
 	void SetShader(Shader& aShader);
 	void SetCollider(Collider& collider);
-	
+	void SetName(std::string name);
+
 	//void SetLighting(Lighting& lighting);
-	Mesh* CreateMesh();
+	Mesh* CreateMesh(Mesh* mesh);
 	
 	
 	
@@ -79,12 +80,12 @@ public:
 	
 	std::string namn;
 
-	void SetName(std::string name);
+	
 
 	static std::vector<Object*> Entities;
 
 	static int SelectedEntity;
-	static std::vector <Object*> SelectedEntityVec;
+	//static std::vector <Object*> SelectedEntityVec;
 
 	
 	bool IsTransformValid;

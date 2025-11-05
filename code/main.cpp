@@ -205,6 +205,7 @@ int static update_ui(UI* myUI, ShaderManager* myShader, ObjectManager* objManage
 {
 	myUI->RenderUI(myShader, objManager);
 	
+	//if (Object::Entities[0] == NULL)
 	Object::Entities[Object::SelectedEntity]->Position = glm::vec3(myUI->xPos, myUI->yPos, myUI->zPos);
 	Object::Entities[Object::SelectedEntity]->Rotation = glm::vec3(
 		glm::radians(myUI->xRot),
@@ -220,6 +221,7 @@ int static update_ui(UI* myUI, ShaderManager* myShader, ObjectManager* objManage
 
 int main()
 {
+	
 	init_window();
 
 	init_memory_tracker();
@@ -227,11 +229,13 @@ int main()
 	init_managers();
 
 	init_camera();
+
 	myCamera->myPosition = glm::vec3(0, 3, 0);
 
 	//Create Textures
 	Texture* wall = myTextureManager->Create("Wall", "wall.jpg");
-	myTextureManager->Create("Default", "Default 1.png");
+
+	//myTextureManager->Create("Default", "Default 1.png");
 	
 	//Message calling
 	message_stuff();
@@ -249,36 +253,9 @@ int main()
 
 	
 	// Object Creation
-	Mesh* fish = myMeshManager->Create("fish", "fish.obj");
-	Mesh* cube = myMeshManager->Create("cube", "cube.obj");
+	Mesh* fish = myMeshManager->Create("Fish", "fish.obj");
+	Mesh* cube = myMeshManager->Create("Cube", "cube.obj");
 
-	//myObjectManager->CreateLight( // this also pushes to Object::Entities
-	//	"lightObj",
-	//	NULL,
-	//	NULL,
-	//	myShaderManager->DefaultShader,
-	//	NULL,
-	//	//myLightingManager->CreatePointLight(glm::vec3(0, 5, 0), glm::vec3(1, 1, 1), 1.0f)
-	//);
-
-	myObjectManager->Create( // this also pushes to Object::Entities
-		"cubeObj",
-		cube,
-		wall,
-		myShaderManager->DefaultShader,
-		MyColliderManager->Create(cubeColl)
-		
-	);
-	
-	
-	myObjectManager->Create( // this also pushes to Object::Entities
-		"fishObj",
-		fish,
-		wall,
-		myShaderManager->DefaultShader,
-		MyColliderManager->Create(sphereColl)
-
-	);
 	//myObjectManager->CreateLight( // this also pushes to Object::Entities and LightObject::lightEntities
 	//	"lightObj",
 	//	cube,
@@ -289,6 +266,35 @@ int main()
 	//);
 
 	
+	
+
+	//myObjectManager->CreateLight( // this also pushes to Object::Entities
+	//	"lightObj",
+	//	NULL,
+	//	NULL,
+	//	myShaderManager->DefaultShader,
+	//	NULL,
+	//	//myLightingManager->CreatePointLight(glm::vec3(0, 5, 0), glm::vec3(1, 1, 1), 1.0f)
+	//);
+	myObjectManager->Create("Cube",
+		cube, // this doesnt get added to the mech cache? and the vertices are copied from the fish obj, this does not happen in the UI though
+		wall,
+		myShaderManager->DefaultShader,
+		MyColliderManager->Create(cubeColl)
+	);
+
+
+
+	//myObjectManager->Find("cubeObj");
+
+	myObjectManager->Create( // this also pushes to Object::Entities
+		"Fish",
+		fish,
+		wall,
+		myShaderManager->DefaultShader,
+		MyColliderManager->Create(sphereColl)
+
+	);
 
 
 	glEnable(GL_DEPTH_TEST);

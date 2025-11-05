@@ -26,18 +26,18 @@ int lightEntityListing(UI* ui)
 	// should I make an ID system for every obj?
 	//objectMang->Find("");
 	//&&Object::ObjectType objEnum = static_cast<Object::ObjectType>(Object::SelectedEntity);
-	if (Object::SelectedEntity == LightObject::SelectedLightEntity)
-	{
-		//std::cout << "0";
-	}
-	for (int i = 0; i < Object::Entities.size(); i++)
-	{
-		
-	}
-	if (Object::Entities[Object::SelectedEntity, Object::Type_Light])
-	{
-		
-	}
+	//if (Object::SelectedEntity == LightObject::SelectedLightEntity)
+	//{
+	//	//std::cout << "0";
+	//}
+	//for (int i = 0; i < Object::Entities.size(); i++)
+	//{
+	//	
+	//}
+	//if (Object::Entities[Object::SelectedEntity, Object::Type_Light])
+	//{
+	//	
+	//}
 
 	
 	/*if (objEnum == Object::Type_Light)
@@ -52,10 +52,10 @@ int lightEntityListing(UI* ui)
 	//	std::cout << "light object selected" << std::endl;
 	//}
 	// If selected entity is light type then blah blah blah
-	if (Object::Entities[Object::SelectedEntity] == Object::Entities[Object::SelectedEntity, Object::ObjectType::Type_Light])
-	{
-		 // it does that because enums are a type of int..
-	}
+	//if (Object::Entities[Object::SelectedEntity] == Object::Entities[Object::SelectedEntity, Object::ObjectType::Type_Light])
+	//{
+	//	 // it does that because enums are a type of int..
+	//}
 	
 	//switch (objEnum)
 	//{
@@ -93,7 +93,7 @@ int uiObjectList(UI* ui)
 		{
 			
 			Object::SelectedEntity = i;
-			Object::SelectedEntityVec[i];
+			//Object::SelectedEntityVec[i];
 			//if (Object::SelectedEntity == LightObject::SelectedLightEntity) // &&? How do I check if the selected entity is the same as the selected light entity, Cause I want to know when the user is selecting the Light object
 			//{
 			//	std::cout << "light object selected" << std::endl;
@@ -102,7 +102,7 @@ int uiObjectList(UI* ui)
 			printf(R"(%d )", Object::SelectedEntity);
 			//std::cout << "Is kinematic?" << Object::&myCollider
 			ui->xPos = Object::Entities[i]->Position[0];
-			ui->yPos = Object::Entities[i]->Position[1];
+			ui->yPos = Object::Entities[i]->Position[1]; 
 			ui->zPos = Object::Entities[i]->Position[2];
 
 			ui->xRot = glm::degrees(Object::Entities[i]->Rotation[0]);
@@ -113,8 +113,13 @@ int uiObjectList(UI* ui)
 			ui->yScale = Object::Entities[i]->Scale[1];
 			ui->zScale = Object::Entities[i]->Scale[2];
 
+
+			/*if (Object::Entities[i]->ObjType == ui->GetObjectType)
+			{
+				printf(R"(%d )", ui->GetObjectType);
+			}*/
 			//ui->SetLightType = Object::Entities[i]->ObjType;
-			ui->SetLightType = Object::Entities[i]->ObjType;
+			//ui->GetObjectType = Object::Entities[i]->ObjType;
 			
 			
 			//virtobj->Scale = cubeCollider->scale; cubeCollider is nullptr
@@ -139,6 +144,7 @@ int classes() {
 	textureMang = new TextureManager();
 	meshmang = new MeshManager();
 	lightMang = new LightingManager();
+	
 	return 0;
 }
 
@@ -196,7 +202,7 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 
 	textureFile = ImGui::InputText("texture file", textureBuffer, sizeof(textureBuffer) - 1);  // does not work as intended
 	name = ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer) - 1);
-	charMesh = ImGui::InputText("Mesh", meshBuffer, sizeof(meshBuffer) - 1); // not yet implemented
+	charMesh = ImGui::InputText("Mesh", meshBuffer, sizeof(meshBuffer) - 1); 
 
 	ImGui::InputFloat("Field of view", &fov, 1.0f, 1.0f, "%.2f");
 
@@ -208,7 +214,7 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 	std::string cubeName = "Cube";
 	// Implement a Camera class and UI to configure it for rendering your scene
 	lightEntityListing(this);
-	lightEntityListing(this);
+	//lightEntityListing(this);
 
 	if (ImGui::Button("Create new mesh"))
 	{
@@ -216,7 +222,7 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 		{
 			objectmanager->Create(
 				"Mesh", // Name
-				meshmang->Create(nameBuffer, meshBuffer),
+				meshmang->Create("Mesh", meshBuffer),
 				textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
 				shader->DefaultShader,
 				colliderMang->Create(cubeColl2)
@@ -247,10 +253,10 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 		if (nameBuffer[0] == '\0' && nameBuffer != NULL)
 		{
 			std::cout << "name field is empty" << std::endl;
-			//name[254] = 'cube';
+			
 			objectmanager->Create("Cube",
-				meshmang->Create("cube", "cube.obj"),
-				textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
+				meshmang->Create("Cube", "cube.obj"),
+				textureMang->Create(std::string("Cube" + tex), textureBuffer),
 				shader->DefaultShader,
 				colliderMang->Create(cubeColl2)
 			);
@@ -258,7 +264,7 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 		else
 		{
 			objectmanager->Create(nameBuffer,
-				meshmang->Create("cube", "cube.obj"),
+				meshmang->Create(nameBuffer, "cube.obj"),
 				textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
 				shader->DefaultShader,
 				colliderMang->Create(cubeColl2)
@@ -279,7 +285,7 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 		if (nameBuffer[0] == '\0' && nameBuffer != NULL)
 		{
 			objectmanager->CreateLight("Light",
-				meshmang->Create("cube", "cube.obj"),
+				meshmang->Create("Cube", "cube.obj"),
 				textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
 				shader->DefaultShader,
 				NULL,
@@ -287,9 +293,9 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 			);
 			
 		}
-		else {
+		else{
 			objectmanager->CreateLight(nameBuffer,
-				meshmang->Create("cube", "cube.obj"),
+				meshmang->Create(nameBuffer, meshBuffer),
 				textureMang->Create(std::string(nameBuffer + tex), textureBuffer),
 				shader->DefaultShader,
 				NULL,
@@ -311,10 +317,10 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 	if (ImGui::Combo("Light type", &SelectedItem, Items, IM_ARRAYSIZE(Items)))
 	{
 		// How do I check if the selected entity is the same as the selected light entity, Cause I want to know when the user is selecting the Light object
-		if (SelectedItem == 0)
+		if (SelectedItem == GetObjectType)
 		{
 			//SetLightType = 1;
-			std::cout << "directional" << std::endl;
+			//std::cout << "directional" << std::endl;
 			//Object::Entities[0]->LightData::LightVar;
 			/*if (Object::Entities[Object::SelectedEntity] == LightObject::Entities[LightObject::SelectedLightEntity])
 			{
@@ -327,23 +333,23 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 			}*/
 			
 		}
-		if (SelectedItem == 1 && SetLightType == 1)
+		if (SelectedItem == 1)
 		{
 			SetLightType = 2;
-			std::cout << "point" << std::endl;
+			//std::cout << "point" << std::endl;
 			/*if (Object::Entities[Object::Type_Light])
 			{
 				std::cout << "light object selected" << std::endl;
 			}
 			std::cout << "point" << std::endl;*/
 		}
-		if (SelectedItem == 2 && SetLightType == 1)
+		if (SelectedItem == 2)
 		{
 			
-			if (Object::SelectedEntityVec[Object::Type_Light])
+			/*if (Object::SelectedEntityVec[Object::Type_Light])
 			{
 				std::cout << "spot" << std::endl;
-			};
+			};*/
 			//LightObject::LightEntities[LightObject::SelectedLightEntity]->SetDirectional(newLightData);
 			
 		}

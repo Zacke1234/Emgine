@@ -2,8 +2,11 @@
 
 Object* ObjectManager::Create(std::string _namn = "new_object", Mesh* Mesh = NULL, Texture* aTexture = NULL, Shader* aShader = NULL, Collider* aCollider = NULL) 
 {
+	
 	Object* obj = new Object(_namn, Mesh, aTexture, aShader, aCollider);
+	
 	Object::Entities.push_back(obj);
+	
 	return obj;
 }
 
@@ -22,14 +25,14 @@ LightObject* ObjectManager::CreateLight(std::string aName = "new_lightObject", M
 	return lightObj;
 }
 
-Object* Find(std::string aName)
+Object* ObjectManager::Find(std::string aName)
 {
 	for (Object* object : Object::Entities)
 	{
 		if (object->namn == aName)
 		{
-			return object;
 			std::cout << "Object found: " << aName << "\n";
+			return object;
 		}
 	}
 	std::cout << "Object not found: " << aName << "\n";

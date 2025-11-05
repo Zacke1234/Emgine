@@ -12,7 +12,7 @@ using namespace std;
 
 vector<Object*> Object::Entities;
 int Object::SelectedEntity;
-vector<Object*> SelectedEntityVec;
+//vector<Object*> SelectedEntityVec;
 int LightObject::SelectedLightEntity;
 vector<LightObject*> LightObject::LightEntities;
 // Objects should hold all my meshes and lights
@@ -34,6 +34,7 @@ Object::Object(std::string _namn = "new_object", Mesh* Mesh = NULL, Texture* aTe
 	if (Mesh)
 	{
 		SetMesh(*Mesh);
+		//CreateMesh(Mesh);
 	}
 	else {
 		std::cout << "No mesh assigned to object: " << _namn << "\n";
@@ -83,8 +84,8 @@ LightObject::LightObject(std::string _namn = "new_lightObject", Mesh* Mesh = NUL
 	//Components
 	if (Mesh)
 	{
-
 		SetMesh(*Mesh);
+		//CreateMesh(Mesh);
 	}
 	else {
 		std::cout << "No mesh assigned to light object: " << _namn << "\n";
@@ -181,12 +182,12 @@ void LightObject::SetSpot(LightData* aLightData)
 //	//lighting = &myLighting;
 //}
 
-Mesh* Object::CreateMesh() 
+Mesh* Object::CreateMesh(Mesh* mesh) 
 {
 	
-	myMesh = new Mesh();
+	mesh = new Mesh();
 	
-	return myMesh;
+	return mesh;
 }
 
 void Object::SetName(std::string name)

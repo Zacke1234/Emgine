@@ -13,7 +13,7 @@ public:
 	
 	virtual LightObject* CreateLight(std::string aName, Mesh* Mesh, Texture* aTexture, Shader* aShader, Collider* aCollider, LightData* lightData);
 
-	Object* Find(std::string name);
+	virtual Object* Find(std::string name);
 
 	void Attach(Observer* observer) override {
 		observers.push_back(observer);

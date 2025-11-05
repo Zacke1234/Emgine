@@ -54,6 +54,11 @@ bool MeshLoader::ObjParser(std::string fileName, Mesh* INmesh)
 		std::istringstream iss(line);
 		std::string prefix;
 		iss >> prefix;
+		if (prefix == "o")
+		{
+			/*iss >> name;
+			name.push_back();*/
+		}
 		if (prefix == "v")
 		{
 			glm::vec3 position;
@@ -217,6 +222,7 @@ void MeshLoader::ParseFaceIndices(const std::string& string, Face& face, int ver
 	int indexCounter = 0;
 	
 	std::vector<std::string> tokens = SplitString(string, del);
+	
 	for (std::string& token : tokens)
 	{
 		int index = std::atoi(token.c_str());
@@ -241,6 +247,7 @@ void MeshLoader::ParseFaceIndices(const std::string& string, Face& face, int ver
 //ofstream filePath("out.bin", std::ios::binary);
 //ofstream fileSize("out.bin", std::ios::binary);
 
+
 filesystem::path filePath = "C:\\Users\\zackarias.hager\\source\\repos\\Emgine\\Emgine\\resource\\meshes\\fish.obj"; //
 size_t fileSize = filesystem::file_size(filePath);
 
@@ -259,7 +266,7 @@ void MeshLoader::WriteToBinary(std::ostream& f)
 	fileSize = type.size();
 	f.write((char*)&fileSize, sizeof(size_t));
 	f.write((char*)type.c_str(), fileSize);
-	
+	//BinaryFile->WriteFile(this);
 	//std::cerr << name << std::endl;
 	
 
@@ -302,6 +309,7 @@ void Mesh::InitialiseMesh()
 {
 	//std::cout << "initialise object file" << "\n";
 	
+	
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
@@ -333,7 +341,7 @@ void BinaryFile::WriteFile(MeshLoader obj) {
 	File.open(FileName, std::ios::binary | std::ios::out);
 	if (!File)
 	{
-		std::cerr << "File error" << FileName << ">\n";
+		std::cerr << "File error writing: " << FileName << ">\n";
 		exit(1);
 	}
 	obj.WriteToBinary(File);
@@ -344,7 +352,7 @@ void BinaryFile::ReadFile(MeshLoader obj) {
 	File.open(FileName, std::ios::binary | std::ios::in);
 	if (!File)
 	{
-		std::cerr << "File error" << FileName << ">\n";
+		std::cerr << "File error reading: " << FileName << ">\n";
 		exit(1);
 	}
 	obj.ReadFromBinary(File);

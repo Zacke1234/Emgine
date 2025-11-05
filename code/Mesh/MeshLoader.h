@@ -84,6 +84,7 @@ private:
 	std::string FileName;
 	std::fstream File;
 public:
+	
 	BinaryFile(std::string FileName) : FileName(FileName) {};
 	void WriteFile(MeshLoader obj);
 
