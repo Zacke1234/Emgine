@@ -163,16 +163,19 @@ void LightObject::SetLightData(LightData& lightdata)
 }
 void LightObject::SetDirectional(LightData* aLightData)
 {
+	std::cout << "Directional light" << std::endl;
 	aLightData->LightVar = aLightData->DirLight;
 }
 
 void LightObject::SetPoint(LightData* aLightData)
 {
+	std::cout << "Pointlight" << std::endl;
 	aLightData->LightVar = aLightData->PointLight;
 }
 
 void LightObject::SetSpot(LightData* aLightData)
 {
+	std::cout << "Spotlight" << std::endl;
 	aLightData->LightVar = aLightData->SpotLight;
 }
 

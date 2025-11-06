@@ -18,69 +18,6 @@ ColliderManager* colliderMang;
 TextureManager* textureMang;
 LightingManager* lightMang;
 LightData* newLightData;
-ObjectType ObjType;
-//const char* lightItems[255] = { "Directional", "Spot", "Spot" };
-
-int lightEntityListing(UI* ui)
-{
-	// should I make an ID system for every obj?
-	//objectMang->Find("");
-	//&&Object::ObjectType objEnum = static_cast<Object::ObjectType>(Object::SelectedEntity);
-	//if (Object::SelectedEntity == LightObject::SelectedLightEntity)
-	//{
-	//	//std::cout << "0";
-	//}
-	//for (int i = 0; i < Object::Entities.size(); i++)
-	//{
-	//	
-	//}
-	//if (Object::Entities[Object::SelectedEntity, Object::Type_Light])
-	//{
-	//	
-	//}
-
-	
-	/*if (objEnum == Object::Type_Light)
-	{
-		
-	}*/
-	// Cant I just use the objectType :light type??+
-	
-	// I want to be able to select the light entities and change their light type in the UI
-	//if (Object::Entities[Object::Type_Light])
-	//{
-	//	std::cout << "light object selected" << std::endl;
-	//}
-	// If selected entity is light type then blah blah blah
-	//if (Object::Entities[Object::SelectedEntity] == Object::Entities[Object::SelectedEntity, Object::ObjectType::Type_Light])
-	//{
-	//	 // it does that because enums are a type of int..
-	//}
-	
-	//switch (objEnum)
-	//{
-	//case Object::Type_NULL:
-	//	break;
-	//case Object::Type_Light:
-	//	std::cout << "obj enum";
-	//	break;
-	//case Object::Type_Mesh:
-	//	break;
-	//case Object::Type_Cube:
-	//	break;
-	//default:
-	//	break;
-	////}
-	//for (int i = 0; i < Object::Entities.size(); i++)
-	//{
-	//	int b = Object::SelectedEntity;
-	//	printf(R"(%d )", b);
-	//	//LightObject::SelectedLightEntity = i;
-	//	
-	//}
-	
-	return 0;
-}
 
 int uiObjectList(UI* ui) 
 {
@@ -93,14 +30,7 @@ int uiObjectList(UI* ui)
 		{
 			
 			Object::SelectedEntity = i;
-			//Object::SelectedEntityVec[i];
-			//if (Object::SelectedEntity == LightObject::SelectedLightEntity) // &&? How do I check if the selected entity is the same as the selected light entity, Cause I want to know when the user is selecting the Light object
-			//{
-			//	std::cout << "light object selected" << std::endl;
-			//}
-			//if (Object::SelectedEntity == )
-			printf(R"(%d )", Object::SelectedEntity);
-			//std::cout << "Is kinematic?" << Object::&myCollider
+			
 			ui->xPos = Object::Entities[i]->Position[0];
 			ui->yPos = Object::Entities[i]->Position[1]; 
 			ui->zPos = Object::Entities[i]->Position[2];
@@ -113,16 +43,9 @@ int uiObjectList(UI* ui)
 			ui->yScale = Object::Entities[i]->Scale[1];
 			ui->zScale = Object::Entities[i]->Scale[2];
 
-
-			/*if (Object::Entities[i]->ObjType == ui->GetObjectType)
-			{
-				printf(R"(%d )", ui->GetObjectType);
-			}*/
-			//ui->SetLightType = Object::Entities[i]->ObjType;
-			//ui->GetObjectType = Object::Entities[i]->ObjType;
+		
 			
 			
-			//virtobj->Scale = cubeCollider->scale; cubeCollider is nullptr
 		}
 		//Object::Entities[0] = o;
 		ImGui::PopID();
@@ -211,10 +134,7 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 	std::string tex = "_tex";
 	//ImGui::Text("Change camera speed");
 	//ImGui::InputFloat("Camera speed", &speed, 1.0f, 1.0f, "%.1f"); // supposed to change speed of camera cause
-	std::string cubeName = "Cube";
-	// Implement a Camera class and UI to configure it for rendering your scene
-	lightEntityListing(this);
-	//lightEntityListing(this);
+	
 
 	if (ImGui::Button("Create new mesh"))
 	{
@@ -303,57 +223,31 @@ void UI::RenderUI(ShaderManager* shader, ObjectManager* objectmanager)
 			);
 			
 		}
-
-
-		//newLightData->SetPoint();
-
-		
-		//newLightData->InitialiseLightData(shader->DefaultShader, newLightData);
-
-
-		//const char* Items[]{ "Directional", "Point", "Spot"};
 	}
 	
 	if (ImGui::Combo("Light type", &SelectedItem, Items, IM_ARRAYSIZE(Items)))
 	{
-		// How do I check if the selected entity is the same as the selected light entity, Cause I want to know when the user is selecting the Light object
-		if (SelectedItem == GetObjectType)
+		if (Object::Entities[Object::SelectedEntity]->ObjType == 1)
 		{
-			//SetLightType = 1;
-			//std::cout << "directional" << std::endl;
-			//Object::Entities[0]->LightData::LightVar;
-			/*if (Object::Entities[Object::SelectedEntity] == LightObject::Entities[LightObject::SelectedLightEntity])
-			{
-				Object::Entities[Object::SelectedEntity]->SetTexture(*texture);
-			}*/
-			/*if (LightObject::LightEntities)
+			//std::cout << "Selected entity is light" << std::endl; // Yes finally!!
+			if (SelectedItem == 0)
 			{
 				LightObject::LightEntities[LightObject::SelectedLightEntity]->SetDirectional(newLightData);
-				
-			}*/
-			
-		}
-		if (SelectedItem == 1)
-		{
-			SetLightType = 2;
-			//std::cout << "point" << std::endl;
-			/*if (Object::Entities[Object::Type_Light])
-			{
-				std::cout << "light object selected" << std::endl;
 			}
-			std::cout << "point" << std::endl;*/
-		}
-		if (SelectedItem == 2)
-		{
-			
-			/*if (Object::SelectedEntityVec[Object::Type_Light])
+			if (SelectedItem == 1)
 			{
-				std::cout << "spot" << std::endl;
-			};*/
-			//LightObject::LightEntities[LightObject::SelectedLightEntity]->SetDirectional(newLightData);
+				LightObject::LightEntities[LightObject::SelectedLightEntity]->SetPoint(newLightData);
+			}
+			if (SelectedItem == 2)
+			{
+				LightObject::LightEntities[LightObject::SelectedLightEntity]->SetSpot(newLightData);
+			}
+		};
 			
-		}
-	};
+
+	}
+		// How do I check if the selected entity is the same as the selected light entity, Cause I want to know when the user is selecting the Light object:: SOLVED
+		
 	
 	ImGui::Text("");
 	

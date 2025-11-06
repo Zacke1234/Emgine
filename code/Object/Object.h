@@ -69,10 +69,11 @@ public:
 
 	enum ObjectType
 	{
-		Type_NULL,
-		Type_Light,
-		Type_Mesh,
-		Type_Cube
+	
+		Type_NULL = 0,
+		Type_Light = 1,
+		Type_Mesh = 2,
+		Type_Cube = 3
 	};
 
 	ObjectType ObjType;

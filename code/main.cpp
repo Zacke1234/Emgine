@@ -60,7 +60,7 @@ SphereCollider* sphereColl;
 LightingManager* myLightingManager;
 //Threading* myThreading;
 Thread* myThread; 
-LightData* myLightData;
+
 
 
 int message_stuff() { // message passing between meshmanager and objectmanager
@@ -173,7 +173,7 @@ int init_lightning() {
 	glm::vec3 SpotLight;
 	//myShader = new Shader("../Shader/VertexShader_1.glsl", "../Shader/FragmentShader_1.glsl");
 	myLighting = new Lighting();
-	myLightData = new LightData();
+	//myLightData = new LightData();
 	return 0;
 }
 
@@ -328,10 +328,10 @@ int main()
 		for (auto& lObjs : LightObject::LightEntities)
 		{
 			//std::string number = sizeof(lObjs);
-			myLightData->lightPos = lObjs->Position;
-			myLightData->InitialiseLightData(myShaderManager->DefaultShader, myLightData);
 			
-
+			LightObject::LightEntities[LightObject::SelectedLightEntity]->myLightData->InitialiseLightData(myShaderManager->DefaultShader, LightObject::LightEntities[LightObject::SelectedLightEntity]->myLightData, myCamera);
+			LightObject::LightEntities[LightObject::SelectedLightEntity]->myLightData->lightPos = lObjs->Position;
+			
 
 		}
 		myShaderManager->DefaultShader->UseShader();
@@ -342,11 +342,6 @@ int main()
 		
 		
 		
-		for (auto& l : LightObject::LightEntities)
-		{
-
-		}
-		 
 		/*for (auto& c : Collider::)
 		{
 			c->SetTheCollision();

@@ -27,7 +27,7 @@ private:
 	
 
 public:
-	void InitialiseLightData(Shader* shader, LightData* aLightData);
+	void InitialiseLightData(Shader* shader, LightData* aLightData, Camera* aCamera);
 
 	
 };
